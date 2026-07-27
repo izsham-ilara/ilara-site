@@ -1,0 +1,1736 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>document.documentElement.classList.add('js')</script>
+<title>Ilara: the decision layer for live mobile games</title>
+<meta name="description" content="Ilara scores every player daily, predicts who'll churn or spend and why, then hands your team a money-ranked list of moves. Every move carries a price, a reason, and a control group. Running on three live titles." />
+<meta property="og:title" content="Ilara: the decision layer for live mobile games" />
+<meta property="og:description" content="Your dashboards tell you what happened. Ilara tells you what to do next. 100M events, 60+ live predictions, three live titles." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600;700&family=Inter+Tight:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+/* =========================================================================
+   Ilara: "Operator's console on warm paper"
+   Design System v3 tokens. Signature: the Decision Queue + evidence grading.
+   ========================================================================= */
+:root{
+  --bg:#f3f1ec; --paper:#fbfaf6; --s1:#f5f3ec; --s2:#e7e4dc; --s3:#d8d5cc; --s4:#b8b4a8;
+  --ink:#0d0d0e; --ink2:#2a2a2c; --ink3:#6b6b70; --ink4:#71716a;
+  --l0:rgba(13,13,14,.06); --l1:rgba(13,13,14,.10); --l2:rgba(13,13,14,.18);
+  --lime:#a3e635; --lime-b:#bef264; --lime-d:#65a30d; --lime-m:rgba(163,230,53,.20); --lime-s:rgba(163,230,53,.10);
+  --indigo:#0d0d0e; --indigo-b:#2a2a2c; --indigo-m:rgba(13,13,14,.12);
+  --warn:#c2410c; --warn-s:rgba(194,65,12,.10);
+  --glow:0 0 0 6px rgba(163,230,53,.18);
+  --fd:'Cabin',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --fb:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --fm:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --maxw:1200px; --pad:clamp(20px,5vw,64px);
+  --r-md:14px; --r-lg:22px;
+  --sh-md:0 10px 30px -12px rgba(13,13,14,.18);
+  --sh-lg:0 30px 70px -28px rgba(13,13,14,.32);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:17px;line-height:1.55;
+  font-weight:420;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E")}
+main,header,footer{position:relative;z-index:1}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.02em;line-height:1.05;margin:0;text-wrap:balance}
+p{margin:0}
+img{max-width:100%;display:block}
+button{font:inherit}
+:focus-visible{outline:2.5px solid var(--lime-d);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--pad)}
+.eyebrow{font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink3);display:inline-flex;align-items:center;gap:10px}
+.eyebrow .idx{color:var(--lime-d)}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--ink3);opacity:.6}
+.ic{width:24px;height:24px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.skip{position:fixed;left:-999px;top:8px;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:8px;z-index:200}
+.skip:focus{left:16px}
+
+/* ---------- buttons ---------- */
+.btn{--bg-btn:var(--ink);--fg-btn:var(--paper);font-family:var(--fb);font-size:15px;font-weight:560;
+  letter-spacing:-.01em;display:inline-flex;align-items:center;gap:9px;cursor:pointer;padding:13px 22px;
+  border-radius:100px;border:1px solid transparent;background:var(--bg-btn);color:var(--fg-btn);
+  transition:transform .18s var(--ease),box-shadow .18s var(--ease),background .18s var(--ease),border-color .18s var(--ease)}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--sh-md)}
+.btn:active{transform:translateY(0)}
+.btn--lime{--bg-btn:var(--lime);--fg-btn:var(--ink)}
+.btn--lime:hover{--bg-btn:var(--lime-b)}
+.btn--ghost{--bg-btn:transparent;--fg-btn:var(--ink);border-color:var(--l2)}
+.btn--ghost:hover{--bg-btn:var(--paper);border-color:var(--ink)}
+.btn .arr{transition:transform .2s var(--ease)}
+.btn:hover .arr{transform:translateX(3px)}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 78%,transparent);
+  backdrop-filter:blur(14px) saturate(1.2);border-bottom:1px solid transparent;transition:border-color .3s,background .3s}
+.nav.scrolled{border-bottom-color:var(--l1);background:color-mix(in srgb,var(--bg) 92%,transparent)}
+.nav__in{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--fd);font-weight:700;font-size:21px;letter-spacing:-.02em}
+.brand .dot{width:11px;height:11px;border-radius:50%;background:var(--lime);box-shadow:var(--glow)}
+.brand__logo{height:22px;width:auto;display:block;transition:opacity .2s var(--ease)}
+.brand:hover .brand__logo{opacity:.68}
+.nav__links{display:flex;align-items:center;gap:22px;font-size:14.5px;color:var(--ink2)}
+.nav__links a{position:relative;padding:6px 0;font-weight:480}
+.nav__links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1.5px;background:var(--ink);transition:width .25s var(--ease)}
+.nav__links a:hover{color:var(--ink)}
+.nav__links a:hover::after{width:100%}
+.nav__cta{display:flex;align-items:center;gap:14px}
+.nav__toggle{display:none;background:none;border:1px solid var(--l2);border-radius:9px;width:42px;height:42px;
+  cursor:pointer;align-items:center;justify-content:center}
+.nav__toggle span,.nav__toggle span::before,.nav__toggle span::after{content:"";display:block;width:18px;height:2px;
+  background:var(--ink);position:relative;transition:.2s}
+.nav__toggle span::before{position:absolute;top:-6px}
+.nav__toggle span::after{position:absolute;top:6px}
+
+/* ---------- section scaffold ---------- */
+.section{padding:clamp(58px,8vw,108px) 0;scroll-margin-top:76px}
+.section--paper{background:var(--paper);border-block:1px solid var(--l1)}
+.section__head h2{font-size:clamp(28px,3.6vw,42px);margin-top:18px;letter-spacing:-.025em;max-width:22ch}
+.section__head p{margin-top:16px;font-size:17px;color:var(--ink2);max-width:60ch}
+.center{text-align:center}
+.center .eyebrow{justify-content:center}
+.center .section__head h2,.center .section__head p{margin-inline:auto}
+.kicker{margin-top:30px;font-size:17px;color:var(--ink2);max-width:64ch}
+.kicker b{color:var(--ink);font-weight:600}
+.center .kicker{margin-inline:auto;text-align:center}
+
+/* ---------- aurora background ----------
+   CSS gradient is the base layer; WebGL replaces it when available.
+   Ported from the Mizan Aurora component, retuned to lime. */
+.aurora{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background:
+    radial-gradient(58% 78% at 18% 108%, rgba(13,13,14,.15), transparent 68%),
+    radial-gradient(54% 74% at 68% 108%, rgba(163,230,53,.26), transparent 68%),
+    radial-gradient(40% 60% at 92% 96%, rgba(13,13,14,.10), transparent 70%);
+  opacity:1;transition:opacity .8s var(--ease)}
+.aurora canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:.55;
+  mix-blend-mode:multiply}
+.aurora--live{background:none}
+/* feather only the top edge, where the headline sits; the glow lives low */
+.aurora::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,var(--bg) 0%,rgba(243,241,236,.55) 26%,transparent 62%)}
+.final .aurora{opacity:.6}
+.final .aurora::after{background:linear-gradient(180deg,var(--bg) 0%,rgba(243,241,236,.5) 24%,transparent 60%)}
+
+/* soft washes so sections don't read as flat blocks */
+.section{position:relative}
+.section--wash{background-image:radial-gradient(900px 420px at 88% -12%,rgba(163,230,53,.13),transparent 68%)}
+.section--wash-warm{background-image:radial-gradient(820px 400px at 8% -14%,rgba(194,65,12,.07),transparent 66%)}
+.section--wash-indigo{background-image:radial-gradient(880px 420px at 92% -10%,rgba(13,13,14,.09),transparent 68%)}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(48px,7vw,92px) 0 clamp(36px,4vw,60px);position:relative;overflow:hidden}
+.hero > .wrap{position:relative;z-index:1}
+.final{position:relative;overflow:hidden}
+.final > .wrap{position:relative;z-index:1}
+.hero__grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,68px);align-items:center}
+.hero h1{font-size:clamp(38px,5.4vw,64px);letter-spacing:-.03em;margin-top:22px}
+.hero h1 .em{position:relative;white-space:nowrap}
+.hero h1 .em::after{content:"";position:absolute;left:-2px;right:-2px;bottom:.13em;height:.30em;background:var(--lime);
+  z-index:-1;opacity:.9;transform:skewX(-4deg)}
+.hero__sub{margin-top:24px;font-size:clamp(17px,1.5vw,19px);color:var(--ink2);max-width:46ch}
+.hero__sub b{color:var(--ink);font-weight:600}
+.hero__cta{margin-top:30px;display:flex;flex-wrap:wrap;gap:14px}
+.hero__meta{margin-top:24px;font-family:var(--fm);font-size:12.5px;color:var(--ink3);display:flex;align-items:center;gap:10px}
+.hero__meta .live{width:8px;height:8px;border-radius:50%;background:var(--lime-d);position:relative;flex:none}
+.hero__meta .live::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--lime-d);
+  opacity:.5;animation:ping 2.4s var(--ease) infinite}
+@keyframes ping{0%{transform:scale(.6);opacity:.6}80%,100%{transform:scale(1.7);opacity:0}}
+
+/* ---------- SIGNATURE: decision queue ---------- */
+.console{background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);box-shadow:var(--sh-lg);
+  overflow:hidden;position:relative}
+.console::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--lime),var(--indigo))}
+.console__bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;
+  border-bottom:1px solid var(--l1);background:var(--s1)}
+.console__title{font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  display:flex;align-items:center;gap:9px}
+.console__title .sq{width:9px;height:9px;border-radius:2px;background:var(--lime)}
+.console__scope{font-family:var(--fm);font-size:11px;color:var(--ink3)}
+.console__list{list-style:none;margin:0;padding:6px}
+.play{display:grid;grid-template-columns:26px 1fr auto;gap:14px;align-items:center;padding:13px 12px;
+  border-radius:12px;transition:background .2s}
+.play+.play{border-top:1px solid var(--l0)}
+.play:hover{background:var(--s1)}
+.play__rank{font-family:var(--fm);font-size:13px;font-weight:700;color:var(--ink4);text-align:center}
+.play__title{font-weight:560;font-size:15px;letter-spacing:-.01em;line-height:1.25;display:block}
+.play__why{margin-top:4px;font-family:var(--fm);font-size:11.5px;color:var(--ink3);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.play__why .chip{background:var(--lime);color:var(--ink);padding:2px 8px;border-radius:5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.play__right{display:flex;align-items:center;gap:12px}
+.play__val{font-family:var(--fm);font-weight:700;font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.play__val small{color:var(--ink3);font-weight:400;font-size:11px}
+.play__act{font-family:var(--fb);font-size:12.5px;font-weight:560;border:1px solid var(--l2);background:var(--paper);
+  color:var(--ink);border-radius:100px;padding:7px 13px;cursor:pointer;white-space:nowrap;transition:.18s var(--ease)}
+.play__act:hover{border-color:var(--ink);transform:translateY(-1px)}
+.play__act[data-done="1"]{background:var(--lime-s);border-color:var(--lime-d);color:var(--lime-d);cursor:default;transform:none}
+.console__foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 18px;
+  border-top:1px solid var(--l1);background:var(--s1);font-family:var(--fm);font-size:11.5px;color:var(--ink3)}
+.console__foot b{color:var(--ink);font-weight:700}
+/* compact queue, used inside the role panels */
+.play--sm{grid-template-columns:20px 1fr auto;padding:10px 9px;gap:10px}
+.play--sm .play__rank{font-size:11px}
+.play--sm .play__title{font-size:13px}
+.play--sm .play__why{font-size:10px}
+.play--sm .play__val{font-size:13px}
+
+/* ---------- proof band ---------- */
+.ticker{border-top:1px solid var(--l1);border-bottom:1px solid var(--l1);background:var(--paper)}
+.ticker__in{display:grid;grid-template-columns:repeat(4,1fr)}
+.ticker__item{padding:22px clamp(16px,2vw,30px);border-right:1px solid var(--l0)}
+.ticker__item:last-child{border-right:0}
+.ticker__n{font-family:var(--fm);font-weight:700;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ticker__n .u{color:var(--lime-d)}
+.ticker__l{margin-top:5px;font-size:12.5px;color:var(--ink3);line-height:1.35}
+
+/* ---------- named-client credential strip ---------- */
+.client{background:var(--paper);border-bottom:1px solid var(--l1)}
+.client__in{display:flex;align-items:center;gap:clamp(20px,4vw,52px);padding:26px 0;flex-wrap:wrap}
+.client__k{font-family:var(--fm);font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink4);display:flex;align-items:center;gap:11px;white-space:nowrap}
+.client__k::after{content:"";width:26px;height:1px;background:var(--l2)}
+.client__name{font-family:var(--fd);font-weight:700;font-size:clamp(21px,2.4vw,28px);letter-spacing:-.03em;
+  display:flex;align-items:center;gap:12px;white-space:nowrap}
+.client__name .flame{width:13px;height:13px}
+.client__meta{font-size:14px;color:var(--ink3);line-height:1.45;max-width:46ch}
+.client__meta b{color:var(--ink2);font-weight:600}
+.client__nda{margin-left:auto;font-family:var(--fm);font-size:11px;color:var(--ink4);border:1px solid var(--l1);
+  background:var(--s1);border-radius:100px;padding:7px 14px;white-space:nowrap}
+
+/* ---------- evidence grades (global component) ---------- */
+.grade{font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 8px;border-radius:5px;white-space:nowrap;display:inline-block}
+.grade--proven{background:var(--lime);color:var(--ink)}
+.grade--strong{background:var(--indigo-m);color:var(--indigo)}
+.grade--early{background:var(--s2);color:var(--ink3)}
+.grade--miss{background:var(--warn-s);color:var(--warn)}
+
+/* ---------- the gap ---------- */
+.gap{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch;margin-top:44px}
+.gap__side{background:var(--s2);border:1px solid var(--l1);border-radius:var(--r-lg);padding:24px 22px;opacity:.75}
+.gap__side .k{font-family:var(--fm);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink4);font-weight:700}
+.gap__side .t{margin-top:10px;font-family:var(--fd);font-weight:600;font-size:19px;letter-spacing:-.02em}
+.gap__side .d{margin-top:8px;font-size:13.5px;color:var(--ink3);line-height:1.45}
+.gap__side .bars{margin-top:18px;display:grid;gap:6px}
+.gap__side .bars i{display:block;height:6px;border-radius:100px;background:var(--s4);opacity:.6}
+.gap__mid{width:clamp(200px,26vw,290px);border-radius:var(--r-lg);padding:26px 22px;text-align:center;
+  background:var(--paper);border:1.5px solid var(--lime-d);box-shadow:0 0 0 6px rgba(163,230,53,.16);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative}
+.gap__mid::before,.gap__mid::after{content:"";position:absolute;top:50%;width:16px;height:1.5px;background:var(--lime-d)}
+.gap__mid::before{left:-17px}
+.gap__mid::after{right:-17px}
+.gap__mid .k{font-family:var(--fm);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--lime-d);font-weight:700}
+.gap__mid .t{font-family:var(--fd);font-weight:600;font-size:23px;letter-spacing:-.02em}
+.gap__mid .d{font-size:13.5px;color:var(--ink2);line-height:1.45}
+.flame{width:15px;height:15px;background:var(--lime-d);border-radius:50% 50% 50% 0;transform:rotate(45deg);flex:none}
+
+/* mode switch: functional signature interaction */
+.modes{margin-top:34px;border:1px solid var(--l1);border-radius:var(--r-lg);background:var(--paper);overflow:hidden}
+.modes__tabs{display:flex;border-bottom:1px solid var(--l1);background:var(--s1)}
+.modes__tab{flex:1;border:0;background:none;padding:16px 18px;cursor:pointer;text-align:left;position:relative;
+  font-family:var(--fb);font-size:15px;font-weight:560;color:var(--ink3);transition:color .2s,background .2s}
+.modes__tab+.modes__tab{border-left:1px solid var(--l1)}
+.modes__tab:hover{color:var(--ink);background:var(--paper)}
+.modes__tab[aria-selected="true"]{color:var(--ink);background:var(--paper)}
+.modes__tab[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--lime-d)}
+.modes__tab .mk{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink4);font-weight:700;margin-bottom:6px}
+.modes__tab[aria-selected="true"] .mk{color:var(--lime-d)}
+.modes__panel{padding:26px 24px;display:none}
+.modes__panel.on{display:block}
+.modes__panel p{font-size:15.5px;color:var(--ink2);max-width:62ch;line-height:1.55}
+.stack{margin-top:20px;display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-family:var(--fm);font-size:11.5px;border:1px solid var(--l1);background:var(--s1);color:var(--ink3);
+  padding:7px 14px;border-radius:100px;white-space:nowrap;transition:.2s var(--ease)}
+.pill.on{background:var(--lime-s);border-color:var(--lime-d);color:var(--lime-d);font-weight:700}
+.pill.off{text-decoration:line-through;opacity:.45}
+
+/* ---------- feature groups ---------- */
+.fgroup{margin-top:38px}
+.fgroup__hd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--l1)}
+.fgroup__k{font-family:var(--fm);font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);
+  display:flex;align-items:center;gap:10px}
+.fgroup__k .sq{width:10px;height:10px;border-radius:2px;background:var(--lime)}
+.fgroup--decide .fgroup__k .sq{background:var(--indigo)}
+.fgroup__d{font-size:14px;color:var(--ink3)}
+.fg{margin-top:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.fg--3{grid-template-columns:repeat(3,1fr)}
+.fc{background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);padding:20px;display:flex;flex-direction:column;
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+.fc:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
+.fc--star{border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-m)}
+.fc--star:hover{box-shadow:0 0 0 3px var(--indigo-m),var(--sh-md)}
+.fc__n{font-family:var(--fm);font-size:10.5px;font-weight:700;color:var(--ink4);letter-spacing:.1em}
+.fc__t{margin-top:8px;font-family:var(--fd);font-weight:600;font-size:17px;letter-spacing:-.02em}
+.fc__d{margin-top:8px;font-size:13.5px;color:var(--ink2);line-height:1.5;flex:1}
+.fc__viz{margin-top:16px;background:var(--s1);border:1px solid var(--l0);border-radius:12px;padding:12px;
+  min-height:92px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+
+/* ---------- REVEAL TILE: name + graphic visible, prose on disclosure ---------- */
+.tile{background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);display:flex;flex-direction:column;
+  overflow:hidden;transition:border-color .22s var(--ease),box-shadow .22s var(--ease),transform .22s var(--ease)}
+.tile:hover{border-color:var(--l2);box-shadow:var(--sh-md);transform:translateY(-2px)}
+.tile[data-open="1"]{border-color:var(--lime-d);box-shadow:0 0 0 3px var(--lime-s);transform:none}
+.tile--star{border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-m)}
+.tile--star[data-open="1"]{border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-m)}
+.tile__hd{display:grid;grid-template-columns:auto 1fr auto;gap:13px;align-items:center;width:100%;border:0;
+  background:none;cursor:pointer;padding:18px 20px;text-align:left;font:inherit;color:inherit}
+.tile__hd:hover .tile__t{color:var(--lime-d)}
+.tile__n{font-family:var(--fm);font-size:10.5px;font-weight:700;color:var(--ink4);letter-spacing:.1em}
+.tile__t{font-family:var(--fd);font-weight:600;font-size:17px;letter-spacing:-.02em;line-height:1.25;
+  transition:color .2s var(--ease)}
+.tile__x{width:20px;height:20px;position:relative;flex:none}
+.tile__x::before,.tile__x::after{content:"";position:absolute;background:var(--ink3);border-radius:2px;
+  transition:transform .32s var(--ease),background .2s var(--ease)}
+.tile__x::before{left:0;right:0;top:9px;height:2px}
+.tile__x::after{top:0;bottom:0;left:9px;width:2px}
+.tile[data-open="1"] .tile__x::after{transform:rotate(90deg)}
+.tile[data-open="1"] .tile__x::before,.tile[data-open="1"] .tile__x::after{background:var(--lime-d)}
+.tile--star[data-open="1"] .tile__x::before,.tile--star[data-open="1"] .tile__x::after{background:var(--indigo)}
+.tile__viz{margin:0 20px 20px;background:var(--s1);border:1px solid var(--l0);border-radius:12px;padding:12px;
+  min-height:92px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.tile__body{max-height:0;overflow:hidden;opacity:0;transition:max-height .38s var(--ease),opacity .28s var(--ease)}
+.tile[data-open="1"] .tile__body{opacity:1}
+.tile__body p{padding:15px 20px 20px;font-size:13.5px;color:var(--ink2);line-height:1.55;margin:0}
+.tile__viz + .tile__body p{padding-top:0}
+/* claim variant: no graphic, longer headline */
+.tile--claim .tile__t{font-size:16.5px;line-height:1.3}
+.tile--claim .tile__body p{font-size:14px;padding-top:0}
+.tile--claim .tile__hd{padding-bottom:16px}
+/* a tile opening shouldn't stretch its neighbours */
+.fg,.claims{align-items:start}
+.reveal-hint{margin-top:14px;font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--ink4);
+  display:flex;align-items:flex-start;gap:9px}
+.reveal-hint::before{content:"+";display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;
+  border:1px solid var(--l2);border-radius:5px;font-size:12px;color:var(--ink3);flex:none;margin-top:-1px}
+
+/* ---------- mini-viz primitives ---------- */
+.mv{display:flex;align-items:center;gap:9px;font-family:var(--fm);font-size:10px;color:var(--ink3)}
+.mv .lab{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mv .val{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.mv-track{height:7px;border-radius:100px;background:var(--s3);overflow:hidden;flex:1.4}
+.mv-fill{height:100%;border-radius:100px;background:var(--lime-d);display:block;transform-origin:left;
+  transition:transform 1.1s var(--ease) .15s}
+.mv-fill.dim{background:var(--s4)}
+.js .rv:not(.in) .mv-fill{transform:scaleX(0)}
+.wf{display:grid;gap:6px}
+.wf__r{display:grid;grid-template-columns:1fr 76px 1fr;align-items:center;font-family:var(--fm);font-size:9px}
+.wf__neg,.wf__pos{height:10px;display:flex}
+.wf__neg{justify-content:flex-end}
+.wf__neg i{display:block;height:100%;background:var(--warn);opacity:.75;border-radius:3px 0 0 3px}
+.wf__pos i{display:block;height:100%;background:var(--lime-d);border-radius:0 3px 3px 0}
+.wf__lab{text-align:center;color:var(--ink3);font-size:8.5px;letter-spacing:-.02em;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+/* risk severity: deliberately NOT the evidence-grade palette, which means something else */
+.risk{font-family:var(--fm);font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:4px;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.risk--hi{background:var(--warn-s);color:var(--warn)}
+.risk--md{background:rgba(161,98,7,.12);color:#a16207}
+.risk--lo{background:var(--s2);color:var(--ink3)}
+.scatter{position:relative;height:78px;border-radius:8px;
+  background:linear-gradient(var(--l0) 1px,transparent 1px) 0 0/100% 19px,
+             linear-gradient(90deg,var(--l0) 1px,transparent 1px) 0 0/19px 100%}
+.scatter i{position:absolute;width:6px;height:6px;border-radius:50%}
+.blob{position:absolute;border-radius:50%;border:1px dashed var(--l2)}
+.flow{display:flex;align-items:center;gap:7px}
+.flow__n{flex:1;background:var(--paper);border:1px solid var(--l1);border-radius:9px;padding:9px 5px;text-align:center;
+  font-family:var(--fm);font-size:9.5px;color:var(--ink2);line-height:1.25}
+.flow__n.on{border-color:var(--lime-d);background:var(--lime-s);color:var(--lime-d);font-weight:700}
+.flow__a{font-family:var(--fm);font-size:9.5px;color:var(--lime-d);font-weight:700;white-space:nowrap}
+.cal{display:grid;gap:6px}
+.cal__r{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center;font-family:var(--fm);font-size:9.5px;color:var(--ink3)}
+.cal__t{height:12px;border-radius:4px;background:var(--s3);position:relative;overflow:hidden}
+.cal__t i{position:absolute;top:0;bottom:0;border-radius:4px;background:var(--lime-d);opacity:.85}
+.cal__t i.b{background:var(--indigo);opacity:.7}
+.tg{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--fm);font-size:10px;color:var(--ink2)}
+.tg .sw{width:28px;height:16px;border-radius:100px;background:var(--s3);position:relative;flex:none}
+.tg .sw::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;
+  background:var(--paper);box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .2s var(--ease)}
+.tg .sw.on{background:var(--lime-d)}
+.tg .sw.on::after{left:14px}
+.offers{display:flex;gap:7px}
+.offer{flex:1;border:1px solid var(--l1);border-radius:9px;background:var(--paper);padding:9px 6px;text-align:center;
+  font-family:var(--fm);font-size:9.5px;color:var(--ink3);line-height:1.3}
+.offer b{display:block;font-size:13px;color:var(--ink);margin-top:4px}
+.offer.on{border-color:var(--lime-d);background:var(--lime-s)}
+.notif{background:var(--paper);border:1px solid var(--l1);border-radius:9px;padding:9px 10px;display:grid;
+  grid-template-columns:auto 1fr;gap:9px;align-items:center}
+.notif .ico{width:22px;height:22px;border-radius:6px;background:var(--lime);flex:none}
+.notif .tt{font-size:10.5px;font-weight:700;line-height:1.25;display:block}
+.notif .dd{font-family:var(--fm);font-size:9px;color:var(--ink3);margin-top:3px;line-height:1.25;display:block}
+.ledger{position:relative;height:78px}
+
+/* ---------- conversation ---------- */
+.chat{background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-lg)}
+.chat__bar{padding:14px 18px;border-bottom:1px solid var(--l1);background:var(--s1);display:flex;align-items:center;
+  justify-content:space-between;gap:10px;font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.chat__bar .sq{width:9px;height:9px;border-radius:2px;background:var(--indigo);display:inline-block;margin-right:9px}
+.chat__bar .who{font-weight:400;letter-spacing:.04em;text-transform:none;color:var(--ink3);font-size:11px}
+.chat__body{padding:18px;display:grid;gap:16px}
+.msg{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.msg__av{width:28px;height:28px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;
+  font-family:var(--fm);font-size:10px;font-weight:700}
+.msg--u .msg__av{background:var(--s2);color:var(--ink3)}
+.msg--a .msg__av{background:var(--lime);color:var(--ink)}
+.msg__b{font-size:15px;line-height:1.5}
+.msg--u .msg__b{color:var(--ink2)}
+.msg__b b{font-weight:600}
+.msg__card{margin-top:12px;border:1px solid var(--l1);border-radius:12px;background:var(--s1);padding:14px}
+.msg__card .ct{font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.spark{margin-top:12px;display:flex;align-items:flex-end;gap:5px;height:52px}
+.spark i{flex:1;border-radius:3px 3px 0 0;background:var(--s4);transform-origin:bottom;transition:transform .8s var(--ease)}
+.spark i.dip{background:var(--warn);opacity:.85}
+.spark i.up{background:var(--lime-d)}
+.js .rv:not(.in) .spark i{transform:scaleY(.05)}
+.spark__x{margin-top:8px;display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--ink4)}
+.msg__acts{margin-top:12px;display:flex;gap:9px;flex-wrap:wrap}
+.actbt{font-family:var(--fb);font-size:12.5px;font-weight:560;border:1px solid var(--l2);background:var(--paper);
+  border-radius:100px;padding:7px 13px;color:var(--ink);cursor:pointer;transition:.18s var(--ease)}
+.actbt:hover{border-color:var(--ink);transform:translateY(-1px)}
+.actbt.pri{background:var(--lime);border-color:transparent;font-weight:700}
+.actbt.pri:hover{background:var(--lime-b)}
+.chat__in{border-top:1px solid var(--l1);padding:13px 18px;display:flex;align-items:center;gap:10px;background:var(--s1)}
+.chat__in .ph{flex:1;font-size:14px;color:var(--ink4)}
+.chat__in .send{width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--paper);
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+
+/* ---------- roles ---------- */
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px}
+.role{background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column}
+.role__hd{padding:16px 18px;border-bottom:1px solid var(--l1);background:var(--s1)}
+.role__k{font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3)}
+.role__t{margin-top:8px;font-family:var(--fd);font-weight:600;font-size:19px;letter-spacing:-.02em}
+.role__d{margin-top:6px;font-size:13px;color:var(--ink3);line-height:1.45}
+.role--lead{border-color:var(--indigo)}
+.role--lead .role__hd{background:var(--indigo-m)}
+.role__bd{padding:16px 18px;display:grid;gap:12px;flex:1;align-content:start}
+.brief{font-size:14px;line-height:1.55;color:var(--ink2)}
+.brief b{color:var(--ink);font-weight:600}
+.brief .money{font-family:var(--fm);font-weight:700;color:var(--ink)}
+.decide{border:1px solid var(--l1);border-radius:11px;padding:12px 13px;background:var(--s1)}
+.decide__t{font-size:13.5px;font-weight:560;line-height:1.35}
+.decide__m{margin-top:6px;font-family:var(--fm);font-size:10.5px;color:var(--ink3)}
+.decide__b{margin-top:11px;display:flex;gap:7px}
+.tiny{font-family:var(--fb);font-size:11.5px;font-weight:600;border:1px solid var(--l2);background:var(--paper);
+  border-radius:100px;padding:5px 11px;color:var(--ink);cursor:pointer;transition:.18s var(--ease)}
+.tiny:hover{border-color:var(--ink)}
+.tiny.pri{background:var(--lime);border-color:transparent}
+.modelcard{border:1px solid var(--l1);border-radius:11px;background:var(--s1);padding:12px 13px;
+  font-family:var(--fm);font-size:10.5px;color:var(--ink3)}
+.modelcard .r{display:flex;justify-content:space-between;gap:8px;padding:4px 0}
+.modelcard .r b{color:var(--ink);font-variant-numeric:tabular-nums}
+.modelcard .r+.r{border-top:1px solid var(--l0)}
+
+/* ---------- pipeline ---------- */
+.pipe{list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr)}
+.pipe--3{grid-template-columns:repeat(3,1fr)}
+.pipe li{position:relative;text-align:center;padding:0 10px}
+.pipe li::before{content:"";position:absolute;top:28px;left:50%;width:100%;height:2px;background:var(--l2);z-index:0}
+.pipe li:last-child::before{display:none}
+.pipe__dot{position:relative;z-index:1;width:58px;height:58px;margin:0 auto;border-radius:50%;background:var(--paper);
+  border:1.5px solid var(--l2);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.pipe li:nth-child(3) .pipe__dot{border-color:var(--lime-d);background:var(--lime-s);color:var(--lime-d)}
+.pipe__when{margin-top:14px;font-family:var(--fm);font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--lime-d);font-weight:700}
+.pipe__t{margin-top:6px;font-family:var(--fd);font-weight:600;font-size:17px;letter-spacing:-.02em}
+.pipe__d{margin-top:5px;font-size:12.5px;color:var(--ink3);line-height:1.4}
+
+/* ---------- integrations ---------- */
+.hub{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(16px,3vw,40px);align-items:center;margin-top:44px}
+.hub__hd{margin-top:clamp(46px,6vw,68px);padding-top:clamp(36px,4vw,48px);border-top:1px solid var(--l1)}
+.hub__hd h3{font-family:var(--fd);font-weight:600;font-size:clamp(21px,2.5vw,27px);letter-spacing:-.022em}
+.hub__hd p{margin-top:13px;font-size:15px;color:var(--ink2);line-height:1.6;max-width:62ch;margin-inline:auto}
+.hub__col{display:grid;gap:10px}
+.hub__k{font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--ink4)}
+.tool{background:var(--paper);border:1px solid var(--l1);border-radius:11px;padding:11px 14px;font-size:14px;
+  display:flex;align-items:center;gap:10px;font-weight:500}
+.tool .m{width:9px;height:9px;border-radius:2px;background:var(--s4);flex:none}
+.tool.live .m{background:var(--lime-d)}
+.tool .st{margin-left:auto;font-family:var(--fm);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink4)}
+.tool.live .st{color:var(--lime-d)}
+.hub__core{width:clamp(130px,17vw,170px);aspect-ratio:1;border-radius:50%;background:var(--paper);
+  border:1.5px solid var(--lime-d);box-shadow:0 0 0 7px rgba(163,230,53,.14);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px;margin:0 auto}
+.hub__core .t{font-family:var(--fd);font-weight:700;font-size:19px;letter-spacing:-.02em}
+.hub__core .d{font-family:var(--fm);font-size:9px;color:var(--ink3);letter-spacing:.06em;line-height:1.35}
+
+/* ---------- proof ---------- */
+.badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--fm);font-size:12px;letter-spacing:.06em;
+  color:var(--ink2);background:var(--s2);border:1px solid var(--l1);padding:8px 14px;border-radius:100px}
+.measured{margin-top:22px;background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);overflow:hidden}
+.measured__hd{padding:15px 22px;border-bottom:1px solid var(--l1);background:var(--s1);display:flex;align-items:center;
+  justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--fm);font-size:12px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase}
+.measured__hd .sub{font-weight:400;letter-spacing:.04em;text-transform:none;color:var(--ink3);font-size:11px}
+.measured__bd{padding:24px 22px;display:grid;grid-template-columns:1.1fr 1fr;gap:30px;align-items:center}
+.bigbars{margin-top:16px;display:grid;gap:14px}
+.bigbars .mv-track{height:13px}
+.predtable{margin-top:14px;border:1px solid var(--l1);border-radius:12px;overflow:hidden}
+.predtable__r{display:grid;grid-template-columns:1fr auto auto;gap:14px;padding:12px 15px;font-size:13.5px;align-items:center}
+.predtable__r+.predtable__r{border-top:1px solid var(--l0)}
+.predtable__r--h{background:var(--s1);font-family:var(--fm);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3);font-weight:700;padding:10px 15px}
+.predtable .p{font-family:var(--fm);color:var(--ink3);font-variant-numeric:tabular-nums;min-width:56px;text-align:right}
+.predtable .o{font-family:var(--fm);font-weight:700;color:var(--lime-d);font-variant-numeric:tabular-nums;min-width:56px;text-align:right}
+.method{margin-top:22px;border:1px solid var(--lime-d);background:var(--lime-s);border-radius:var(--r-lg);
+  padding:24px 26px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+.method__k{font-family:var(--fm);font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--lime-d);white-space:nowrap;padding-top:4px}
+.method p{font-size:15px;color:var(--ink2);line-height:1.6;max-width:80ch}
+.method p b{color:var(--ink);font-weight:600}
+
+/* ---------- scorecard ---------- */
+.score{margin-top:22px;background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);overflow:hidden}
+.score__hd{padding:15px 22px;border-bottom:1px solid var(--l1);background:var(--s1);font-family:var(--fm);font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;font-weight:700;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.score__hd .sub{font-weight:400;letter-spacing:.04em;color:var(--ink3);text-transform:none}
+.score__r{display:grid;grid-template-columns:1.7fr 90px 90px 1fr;gap:12px;padding:13px 22px;font-size:14px;align-items:center}
+.score__r+.score__r{border-top:1px solid var(--l0)}
+.score__r--h{background:transparent;font-family:var(--fm);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3);font-weight:700;padding:11px 22px;border-bottom:1px solid var(--l0)}
+.score__r .c{font-family:var(--fm);color:var(--ink3);font-variant-numeric:tabular-nums}
+.score__r .t{font-family:var(--fm);font-weight:700;font-variant-numeric:tabular-nums}
+.score__foot{padding:16px 22px;border-top:1px solid var(--l1);background:var(--s1);font-size:14px;color:var(--ink3);
+  display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.score__foot b{color:var(--ink);font-weight:600}
+
+/* ---------- why / claims ---------- */
+.claims{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:44px}
+
+/* matrix */
+.matrix{position:relative;aspect-ratio:16/9;min-height:340px;border-radius:var(--r-lg);background:var(--paper);
+  border:1px solid var(--l1);padding:38px 38px 50px 60px;margin-top:22px;display:flex}
+/* flex, not height:100%. The parent's height comes from min-height on small screens,
+   which is not a definite height, so a percentage height would collapse the field */
+.mx__field{position:relative;flex:1;border-left:1.5px solid var(--l2);border-bottom:1.5px solid var(--l2)}
+.mx__grid{position:absolute;inset:0;background:linear-gradient(var(--l0) 1px,transparent 1px) 0 0/100% 25%,
+  linear-gradient(90deg,var(--l0) 1px,transparent 1px) 0 0/25% 100%}
+.mx__q{position:absolute;font-family:var(--fm);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink4);line-height:1.4;max-width:16ch}
+.mx__pt{position:absolute;transform:translate(-50%,50%);display:flex;align-items:center;gap:9px;white-space:nowrap}
+.mx__pt .d{width:11px;height:11px;border-radius:50%;background:var(--s4);flex:none}
+.mx__pt .n{font-size:13px;color:var(--ink3)}
+.mx__pt--us .d{width:17px;height:17px;background:var(--lime-d);box-shadow:0 0 0 7px rgba(163,230,53,.2)}
+.mx__pt--us .n{font-family:var(--fd);font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.02em}
+.mx__ax{position:absolute;font-family:var(--fm);font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink3);font-weight:700}
+.mx__ax--x{bottom:16px;left:60px;right:38px;display:flex;justify-content:space-between}
+.mx__ax--y{top:38px;bottom:50px;left:18px;writing-mode:vertical-rl;transform:rotate(180deg);display:flex;justify-content:space-between}
+
+/* ---------- pricing ---------- */
+.ladder{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch;margin-top:44px}
+.ladder__arr{align-self:center}
+.rung{background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);padding:26px 24px}
+.rung--first{border-color:var(--lime-d);box-shadow:0 0 0 4px var(--lime-s)}
+.rung__k{font-family:var(--fm);font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink4)}
+.rung--first .rung__k{color:var(--lime-d)}
+.rung__t{margin-top:10px;font-family:var(--fd);font-weight:600;font-size:22px;letter-spacing:-.02em}
+.rung__d{margin-top:10px;font-size:14.5px;color:var(--ink2);line-height:1.55}
+.rung ul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:9px;font-size:13.5px;color:var(--ink2)}
+.rung li{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;line-height:1.4}
+.rung li .ic{width:15px;height:15px;color:var(--lime-d);margin-top:3px}
+.ladder__arr{font-family:var(--fm);font-size:11px;color:var(--ink4);letter-spacing:.1em;text-transform:uppercase;
+  writing-mode:horizontal-tb;font-weight:700}
+.anchor{display:grid;gap:12px;margin-top:44px}
+.an{display:grid;grid-template-columns:clamp(160px,23vw,250px) 1fr auto;gap:16px;align-items:center}
+.an__k{font-size:14px;color:var(--ink2);line-height:1.35}
+.an__k small{display:block;font-family:var(--fm);font-size:10.5px;color:var(--ink4);margin-top:3px}
+.an__t{height:28px;border-radius:8px;background:var(--s2);overflow:hidden}
+.an__f{height:100%;border-radius:8px;background:var(--s4);display:block;transform-origin:left;transition:transform 1.1s var(--ease) .15s}
+.js .rv:not(.in) .an__f{transform:scaleX(0)}
+.an__f.us{background:linear-gradient(90deg,var(--lime-d),var(--lime))}
+.an__v{font-family:var(--fm);font-weight:700;font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.an--us .an__k{color:var(--ink);font-weight:600}
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:34px}
+.tier{border:1px solid var(--l1);border-radius:var(--r-lg);padding:24px 20px;background:var(--paper);display:flex;flex-direction:column}
+.tier--feat{border-color:var(--ink);box-shadow:var(--sh-md);position:relative}
+.tier--feat::before{content:"Most start here";position:absolute;top:-11px;left:20px;background:var(--lime);color:var(--ink);
+  font-family:var(--fm);font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:100px}
+.tier__n{font-family:var(--fm);font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3)}
+.tier__p{margin-top:12px;font-family:var(--fd);font-weight:700;font-size:30px;letter-spacing:-.03em}
+.tier__p small{font-size:13.5px;color:var(--ink3);font-weight:400;font-family:var(--fb)}
+.tier ul{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px;font-size:13.5px;color:var(--ink2);flex:1}
+.tier li{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;line-height:1.4}
+.tier li .ic{width:14px;height:14px;color:var(--lime-d);margin-top:3px}
+
+/* ---------- faq ---------- */
+.faq{margin-top:44px;background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);overflow:hidden}
+.faq__i+.faq__i{border-top:1px solid var(--l1)}
+.faq__q{width:100%;border:0;background:none;text-align:left;cursor:pointer;padding:20px 24px;display:grid;
+  grid-template-columns:auto 1fr auto;gap:14px;align-items:center;font-family:var(--fd);font-weight:600;font-size:17px;
+  letter-spacing:-.02em;color:var(--ink);transition:background .2s}
+.faq__q:hover{background:var(--s1)}
+.faq__q .m{font-family:var(--fm);font-size:11.5px;color:var(--lime-d);font-weight:700}
+.faq__q .x{width:22px;height:22px;position:relative;flex:none}
+.faq__q .x::before,.faq__q .x::after{content:"";position:absolute;background:var(--ink3);border-radius:2px;
+  transition:transform .25s var(--ease)}
+.faq__q .x::before{left:0;right:0;top:10px;height:2px}
+.faq__q .x::after{top:0;bottom:0;left:10px;width:2px}
+.faq__q[aria-expanded="true"] .x::after{transform:rotate(90deg)}
+.faq__a{overflow:hidden;max-height:0;transition:max-height .35s var(--ease)}
+.faq__a > div{padding:0 24px 22px 62px;font-size:15px;color:var(--ink2);line-height:1.65;max-width:86ch}
+.faq__a em{font-style:normal;color:var(--ink);font-weight:600}
+
+/* ---------- final ---------- */
+.final{text-align:center;padding:clamp(64px,9vw,124px) 0}
+.final__illa{width:clamp(110px,15vw,164px);margin:0 auto 8px;filter:drop-shadow(0 20px 30px rgba(13,13,14,.18))}
+.final h2{font-size:clamp(32px,5vw,56px);letter-spacing:-.03em;max-width:16ch;margin:0 auto}
+.final p{margin:22px auto 0;max-width:52ch;font-size:17px;color:var(--ink2)}
+.final__cta{margin-top:34px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* ---------- footer ---------- */
+.foot{border-top:1px solid var(--l1);background:var(--paper);padding:56px 0 40px}
+.foot__grid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:36px}
+.foot__tag{margin-top:14px;font-size:14px;color:var(--ink3);max-width:34ch}
+.foot__cols{display:flex;gap:56px;flex-wrap:wrap}
+.foot__col h3{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4);font-weight:700}
+.foot__col a{display:block;margin-top:12px;font-size:14px;color:var(--ink2)}
+.foot__col a:hover{color:var(--ink)}
+.foot__base{margin-top:44px;padding-top:22px;border-top:1px solid var(--l1);display:flex;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;font-family:var(--fm);font-size:11.5px;color:var(--ink4)}
+
+/* ================= BOLD EXPANDING ROWS =================
+   Full-bleed disclosure rows. A grid of cards goes ragged the moment one
+   opens; a row uses the whole width and stays composed. */
+.xrows{margin-top:clamp(40px,6vw,68px);border-top:1px solid var(--l2)}
+.xrow{border-bottom:1px solid var(--l2);position:relative;
+  --gutter:clamp(18px,3.5vw,52px);--num:22px;--shift:clamp(16px,2.2vw,30px)}
+.xrow::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--lime-d);
+  transform:scaleY(0);transform-origin:top;transition:transform .45s var(--ease)}
+.xrow[data-open="1"]::before{transform:scaleY(1)}
+.xrow--indigo::before{background:var(--indigo)}
+.xrow__hd{width:100%;border:0;background:none;cursor:pointer;text-align:left;font:inherit;color:inherit;
+  display:grid;grid-template-columns:auto 1fr auto;gap:var(--gutter);align-items:start;
+  padding:clamp(26px,3.4vw,40px) 0;transition:padding .38s var(--ease),background .25s var(--ease)}
+.xrow[data-open="1"] .xrow__hd{padding-left:var(--shift)}
+.xrow__hd:hover{padding-left:clamp(10px,1.4vw,18px)}
+.xrow__n{font-family:var(--fm);font-size:12px;font-weight:700;letter-spacing:.18em;color:var(--ink4);
+  padding-top:.7em;transition:color .25s var(--ease)}
+.xrow[data-open="1"] .xrow__n{color:var(--lime-d)}
+.xrow--indigo[data-open="1"] .xrow__n{color:var(--indigo)}
+.xrow__k{display:block;font-family:var(--fm);font-size:11.5px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
+.xrow[data-open="1"] .xrow__k{color:var(--lime-d)}
+.xrow--indigo[data-open="1"] .xrow__k{color:var(--indigo)}
+.xrow__t{display:block;font-family:var(--fd);font-weight:600;font-size:clamp(25px,4vw,44px);
+  letter-spacing:-.032em;line-height:1.05;text-wrap:balance;max-width:22ch}
+.xrow__x{width:34px;height:34px;position:relative;flex:none;margin-top:.35em;border-radius:50%;
+  border:1px solid var(--l2);transition:border-color .25s var(--ease),background .25s var(--ease)}
+.xrow__hd:hover .xrow__x{border-color:var(--ink)}
+.xrow[data-open="1"] .xrow__x{background:var(--lime);border-color:transparent}
+.xrow--indigo[data-open="1"] .xrow__x{background:var(--indigo)}
+.xrow__x::before,.xrow__x::after{content:"";position:absolute;background:var(--ink);border-radius:2px;
+  transition:transform .35s var(--ease),background .25s var(--ease)}
+.xrow__x::before{left:9px;right:9px;top:16px;height:2px}
+.xrow__x::after{top:9px;bottom:9px;left:16px;width:2px}
+.xrow[data-open="1"] .xrow__x::after{transform:rotate(90deg)}
+.xrow--indigo[data-open="1"] .xrow__x::before,.xrow--indigo[data-open="1"] .xrow__x::after{background:var(--paper)}
+.xrow__body{max-height:0;overflow:hidden;opacity:0;transition:max-height .45s var(--ease),opacity .32s var(--ease)}
+.xrow[data-open="1"] .xrow__body{opacity:1}
+.xrow__in{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px);align-items:start;
+  padding:0 0 clamp(32px,4vw,52px) calc(var(--shift) + var(--num) + var(--gutter))}
+.xrow__in--single{grid-template-columns:1fr}
+.xrow__in p{font-size:clamp(15.5px,1.5vw,18px);color:var(--ink2);line-height:1.6;max-width:62ch}
+.xrow__panel{background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);padding:16px;
+  display:flex;flex-direction:column;justify-content:center;gap:9px;min-height:132px}
+.section--paper .xrow__panel{background:var(--bg)}
+
+/* ---------- the problem: bold stacked statements, no boxes ---------- */
+.pstack{margin-top:clamp(40px,6vw,68px);border-top:1px solid var(--l2)}
+.pitem{display:grid;grid-template-columns:minmax(160px,25%) 1fr;gap:clamp(22px,5vw,64px);
+  padding:clamp(30px,4vw,48px) 0;border-bottom:1px solid var(--l2);align-items:start}
+.pitem__stat{font-family:var(--fm);font-weight:700;font-size:clamp(34px,5.4vw,64px);letter-spacing:-.045em;
+  line-height:.92;color:var(--warn);font-variant-numeric:tabular-nums}
+.pitem__cap{display:block;margin-top:14px;font-size:12.5px;color:var(--ink3);line-height:1.45}
+.pitem__t{font-family:var(--fd);font-weight:600;font-size:clamp(21px,2.6vw,31px);letter-spacing:-.028em;line-height:1.13}
+.pitem__d{margin-top:14px;font-size:clamp(15px,1.4vw,17.5px);color:var(--ink2);line-height:1.6;max-width:54ch}
+
+/* ---------- the problem: three cost-of-the-status-quo cards ---------- */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
+.pcard{background:var(--paper);border:1px solid var(--l1);border-radius:var(--r-lg);padding:28px 26px;
+  display:flex;flex-direction:column}
+.pcard__n{font-family:var(--fm);font-size:10.5px;font-weight:700;color:var(--warn);letter-spacing:.12em;text-transform:uppercase}
+.pcard__t{margin-top:14px;font-family:var(--fd);font-weight:600;font-size:21px;letter-spacing:-.025em;line-height:1.18}
+.pcard__d{margin-top:12px;font-size:15px;color:var(--ink2);line-height:1.55;flex:1}
+.pcard__stat{margin-top:22px;padding-top:18px;border-top:1px solid var(--l1)}
+.pcard__stat b{display:block;font-family:var(--fm);font-size:28px;font-weight:700;color:var(--warn);
+  letter-spacing:-.03em;line-height:1;margin-bottom:7px;font-variant-numeric:tabular-nums}
+.pcard__stat span{font-size:12.5px;color:var(--ink3);line-height:1.4;display:block}
+
+/* ---------- the fix: three pillars, parts revealed on demand ---------- */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;align-items:start}
+.tile--pillar .tile__hd{padding:26px 26px 18px;grid-template-columns:1fr auto;align-items:start;gap:16px}
+.tile--pillar .tile__k{display:block;font-family:var(--fm);font-size:10.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--lime-d);margin-bottom:11px}
+.tile--pillar .tile__t{font-size:20px;letter-spacing:-.025em;line-height:1.2;display:block}
+.tile--pillar .tile__viz{margin:0 26px 22px}
+.tile--pillar .tile__x{margin-top:2px}
+.parts{list-style:none;margin:0;padding:2px 26px 24px;display:grid;gap:13px}
+.parts li{font-size:13.5px;color:var(--ink2);line-height:1.45;display:grid;grid-template-columns:auto 1fr;gap:10px}
+.parts li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--lime-d);margin-top:7px;align-self:start}
+.parts b{color:var(--ink);font-weight:600}
+
+/* ---------- headline proof numbers ---------- */
+.bignums{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
+.bignum{border-top:2px solid var(--ink);padding-top:18px}
+.bignum b{display:block;font-family:var(--fm);font-weight:700;font-size:clamp(34px,4.6vw,52px);letter-spacing:-.04em;
+  line-height:1;font-variant-numeric:tabular-nums}
+.bignum b .u{color:var(--lime-d)}
+.bignum > span{display:block;margin-top:12px;font-size:15px;color:var(--ink2);line-height:1.45}
+.bignum b .u{display:inline}
+
+/* ---------- reveal ---------- */
+.rv{transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.js .rv:not(.in){opacity:0;transform:translateY(22px)}
+.js .play.rv:not(.in){transform:translateY(14px)}
+.rv[data-d="1"]{transition-delay:.07s}.rv[data-d="2"]{transition-delay:.14s}
+.rv[data-d="3"]{transition-delay:.21s}.rv[data-d="4"]{transition-delay:.28s}
+.rv[data-d="5"]{transition-delay:.35s}
+
+/* ---------- responsive ---------- */
+@media (max-width:1040px){
+  .fg{grid-template-columns:repeat(2,1fr)}
+  .measured__bd{grid-template-columns:1fr;gap:24px}
+}
+@media (max-width:980px){
+  .hero__grid{grid-template-columns:1fr;gap:44px}
+  .hero__sub{max-width:none}
+  .gap{grid-template-columns:1fr}
+  .gap__mid{width:auto}
+  .gap__mid::before,.gap__mid::after{display:none}
+  .fg--3{grid-template-columns:1fr}
+  .pgrid,.pillars{grid-template-columns:1fr}
+  .xrow__in{grid-template-columns:1fr;gap:22px;padding-left:0}
+  .xrow__hd{grid-template-columns:auto 1fr auto;gap:14px;padding-block:26px}
+  /* keep the row number clear of the 3px accent bar */
+  .xrow{--shift:13px;--gutter:14px}
+  .xrow__hd:hover{padding-left:0}
+  .xrow__t{font-size:clamp(23px,6.4vw,32px);max-width:none}
+  .xrow__x{width:30px;height:30px}
+  .xrow__x::before{left:8px;right:8px;top:14px}
+  .xrow__x::after{top:8px;bottom:8px;left:14px}
+  .pitem{grid-template-columns:1fr;gap:16px;padding-block:30px}
+  .pitem__cap{margin-top:8px}
+  .bignums{grid-template-columns:1fr;gap:26px}
+  .roles{grid-template-columns:1fr}
+  .claims{grid-template-columns:1fr}
+  .ticker__in{grid-template-columns:repeat(2,1fr)}
+  .client__in{gap:14px 22px}
+  .client__meta{max-width:none;flex-basis:100%;order:3}
+  .client__nda{margin-left:0;order:4}
+  .pipe,.pipe--3{grid-template-columns:1fr;gap:6px;text-align:left}
+  .pipe li{display:grid;grid-template-columns:58px 1fr;gap:16px;align-items:center;padding:7px 0}
+  .pipe li::before{top:0;bottom:0;left:28px;width:2px;height:auto}
+  .pipe li:last-child::before{display:none}
+  .pipe__t,.pipe__d,.pipe__when{text-align:left;grid-column:2}
+  .pipe__when{margin-top:0}
+  /* the dot occupies column one across all three text rows */
+  .pipe li{align-items:start}
+  .pipe__dot{grid-row:1/4}
+  .hub{grid-template-columns:1fr;gap:24px}
+  .ladder{grid-template-columns:1fr;gap:14px}
+  .ladder__arr{text-align:center}
+  .tiers{grid-template-columns:repeat(2,1fr)}
+  .matrix{aspect-ratio:auto;min-height:460px;padding:34px 24px 46px 52px}
+  .mx__pt .n{font-size:12px}
+  .mx__pt--us .n{font-size:17px}
+  .mx__ax--x{left:52px;right:24px}
+  .method{grid-template-columns:1fr;gap:12px}
+  .score__r{grid-template-columns:1.4fr 70px 70px;gap:10px;padding:13px 18px}
+  .score__r .g{grid-column:1/-1}
+  .score__r--h{grid-template-columns:1.4fr 70px 70px}
+  .score__r--h .gh{display:none}
+}
+@media (max-width:760px){
+  .nav__links,.nav__cta .btn{display:none}
+  .nav__toggle{display:flex}
+  .nav[data-open="1"] .nav__links{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;
+    background:var(--paper);border-bottom:1px solid var(--l1);padding:8px var(--pad) 20px}
+  .nav[data-open="1"] .nav__links a{padding:14px 0;border-bottom:1px solid var(--l0)}
+  body{font-size:16px}
+  .fg,.tiers{grid-template-columns:1fr}
+  .modes__tabs{flex-direction:column}
+  .modes__tab+.modes__tab{border-left:0;border-top:1px solid var(--l1)}
+  .an{grid-template-columns:1fr;gap:8px}
+  .an__v{text-align:right}
+  .faq__a > div{padding-left:24px}
+  .predtable__r{grid-template-columns:1fr auto auto;gap:10px;padding:11px 13px;font-size:12.5px}
+}
+@media (max-width:560px){
+  /* the queue needs two rows once the title column gets squeezed */
+  .play,.play--sm{grid-template-columns:22px 1fr;row-gap:10px}
+  .play__right{grid-column:2;justify-content:space-between;width:100%}
+  .console__bar,.console__foot{padding-inline:14px}
+  .measured__bd{padding:20px 16px}
+  .score__r,.score__r--h{padding-inline:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  .rv{transition:none}
+  .js .rv:not(.in){opacity:1;transform:none}
+  .js .rv:not(.in) .mv-fill,.js .rv:not(.in) .an__f,.js .rv:not(.in) .spark i{transform:none}
+  .hero__meta .live::after{animation:none}
+  .btn:hover,.fc:hover,.claim:hover,.play__act:hover,.actbt:hover{transform:none}
+  .faq__a{transition:none}
+}
+/* Ask section: cycling conversation playback */
+.chat__body .convo{display:none}
+.chat__body .convo.active{display:grid;gap:16px}
+.chat--seq .chat__body{overflow:hidden}
+.chat--seq .convo>.msg{display:none}
+.chat--seq .convo>.msg.show{display:grid;animation:msgIn .5s var(--ease) both}
+@keyframes msgIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.msg--typing .msg__b{display:inline-flex;align-items:center}
+.typing{display:inline-flex;gap:5px;align-items:center;padding:6px 2px}
+.typing i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45;animation:tdot 1.1s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:.16s}
+.typing i:nth-child(3){animation-delay:.32s}
+@keyframes tdot{0%,55%,100%{transform:translateY(0);opacity:.4}28%{transform:translateY(-4px);opacity:.95}}
+@media(prefers-reduced-motion:reduce){.chat--seq .convo>.msg{display:grid!important}.typing i{animation:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-rank" viewBox="0 0 24 24"><path d="M5 20v-6M12 20V9M19 20V4"/></symbol>
+<symbol id="i-connect" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 6 0l2-2a4 4 0 0 0-6-6l-1 1"/><path d="M14 10a4 4 0 0 0-6 0l-2 2a4 4 0 0 0 6 6l1-1"/></symbol>
+<symbol id="i-score" viewBox="0 0 24 24"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-4.5"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6l1-7z"/></symbol>
+<symbol id="i-learn" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-.6 4"/><path d="M20 4v4h-4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l4 4L19 6"/></symbol>
+</defs></svg>
+
+<!-- ============================== NAV ============================== -->
+<header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a class="brand" href="#" aria-label="Ilara home"><img class="brand__logo" src="assets/ilara-logo-black.svg" alt="Ilara" width="61" height="22"></a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#problem">Problem</a><a href="#platform">Platform</a><a href="#ask">Ask</a><a href="#roles">Roles</a><a href="#how">How</a><a href="#proof">Proof</a><a href="#why">Why</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav__cta">
+      <a class="btn btn--lime" href="#start">Run it on your game <span class="arr" aria-hidden="true">→</span></a>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span aria-hidden="true"></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============================== HERO ============================== -->
+  <section class="hero">
+    <div class="aurora" aria-hidden="true"></div>
+    <div class="wrap hero__grid">
+      <div>
+        <span class="eyebrow rv"><span class="idx">//</span> For live mobile games</span>
+        <h1 class="rv" data-d="1">Your dashboards tell you what happened. Ilara tells you <span class="em">what to do next</span>.</h1>
+        <p class="hero__sub rv" data-d="2">It scores every player every day, then hands your team a short list of moves with a price on each. In one engagement that list added up to <b>$440K to $1.5M a year</b>.</p>
+        <div class="hero__cta rv" data-d="3">
+          <a class="btn btn--lime" href="#start">Run it on your game <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn btn--ghost" href="#proof">See the proof</a>
+        </div>
+        <div class="hero__meta rv" data-d="4"><span class="live" aria-hidden="true"></span> Scoring 1.1M players across three live titles</div>
+      </div>
+
+      <div class="console rv" data-d="2" role="figure" aria-label="The Ilara decision queue: this week's moves, ranked by money">
+        <div class="console__bar"><span class="console__title"><span class="sq" aria-hidden="true"></span>Decision queue</span><span class="console__scope">LIVE&nbsp;TITLE · WK&nbsp;29</span></div>
+        <ol class="console__list">
+          <li class="play rv" data-d="1"><span class="play__rank">01</span><span><span class="play__title">Rescue paying players going cold</span><span class="play__why"><span class="chip">why</span> spend −60% in 7 days · 4,120 players</span></span><span class="play__right"><span class="play__val">$18.4K<small>/mo</small></span><button class="play__act" type="button">Activate</button></span></li>
+          <li class="play rv" data-d="2"><span class="play__rank">02</span><span><span class="play__title">Loot box 45s after a match win</span><span class="play__why"><span class="chip">why</span> 154,018 win→buy paths/wk</span></span><span class="play__right"><span class="play__val">$12.9K<small>/mo</small></span><button class="play__act" type="button">Schedule</button></span></li>
+          <li class="play rv" data-d="3"><span class="play__rank">03</span><span><span class="play__title">Offer to likely payers</span><span class="play__why"><span class="chip">why</span> top 1% · 55× likelier to buy</span></span><span class="play__right"><span class="play__val">$9.7K<small>/mo</small></span><button class="play__act" type="button">Target</button></span></li>
+          <li class="play rv" data-d="4"><span class="play__rank">04</span><span><span class="play__title">Stop spending on the already-gone</span><span class="play__why"><span class="chip">why</span> 0% of them ever came back</span></span><span class="play__right"><span class="play__val">$4.1K<small>/mo</small></span><button class="play__act" type="button">Hold</button></span></li>
+        </ol>
+        <div class="console__foot"><span>Σ this month ≈ <b>$45K</b></span><span>of <b>$440K–$1.5M</b>/yr</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== NAMED CLIENT ============================== -->
+  <div class="client">
+    <div class="wrap client__in">
+      <span class="client__k">Working with</span>
+      <span class="client__name"><span class="flame" aria-hidden="true"></span>Reliance Games</span>
+      <span class="client__meta">Two live titles, <b>100 million events</b>, and the controlled test on this page.</span>
+      <span class="client__nda">+ one more studio, under NDA</span>
+    </div>
+  </div>
+
+  <!-- ============================== 01 · THE PROBLEM ============================== -->
+  <section class="section section--wash-warm" id="problem">
+    <div class="wrap">
+      <span class="eyebrow rv"><span class="idx">01</span> The problem</span>
+      <div class="section__head">
+        <h2 class="rv" data-d="1">Three in four players leave. You find out too late to do anything.</h2>
+        <p class="rv" data-d="2">It's rarely the game. Nobody can watch a million players one at a time, so retention budget gets sprayed at everyone and the players worth saving walk out unnoticed.</p>
+      </div>
+
+      <div class="pstack">
+        <div class="pitem rv">
+          <div><div class="pitem__stat">38.7%</div><span class="pitem__cap">of installs are never seen again after day zero</span></div>
+          <div>
+            <h3 class="pitem__t">You find out after they've gone</h3>
+            <p class="pitem__d">By the time a player shows up in a churn report, they left weeks ago. The window to do anything about it closed on day one.</p>
+          </div>
+        </div>
+        <div class="pitem rv">
+          <div><div class="pitem__stat">0%</div><span class="pitem__cap">of the most at-risk group ever came back, on one live title</span></div>
+          <div>
+            <h3 class="pitem__t">You spend on the wrong players</h3>
+            <p class="pitem__d">Most retention budget lands on people who were never coming back, or who were coming back anyway. Both are money you didn't need to spend.</p>
+          </div>
+        </div>
+        <div class="pitem rv">
+          <div><div class="pitem__stat">Every week</div><span class="pitem__cap">a fresh set of calls, made by eye, with real money on them</span></div>
+          <div>
+            <h3 class="pitem__t">So your team guesses</h3>
+            <p class="pitem__d">There are a thousand moves you could make in a week: an offer, an event, a push, a price change. Nothing tells you which one is worth making on Tuesday.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="kicker rv" data-d="3">Most of the gap between what your game earns and what it could earn <b>comes down to decisions nobody had the time to make.</b></p>
+    </div>
+  </section>
+
+  <!-- ============================== 02 · THE FIX ============================== -->
+  <section class="section section--paper section--wash" id="platform">
+    <div class="wrap">
+      <span class="eyebrow rv"><span class="idx">02</span> The fix</span>
+      <div class="section__head">
+        <h2 class="rv" data-d="1">Ilara decides, so your team doesn't have to guess.</h2>
+        <p class="rv" data-d="2">It scores every player every day, works out who is about to leave or spend, and turns that into a ranked list of moves with a dollar value on each.</p>
+      </div>
+
+      <div class="xrows">
+        <article class="xrow rv">
+          <button class="xrow__hd" type="button" aria-expanded="false" aria-controls="x1">
+            <span class="xrow__n">01</span>
+            <span><span class="xrow__k">Predict</span><span class="xrow__t">Know who's leaving and who's about to pay.</span></span>
+            <span class="xrow__x" aria-hidden="true"></span>
+          </button>
+          <div class="xrow__body" id="x1"><div class="xrow__in">
+            <div class="xrow__panel" aria-hidden="true">
+              <div class="mv"><span class="lab">plyr_88214</span><span class="mv-track"><i class="mv-fill" style="width:91%"></i></span><span class="risk risk--hi">0.91</span></div>
+              <div class="mv"><span class="lab">plyr_10577</span><span class="mv-track"><i class="mv-fill" style="width:64%"></i></span><span class="risk risk--md">0.64</span></div>
+              <div class="mv"><span class="lab">plyr_43902</span><span class="mv-track"><i class="mv-fill dim" style="width:18%"></i></span><span class="risk risk--lo">0.18</span></div>
+            </div>
+            <ul class="parts">
+              <li><span><b>Player Scores.</b> Churn risk, pay likelihood and value, for every player, every day.</span></li>
+              <li><span><b>Reason Codes.</b> The reasons behind each score, so you never have to take our word for it.</span></li>
+              <li><span><b>Auto-Cohorts.</b> Your base sorts itself into behavior groups, so you never build a segment by hand.</span></li>
+              <li><span><b>Purchase Paths.</b> The route players actually take to a purchase, and the window right after it.</span></li>
+            </ul>
+          </div></div>
+        </article>
+
+        <article class="xrow xrow--indigo rv">
+          <button class="xrow__hd" type="button" aria-expanded="false" aria-controls="x2">
+            <span class="xrow__n">02</span>
+            <span><span class="xrow__k">Decide</span><span class="xrow__t">Get the week's moves, ranked by money.</span></span>
+            <span class="xrow__x" aria-hidden="true"></span>
+          </button>
+          <div class="xrow__body" id="x2"><div class="xrow__in">
+            <div class="xrow__panel" aria-hidden="true">
+              <div class="mv"><span style="font-weight:700;color:var(--ink)">01</span><span class="lab">Rescue cooling payers</span><span class="val">$18.4K</span></div>
+              <div class="mv"><span style="font-weight:700;color:var(--ink)">02</span><span class="lab">Loot box after win</span><span class="val">$12.9K</span></div>
+              <div class="mv"><span style="font-weight:700;color:var(--ink)">03</span><span class="lab">Offer to likely payers</span><span class="val">$9.7K</span></div>
+              <div class="mv" style="border-top:1px solid var(--l1);padding-top:8px"><span class="lab">Σ this month</span><span class="val">≈ $45K</span></div>
+            </div>
+            <ul class="parts">
+              <li><span><b>Decision Queue.</b> Your week as a short ranked list, every move priced, biggest first.</span></li>
+              <li><span><b>Ask Ilara.</b> Plain English in, answers from your own game data out.</span></li>
+              <li><span><b>Lift Ledger.</b> What each play actually earned, measured against a control group.</span></li>
+            </ul>
+          </div></div>
+        </article>
+
+        <article class="xrow rv">
+          <button class="xrow__hd" type="button" aria-expanded="false" aria-controls="x3">
+            <span class="xrow__n">03</span>
+            <span><span class="xrow__k">Act</span><span class="xrow__t">Ship the move without waiting on a release.</span></span>
+            <span class="xrow__x" aria-hidden="true"></span>
+          </button>
+          <div class="xrow__body" id="x3"><div class="xrow__in">
+            <div class="xrow__panel" aria-hidden="true">
+              <div class="offers"><span class="offer">dormant<b>$1.99</b></span><span class="offer on">cooling<b>$4.99</b></span><span class="offer">whale<b>$49.99</b></span></div>
+              <div class="tg" style="margin-top:6px"><span>hard_currency_boost</span><span class="sw on"></span></div>
+            </div>
+            <ul class="parts">
+              <li><span><b>Personal Offers.</b> A different price, bundle and moment per player.</span></li>
+              <li><span><b>Push &amp; In-App.</b> Ilara picks the moment, so nothing goes out just because it's Thursday.</span></li>
+              <li><span><b>Live Events.</b> Plan, target and schedule the whole calendar in one view.</span></li>
+              <li><span><b>Flags &amp; Experiments.</b> Tune features and run A/B tests without a build.</span></li>
+            </ul>
+          </div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 03 · ASK ILARA ============================== -->
+  <section class="section section--wash-indigo" id="ask">
+    <div class="wrap">
+      <div class="hero__grid">
+        <div>
+          <span class="eyebrow rv"><span class="idx">03</span> Ask Ilara</span>
+          <div class="section__head">
+            <h2 class="rv" data-d="1">Ask it like you'd ask your best analyst.</h2>
+            <p class="rv" data-d="2">Answers come from your live game data, with the chart and the next move attached. You don't need a query language or an analyst in the loop.</p>
+          </div>
+        </div>
+
+        <div class="chat rv" data-d="2" role="figure" aria-label="An example conversation with Ilara">
+          <div class="chat__bar"><span><span class="sq" aria-hidden="true"></span>Ask Ilara</span><span class="who">live title · 265,832 players</span></div>
+          <div class="chat__body">
+            <div class="convo active" data-c="0">
+            <div class="msg msg--u"><span class="msg__av" aria-hidden="true">YOU</span><div class="msg__b">Why did revenue dip on the 14th?</div></div>
+            <div class="msg msg--a">
+              <span class="msg__av" aria-hidden="true">IL</span>
+              <div class="msg__b">
+                Your alliance event ended on the 13th. Revenue from alliance-active players fell <b>−38%</b> the next day and hasn't recovered. That's <b>−$4.1K</b> so far.
+                <div class="msg__card">
+                  <div class="ct">Daily revenue · alliance-active players</div>
+                  <div class="spark" aria-hidden="true">
+                    <i style="height:62%"></i><i style="height:70%"></i><i style="height:66%"></i><i style="height:78%"></i>
+                    <i style="height:74%"></i><i class="dip" style="height:44%"></i><i class="dip" style="height:38%"></i>
+                    <i class="dip" style="height:41%"></i><i style="height:46%"></i><i class="up" style="height:52%"></i>
+                  </div>
+                  <div class="spark__x"><span>Jul 8</span><span>Jul 13 · event ends</span><span>Jul 17</span></div>
+                </div>
+                <div class="msg__acts">
+                  <button class="actbt pri" type="button">Queue the fix · $4.1K</button>
+                  <button class="actbt" type="button">Show me who's affected</button>
+                </div>
+              </div>
+            </div>
+            <div class="msg msg--u"><span class="msg__av" aria-hidden="true">YOU</span><div class="msg__b">Is that just seasonality?</div></div>
+            <div class="msg msg--a"><span class="msg__av" aria-hidden="true">IL</span><div class="msg__b">No. Players with no alliance held flat over the same window, so the drop is specific to the cohort the event touched.</div></div>
+            </div>
+            <div class="convo" data-c="1">
+              <div class="msg msg--u"><span class="msg__av" aria-hidden="true">YOU</span><div class="msg__b">Which players should I save this week?</div></div>
+              <div class="msg msg--a">
+                <span class="msg__av" aria-hidden="true">IL</span>
+                <div class="msg__b">
+                  <b>3,410</b> players are on track to churn in the next 7 days but are still savable, not lost causes. Most stalled right after the Level 14 difficulty spike.
+                  <div class="msg__card">
+                    <div class="ct">7-day retention · Level-14 stalled cohort</div>
+                    <div class="spark" aria-hidden="true">
+                      <i style="height:80%"></i><i style="height:74%"></i><i style="height:66%"></i><i class="dip" style="height:52%"></i>
+                      <i class="dip" style="height:44%"></i><i class="dip" style="height:39%"></i><i class="dip" style="height:35%"></i>
+                      <i style="height:37%"></i><i style="height:40%"></i><i class="up" style="height:43%"></i>
+                    </div>
+                    <div class="spark__x"><span>Day 1</span><span>Level 14 spike</span><span>Day 7</span></div>
+                  </div>
+                  <div class="msg__acts">
+                    <button class="actbt pri" type="button">Send the save offer · 3,410</button>
+                    <button class="actbt" type="button">Show the cohort</button>
+                  </div>
+                </div>
+              </div>
+              <div class="msg msg--u"><span class="msg__av" aria-hidden="true">YOU</span><div class="msg__b">What worked last time?</div></div>
+              <div class="msg msg--a"><span class="msg__av" aria-hidden="true">IL</span><div class="msg__b">A free progression boost on the same segment lifted 7-day retention <b>+9%</b> last month, at no revenue cost.</div></div>
+            </div>
+            <div class="convo" data-c="2">
+              <div class="msg msg--u"><span class="msg__av" aria-hidden="true">YOU</span><div class="msg__b">Our conversion rate looks off. What's going on?</div></div>
+              <div class="msg msg--a">
+                <span class="msg__av" aria-hidden="true">IL</span>
+                <div class="msg__b">
+                  Paid conversion slipped to <b>2.1%</b> this week. <b>6,900</b> installs from one UA source look bot-like: identical session patterns, never spend. They're diluting your baseline.
+                  <div class="msg__card">
+                    <div class="ct">New installs · bot-flagged share</div>
+                    <div class="spark" aria-hidden="true">
+                      <i style="height:40%"></i><i style="height:44%"></i><i style="height:41%"></i><i style="height:46%"></i>
+                      <i class="up" style="height:64%"></i><i class="up" style="height:82%"></i><i class="up" style="height:88%"></i>
+                      <i class="up" style="height:79%"></i><i style="height:48%"></i><i style="height:45%"></i>
+                    </div>
+                    <div class="spark__x"><span>Jul 12</span><span>source spike</span><span>Jul 18</span></div>
+                  </div>
+                  <div class="msg__acts">
+                    <button class="actbt pri" type="button">Exclude the source</button>
+                    <button class="actbt" type="button">Show the pattern</button>
+                  </div>
+                </div>
+              </div>
+              <div class="msg msg--u"><span class="msg__av" aria-hidden="true">YOU</span><div class="msg__b">Are they hurting the predictions too?</div></div>
+              <div class="msg msg--a"><span class="msg__av" aria-hidden="true">IL</span><div class="msg__b">Yes, they pad the retained bucket so churn scores read better than reality. We've quarantined them from training so the next scores stay honest.</div></div>
+            </div>
+          </div>
+          <div class="chat__in"><span class="ph">Ask about players, revenue, retention, a play…</span><span class="send" aria-hidden="true">↑</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 04 · WHO IT'S FOR ============================== -->
+  <section class="section section--paper" id="roles">
+    <div class="wrap">
+      <span class="eyebrow rv"><span class="idx">04</span> Who it's for</span>
+      <div class="section__head">
+        <h2 class="rv" data-d="1">Everyone sees the version of it they can act on.</h2>
+        <p class="rv" data-d="2">The same predictions doing three different jobs. A one-line approval at one end, the raw read-out at the other.</p>
+      </div>
+
+      <div class="xrows">
+        <article class="xrow xrow--indigo rv">
+          <button class="xrow__hd" type="button" aria-expanded="false" aria-controls="r1">
+            <span class="xrow__n">01</span>
+            <span><span class="xrow__k">Studio lead · C-suite</span><span class="xrow__t">A brief you can approve from.</span></span>
+            <span class="xrow__x" aria-hidden="true"></span>
+          </button>
+          <div class="xrow__body" id="r1"><div class="xrow__in">
+            <div>
+              <p>Three decisions a week in plain language, each with the money attached. You don't have to learn a dashboard or interpret anything.</p>
+            </div>
+            <div>
+              <p class="brief" style="margin-bottom:14px">Revenue is tracking <b>−4.2%</b> against plan. Most of it is <b>4,120 paying players</b> whose spend fell 60% in seven days. Recovering them is worth <span class="money">$18.4K/mo</span>.</p>
+              <div class="decide">
+                <div class="decide__t">Approve the rescue campaign?</div>
+                <div class="decide__m">est. $18.4K/mo · control group 10% · LiveOps ready</div>
+                <div class="decide__b"><button class="tiny pri" type="button">Approve</button><button class="tiny" type="button">Ask why</button></div>
+              </div>
+            </div>
+          </div></div>
+        </article>
+
+        <article class="xrow rv">
+          <button class="xrow__hd" type="button" aria-expanded="false" aria-controls="r2">
+            <span class="xrow__n">02</span>
+            <span><span class="xrow__k">LiveOps · Product</span><span class="xrow__t">The queue you work out of.</span></span>
+            <span class="xrow__x" aria-hidden="true"></span>
+          </button>
+          <div class="xrow__body" id="r2"><div class="xrow__in">
+            <div><p>The working surface. Every play ranked by money, with its reason and its control group attached, ready to ship or hand back.</p></div>
+            <div class="console" style="box-shadow:none">
+              <ol class="console__list" style="padding:4px">
+                <li class="play play--sm"><span class="play__rank">01</span><span><span class="play__title">Rescue cooling payers</span><span class="play__why"><span class="chip">why</span> spend −60%/7d</span></span><span class="play__val">$18.4K</span></li>
+                <li class="play play--sm"><span class="play__rank">02</span><span><span class="play__title">Loot box after win</span><span class="play__why"><span class="chip">why</span> 45s window</span></span><span class="play__val">$12.9K</span></li>
+                <li class="play play--sm"><span class="play__rank">03</span><span><span class="play__title">Offer to likely payers</span><span class="play__why"><span class="chip">why</span> top 1% · 55×</span></span><span class="play__val">$9.7K</span></li>
+                <li class="play play--sm"><span class="play__rank">04</span><span><span class="play__title">Hold spend on the gone</span><span class="play__why"><span class="chip">why</span> 0% ever return</span></span><span class="play__val">$4.1K</span></li>
+              </ol>
+            </div>
+          </div></div>
+        </article>
+
+        <article class="xrow rv">
+          <button class="xrow__hd" type="button" aria-expanded="false" aria-controls="r3">
+            <span class="xrow__n">03</span>
+            <span><span class="xrow__k">Analytics · Data</span><span class="xrow__t">The full read-out, open to audit.</span></span>
+            <span class="xrow__x" aria-hidden="true"></span>
+          </button>
+          <div class="xrow__body" id="r3"><div class="xrow__in">
+            <div><p>Which players it learned from, which it was checked against, how well it did, and the raw scores. Export any of it and disagree with us in your own tools.</p></div>
+            <div>
+              <div class="modelcard">
+                <div class="r"><span>predicts</span><b>who quits by week 2</b></div>
+                <div class="r"><span>learned from</span><b>Jul 01–15</b></div>
+                <div class="r"><span>checked, unseen</span><b>Jul 16–30</b></div>
+                <div class="r"><span>top 1% we flag</span><b>55× likelier to pay</b></div>
+                <div class="r"><span>no future data leaked</span><b>✓</b></div>
+              </div>
+              <div style="display:flex;gap:7px;margin-top:12px"><button class="tiny" type="button">Export CSV</button><button class="tiny" type="button">Full read-out</button></div>
+            </div>
+          </div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 05 · HOW IT WORKS ============================== -->
+  <section class="section" id="how">
+    <div class="wrap center">
+      <span class="eyebrow rv"><span class="idx">05</span> How it works</span>
+      <div class="section__head">
+        <h2 class="rv" data-d="1">Live in days, not months.</h2>
+        <p class="rv" data-d="2">You skip the warm-up window, the six-month integration and the data science hire.</p>
+      </div>
+      <ol class="pipe pipe--3 rv" data-d="1">
+        <li>
+          <div class="pipe__dot"><svg class="ic" aria-hidden="true"><use href="#i-connect"/></svg></div>
+          <div class="pipe__when">Step one</div><h3 class="pipe__t">Connect</h3><p class="pipe__d">Send a data export, or drop in the SDK. Whatever you already collect is enough: devtodev, Firebase, GA4 or a daily CSV.</p>
+        </li>
+        <li>
+          <div class="pipe__dot"><svg class="ic" aria-hidden="true"><use href="#i-score"/></svg></div>
+          <div class="pipe__when">Step two</div><h3 class="pipe__t">Score</h3><p class="pipe__d">We stand your predictions up cold and score every player. Twenty-three predictions in under a day, on a game we'd never seen.</p>
+        </li>
+        <li>
+          <div class="pipe__dot"><svg class="ic" aria-hidden="true"><use href="#i-bolt"/></svg></div>
+          <div class="pipe__when">Step three</div><h3 class="pipe__t">Act</h3><p class="pipe__d">You get a ranked, priced list of moves. Approve them, and we measure what each one earned against a control.</p>
+        </li>
+      </ol>
+
+      <div class="hub__hd rv">
+        <h3>Connects to what you already run.</h3>
+        <p>We read the game data you already collect, and we write decisions back into the places your team already acts. If your events live somewhere else, a CSV export covers the first run.</p>
+      </div>
+
+      <div class="hub rv" data-d="1">
+        <div class="hub__col">
+          <span class="hub__k">What you send</span>
+          <div class="tool live"><span class="m" aria-hidden="true"></span>devtodev</div>
+          <div class="tool live"><span class="m" aria-hidden="true"></span>Firebase / GA4</div>
+          <div class="tool live"><span class="m" aria-hidden="true"></span>Daily CSV or S3 drop</div>
+          <div class="tool live"><span class="m" aria-hidden="true"></span>SDK or REST</div>
+        </div>
+        <div class="hub__core">
+          <span class="t">Ilara</span>
+          <span class="d">SCORES EVERY<br/>PLAYER DAILY</span>
+        </div>
+        <div class="hub__col">
+          <span class="hub__k">What comes back</span>
+          <div class="tool live"><span class="m" aria-hidden="true"></span>Live scoring API</div>
+          <div class="tool live"><span class="m" aria-hidden="true"></span>In-game offers</div>
+          <div class="tool live"><span class="m" aria-hidden="true"></span>A/B control groups</div>
+          <div class="tool live"><span class="m" aria-hidden="true"></span>Webhooks</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 06 · PROOF ============================== -->
+  <section class="section section--paper section--wash" id="proof">
+    <div class="wrap">
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px;justify-content:space-between">
+        <div>
+          <span class="eyebrow rv"><span class="idx">06</span> Proof</span>
+          <div class="section__head"><h2 class="rv" data-d="1">We ran it on a live game. Here's what happened.</h2></div>
+        </div>
+        <span class="badge rv" data-d="2"><span class="flame" aria-hidden="true"></span>Reliance Games · 6,319 players</span>
+      </div>
+      <p class="section__head rv" data-d="2" style="margin-top:16px;font-size:17px;color:var(--ink2);max-width:60ch">One controlled test on a live title: a control group and two identical treatment groups, so the result validates itself.</p>
+
+      <div class="bignums">
+        <div class="bignum rv"><b>38<span class="u">%</span></b><span>less onboarding friction, or one in thirteen installs rescued</span></div>
+        <div class="bignum rv" data-d="1"><b>9.5<span class="u">%</span></b><span>more revenue per install, with retention flat at every horizon</span></div>
+        <div class="bignum rv" data-d="2"><b>$1.5<span class="u">M</span></b><span>a year found across the wider engagement, from $440K</span></div>
+      </div>
+
+      <div class="measured rv" data-d="1" style="margin-top:44px">
+        <div class="measured__hd">
+          <span style="display:flex;align-items:center;gap:10px"><span style="width:9px;height:9px;border-radius:2px;background:var(--lime);display:inline-block" aria-hidden="true"></span>We said it first, then it happened</span>
+          <span class="sub">predicted before the test · measured after</span>
+        </div>
+        <div class="measured__bd">
+          <div>
+            <div class="predtable" style="margin-top:0">
+              <div class="predtable__r predtable__r--h"><span>Per 10,000 installs</span><span class="p">Predicted</span><span class="o">Observed</span></div>
+              <div class="predtable__r"><span>Extra paying players</span><span class="p">27</span><span class="o">24</span></div>
+              <div class="predtable__r"><span>Extra retained to day 7</span><span class="o" style="color:var(--ink3);font-weight:400">46</span><span class="o">50</span></div>
+            </div>
+            <p style="margin-top:16px;font-size:14.5px;color:var(--ink2);line-height:1.55">We told them what the fix would be worth before it shipped. Then it shipped, and it was worth that.</p>
+          </div>
+          <div>
+            <div style="font-family:var(--fm);font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3)">And we grade our own findings</div>
+            <div style="margin-top:14px;display:grid;gap:10px">
+              <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;font-size:13.5px"><span>Onboarding friction cut 38%</span><span class="grade grade--proven">Proven</span></div>
+              <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;font-size:13.5px;border-top:1px solid var(--l0);padding-top:10px"><span>Repeat purchases up 44% → 56%</span><span class="grade grade--strong">Strong pattern</span></div>
+              <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;font-size:13.5px;border-top:1px solid var(--l0);padding-top:10px"><span>Revenue per install $0.39 → $0.46</span><span class="grade grade--early">Early trend</span></div>
+              <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;font-size:13.5px;border-top:1px solid var(--l0);padding-top:10px"><span>Day-1 paying conversion</span><span class="grade grade--miss">No lift</span></div>
+            </div>
+            <p style="margin-top:14px;font-size:13.5px;color:var(--ink3);line-height:1.55">That last one was the test's primary metric. It didn't move, and we led the report with it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="method rv" data-d="2">
+        <span class="method__k">How we prove it</span>
+        <p>Every prediction is tested on players it has never seen, and every play runs against a control group. What comes back to you is earned dollars, not a projection. <b>Ask us for the exact test behind any number</b> and we'll send it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 07 · WHY ILARA ============================== -->
+  <section class="section section--wash-indigo" id="why">
+    <div class="wrap">
+      <span class="eyebrow rv"><span class="idx">07</span> Why Ilara</span>
+      <div class="section__head">
+        <h2 class="rv" data-d="1">Why studios pick us.</h2>
+      </div>
+
+      <div class="xrows">
+        <article class="xrow rv">
+          <button class="xrow__hd" type="button" aria-expanded="false" aria-controls="w01">
+            <span class="xrow__n">01</span>
+            <span><span class="xrow__t">It decides. You approve.</span></span>
+            <span class="xrow__x" aria-hidden="true"></span>
+          </button>
+          <div class="xrow__body" id="w01"><div class="xrow__in xrow__in--single"><p>Everything else in this space runs the logic you write. Ilara works out the move itself, prices it, and puts it at the top of the queue. Your team approves the move instead of designing it.</p></div></div>
+        </article>
+        <article class="xrow rv">
+          <button class="xrow__hd" type="button" aria-expanded="false" aria-controls="w02">
+            <span class="xrow__n">02</span>
+            <span><span class="xrow__t">It tells you who to stop spending on.</span></span>
+            <span class="xrow__x" aria-hidden="true"></span>
+          </button>
+          <div class="xrow__body" id="w02"><div class="xrow__in xrow__in--single"><p>Ilara splits at-risk players into the ones who'll come back on their own, the ones worth chasing, and the ones already gone. On one title the bottom group came back at zero percent, so every dollar aimed at them was wasted. Most tools only ever tell you where to spend more.</p></div></div>
+        </article>
+        <article class="xrow rv">
+          <button class="xrow__hd" type="button" aria-expanded="false" aria-controls="w03">
+            <span class="xrow__n">03</span>
+            <span><span class="xrow__t">We publish our accuracy. Nobody else does.</span></span>
+            <span class="xrow__x" aria-hidden="true"></span>
+          </button>
+          <div class="xrow__body" id="w03"><div class="xrow__in xrow__in--single"><p>Look across the category: everyone says it works, nobody shows it. We call the fix before a play ships and measure it against a control group after, across sixty-odd predictions and three live titles, every one tested on players it had never seen. We&#39;ll walk you through exactly how.</p></div></div>
+        </article>
+        <article class="xrow rv">
+          <button class="xrow__hd" type="button" aria-expanded="false" aria-controls="w04">
+            <span class="xrow__n">04</span>
+            <span><span class="xrow__t">We prove it against a control, and we report what didn't work.</span></span>
+            <span class="xrow__x" aria-hidden="true"></span>
+          </button>
+          <div class="xrow__body" id="w04"><div class="xrow__in xrow__in--single"><p>Every play runs against a control group, so you get earned dollars rather than a projection. On our last controlled test with Reliance Games the primary metric didn't move, and that was the first line of the report.</p></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 08 · PRICING ============================== -->
+  <section class="section section--paper" id="pricing">
+    <div class="wrap">
+      <span class="eyebrow rv"><span class="idx">08</span> Pricing</span>
+      <div class="section__head">
+        <h2 class="rv" data-d="1">Start with a teardown. Scale into the platform.</h2>
+        <p class="rv" data-d="2">Send us data, we come back with findings you can check. If the numbers are there, the platform is how you keep acting on them.</p>
+      </div>
+
+      <div class="ladder">
+        <div class="rung rung--first rv">
+          <div class="rung__k">Step one</div>
+          <h3 class="rung__t">The teardown</h3>
+          <p class="rung__d">We onboard cold, rebuild your numbers against your own reporting, and come back with a money-ranked list of moves.</p>
+          <ul>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Your revenue and retention, rebuilt from raw events</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Predictions live on day one, on players we'd never seen before</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>A ranked, priced list of moves</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>A/B specs with sizing, ready to run</li>
+          </ul>
+          <a class="btn btn--lime" style="margin-top:22px" href="#start">Book a teardown <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+        <div class="ladder__arr rv" data-d="1" aria-hidden="true">then →</div>
+        <div class="rung rv" data-d="2">
+          <div class="rung__k">Step two</div>
+          <h3 class="rung__t">The platform</h3>
+          <p class="rung__d">Ilara runs continuously. It rescores every player daily, keeps the queue current, ships the plays you approve and measures what each one earned.</p>
+          <ul>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Every player rescored daily</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>The Decision Queue, always current</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Act in-game without a release</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>From $0. The brain is in Growth, at $499/mo</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="anchor rv" data-d="1" role="figure" aria-label="Cost comparison: building in-house costs $500,000 or more; buying elsewhere starts at $24,000 a year on a one-year commitment; Ilara Growth is $6,000 a year, month to month.">
+        <div class="an">
+          <div class="an__k">Build it in-house<small>3–6 months · a data team</small></div>
+          <div class="an__t"><i class="an__f" style="width:100%"></i></div>
+          <div class="an__v">$500K+</div>
+        </div>
+        <div class="an">
+          <div class="an__k">Buy it elsewhere<small>from $2,000/mo · 1-year commitment</small></div>
+          <div class="an__t"><i class="an__f" style="width:34%"></i></div>
+          <div class="an__v">$24K<span style="color:var(--ink3);font-weight:400">/yr</span></div>
+        </div>
+        <div class="an an--us">
+          <div class="an__k">Ilara Growth<small>$499/mo · monthly · cancel any time</small></div>
+          <div class="an__t"><i class="an__f us" style="width:9%"></i></div>
+          <div class="an__v">$6K<span style="color:var(--ink3);font-weight:400">/yr</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== 09 · FAQ ============================== -->
+  <section class="section" id="faq">
+    <div class="wrap">
+      <span class="eyebrow rv"><span class="idx">09</span> FAQ</span>
+      <div class="section__head"><h2 class="rv" data-d="1">The questions people actually ask.</h2></div>
+
+      <div class="faq rv" data-d="1">
+        <div class="faq__i">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="a1"><span class="m">01</span><span>Do we need a data scientist to run this?</span><span class="x" aria-hidden="true"></span></button>
+          <div class="faq__a" id="a1"><div>No. Ilara does the analysis and hands your ops team a ranked list in plain language. If you <em>do</em> have analysts, they get the full read-outs and raw scores to audit.</div></div>
+        </div>
+        <div class="faq__i">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="a2"><span class="m">02</span><span>Does Ilara replace our analytics platform, or sit on top of it?</span><span class="x" aria-hidden="true"></span></button>
+          <div class="faq__a" id="a2"><div>Either. Keep devtodev, Firebase or whatever you run, and Ilara reads the same game data while adding the decision layer they don't have. Or consolidate into Ilara and drop the rest. <em>Most studios start alongside and consolidate later.</em></div></div>
+        </div>
+        <div class="faq__i">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="a3"><span class="m">03</span><span>How long does it take to see something?</span><span class="x" aria-hidden="true"></span></button>
+          <div class="faq__a" id="a3"><div>Hours for the SDK, or send an export and skip integration entirely for the first run. We come back with scored players and a ranked queue inside a day.</div></div>
+        </div>
+        <div class="faq__i">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="a4"><span class="m">04</span><span>How much history do you need?</span><span class="x" aria-hidden="true"></span></button>
+          <div class="faq__a" id="a4"><div>We've stood up twenty-three working predictions on a single fifteen-day drop, cold. More history sharpens value estimates, but it isn't required to start.</div></div>
+        </div>
+        <div class="faq__i">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="a5"><span class="m">05</span><span>Can Ilara act in the game, or does it only advise?</span><span class="x" aria-hidden="true"></span></button>
+          <div class="faq__a" id="a5"><div>Both, and it's your call. Approve a play and it ships as an offer, message, live event or feature flag. Or keep Ilara advisory and run the plays in the tools you already use.</div></div>
+        </div>
+        <div class="faq__i">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="a6"><span class="m">06</span><span>How do we know a play actually worked?</span><span class="x" aria-hidden="true"></span></button>
+          <div class="faq__a" id="a6"><div>Every play runs against a control group, and we report earned dollars measured against that control. It isn't a projection, and it isn't attribution either. When a test misses, we say so.</div></div>
+        </div>
+        <div class="faq__i">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="a7"><span class="m">07</span><span>Is this only for big studios?</span><span class="x" aria-hidden="true"></span></button>
+          <div class="faq__a" id="a7"><div>No. Under 25,000 players it's free, and a two-person team gets the same predictions a two-hundred-person one does.</div></div>
+        </div>
+        <div class="faq__i">
+          <button class="faq__q" type="button" aria-expanded="false" aria-controls="a8"><span class="m">08</span><span>Does it work on ad-driven games, or only in-app purchases?</span><span class="x" aria-hidden="true"></span></button>
+          <div class="faq__a" id="a8"><div>Both, and they're genuinely different problems. One of the three titles we work on earns 83% of its revenue from advertising and needed a completely different playbook. We predict ad value and rewarded-video adoption <em>without using ad revenue as an input</em>, so the predictions aren't circular.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== FINAL CTA ============================== -->
+  <section class="section final" id="start">
+    <div class="aurora" aria-hidden="true"></div>
+    <div class="wrap">
+      <img class="final__illa rv" src="assets/illa/Illa_shout-lg.png" alt="" width="164" height="166" loading="lazy" />
+      <h2 class="rv" data-d="1">See what Ilara finds in your game.</h2>
+      <p class="rv" data-d="2">Send a data export or hook up the SDK. We come back with a money-ranked list of moves, priced against your revenue, in days. <b>If the numbers aren't there, we'll tell you.</b></p>
+      <div class="final__cta rv" data-d="3">
+        <a class="btn btn--lime" href="mailto:hello@ilara.ai?subject=Run%20Ilara%20on%20our%20game">Run it on your game <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost" href="#proof">See the proof</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__grid">
+      <div>
+        <a class="brand" href="#" aria-label="Ilara home"><img class="brand__logo" src="assets/ilara-logo-black.svg" alt="Ilara" width="61" height="22"></a>
+        <p class="foot__tag">The decision layer for live mobile games.</p>
+      </div>
+      <div class="foot__cols">
+        <div class="foot__col"><h3>Platform</h3><a href="#problem">The problem</a><a href="#platform">The fix</a><a href="#ask">Ask Ilara</a><a href="#roles">Who it's for</a><a href="#how">How it works</a></div>
+        <div class="foot__col"><h3>Proof</h3><a href="#proof">The proof</a><a href="#why">Why Ilara</a></div>
+        <div class="foot__col"><h3>Start</h3><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="#start">Run it on your game</a></div>
+      </div>
+    </div>
+    <div class="foot__base"><span>© 2026 Ilara · a Big Immersive company</span><span>// rigor, not adjectives</span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* nav */
+  var nav = document.getElementById('nav');
+  var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 8); };
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  var toggle = document.getElementById('navToggle');
+  if(toggle){
+    toggle.addEventListener('click', function(){
+      var open = nav.getAttribute('data-open') === '1';
+      nav.setAttribute('data-open', open ? '0' : '1');
+      toggle.setAttribute('aria-expanded', String(!open));
+    });
+  }
+  nav.querySelectorAll('.nav__links a').forEach(function(a){
+    a.addEventListener('click', function(){
+      nav.setAttribute('data-open','0');
+      if(toggle) toggle.setAttribute('aria-expanded','false');
+    });
+  });
+
+  /* reveal on scroll, gated on .js so no-JS visitors see everything */
+  try{
+    var els = Array.prototype.slice.call(document.querySelectorAll('.rv'));
+    if(reduce || !('IntersectionObserver' in window)){
+      els.forEach(function(e){ e.classList.add('in'); });
+    } else {
+      document.querySelectorAll('.hero .rv, .console .rv').forEach(function(e){ e.classList.add('in'); });
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+        });
+      }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+      els.forEach(function(e){ if(!e.classList.contains('in')) io.observe(e); });
+    }
+  }catch(e){
+    document.querySelectorAll('.rv').forEach(function(x){ x.classList.add('in'); });
+  }
+
+  /* decision queue: queueing a play */
+  document.querySelectorAll('.play__act').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(btn.getAttribute('data-done') === '1') return;
+      btn.setAttribute('data-done','1');
+      btn.textContent = 'Queued ✓';
+    });
+  });
+
+  /* layer vs replace: real tablist, keyboard operable */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.modes__tab'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      if(panel){ panel.classList.toggle('on', on); if(on){ panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden',''); } }
+    });
+  }
+  tabs.forEach(function(tab, i){
+    tab.addEventListener('click', function(){ selectTab(tab); });
+    tab.addEventListener('keydown', function(ev){
+      if(ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
+      ev.preventDefault();
+      var next = tabs[(i + (ev.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      next.focus(); selectTab(next);
+    });
+  });
+
+  /* FAQ accordion */
+  document.querySelectorAll('.faq__q').forEach(function(q){
+    var panel = document.getElementById(q.getAttribute('aria-controls'));
+    if(!panel) return;
+    q.addEventListener('click', function(){
+      var open = q.getAttribute('aria-expanded') === 'true';
+      q.setAttribute('aria-expanded', String(!open));
+      panel.style.maxHeight = open ? '' : (panel.scrollHeight + 'px');
+    });
+  });
+
+  /* expanding rows: the heading carries the point, the detail is on demand */
+  function setRow(row, open){
+    var btn = row.querySelector('.xrow__hd');
+    if(!btn) return;
+    var body = document.getElementById(btn.getAttribute('aria-controls'));
+    row.setAttribute('data-open', open ? '1' : '0');
+    btn.setAttribute('aria-expanded', String(open));
+    if(body) body.style.maxHeight = open ? (body.scrollHeight + 'px') : '';
+  }
+  Array.prototype.slice.call(document.querySelectorAll('.xrow')).forEach(function(row){
+    var btn = row.querySelector('.xrow__hd');
+    if(!btn) return;
+    btn.addEventListener('click', function(){
+      setRow(row, row.getAttribute('data-open') !== '1');
+    });
+  });
+  /* first row of each set opens, so the pattern is discoverable without a hint */
+  document.querySelectorAll('.xrows').forEach(function(set){
+    var first = set.querySelector('.xrow');
+    if(first) setRow(first, true);
+  });
+
+  /* ---- aurora ------------------------------------------------------------
+     Simplex-noise aurora, ported from the Mizan Aurora component with the OGL
+     dependency dropped so this file stays self-contained. The CSS gradient
+     underneath is the fallback: if WebGL2 is missing or motion is reduced we
+     simply never upgrade, and the static gradient stands in. */
+  (function aurora(){
+    var hosts = Array.prototype.slice.call(document.querySelectorAll('.aurora'));
+    if(!hosts.length || reduce) return;
+
+    var VERT = '#version 300 es\nin vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}';
+    var FRAG = [
+      '#version 300 es',
+      'precision highp float;',
+      'uniform float uTime;uniform float uAmp;uniform vec2 uRes;uniform float uBlend;',
+      'uniform vec3 uA;uniform vec3 uB;uniform vec3 uC;',
+      'out vec4 fragColor;',
+      'vec3 permute(vec3 x){return mod(((x*34.0)+1.0)*x,289.0);}',
+      'float snoise(vec2 v){',
+      '  const vec4 C=vec4(0.211324865405187,0.366025403784439,-0.577350269189626,0.024390243902439);',
+      '  vec2 i=floor(v+dot(v,C.yy));vec2 x0=v-i+dot(i,C.xx);',
+      '  vec2 i1=(x0.x>x0.y)?vec2(1.0,0.0):vec2(0.0,1.0);',
+      '  vec4 x12=x0.xyxy+C.xxzz;x12.xy-=i1;i=mod(i,289.0);',
+      '  vec3 p=permute(permute(i.y+vec3(0.0,i1.y,1.0))+i.x+vec3(0.0,i1.x,1.0));',
+      '  vec3 m=max(0.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.0);',
+      '  m=m*m;m=m*m;',
+      '  vec3 x=2.0*fract(p*C.www)-1.0;vec3 h=abs(x)-0.5;vec3 ox=floor(x+0.5);vec3 a0=x-ox;',
+      '  m*=1.79284291400159-0.85373472095314*(a0*a0+h*h);',
+      '  vec3 g;g.x=a0.x*x0.x+h.x*x0.y;g.yz=a0.yz*x12.xz+h.yz*x12.yw;',
+      '  return 130.0*dot(m,g);',
+      '}',
+      'void main(){',
+      '  vec2 uv=gl_FragCoord.xy/uRes;',
+      '  vec3 ramp = uv.x<0.5 ? mix(uA,uB,uv.x/0.5) : mix(uB,uC,(uv.x-0.5)/0.5);',
+      '  float height=snoise(vec2(uv.x*2.0+uTime*0.1,uTime*0.25))*0.5*uAmp;',
+      /* flipped against the Mizan original: the glow rises from the bottom so it
+         sits under the copy rather than behind the headline */
+      '  height=exp(height);height=((1.0-uv.y)*2.0-height+0.2);',
+      '  float intensity=0.6*height;',
+      '  float mid=0.20;',
+      '  float a=smoothstep(mid-uBlend*0.5,mid+uBlend*0.5,intensity);',
+      '  fragColor=vec4(ramp,a*0.9);',
+      '}'
+    ].join('\n');
+
+    function compile(gl,type,src){
+      var s=gl.createShader(type); gl.shaderSource(s,src); gl.compileShader(s);
+      if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) return null;
+      return s;
+    }
+
+    hosts.forEach(function(host){
+      var canvas=document.createElement('canvas');
+      var gl=canvas.getContext('webgl2',{alpha:true,premultipliedAlpha:false,antialias:false,depth:false});
+      if(!gl) return;                                  // keep the CSS gradient
+      var vs=compile(gl,gl.VERTEX_SHADER,VERT), fs=compile(gl,gl.FRAGMENT_SHADER,FRAG);
+      if(!vs||!fs) return;
+      var prog=gl.createProgram();
+      gl.attachShader(prog,vs); gl.attachShader(prog,fs); gl.linkProgram(prog);
+      if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) return;
+      gl.useProgram(prog);
+
+      var buf=gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+      gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+      var loc=gl.getAttribLocation(prog,'p');
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+
+      var uTime=gl.getUniformLocation(prog,'uTime'),
+          uRes=gl.getUniformLocation(prog,'uRes'),
+          uAmp=gl.getUniformLocation(prog,'uAmp'),
+          uBlend=gl.getUniformLocation(prog,'uBlend');
+      gl.uniform3f(gl.getUniformLocation(prog,'uA'),0.396,0.639,0.051);  // lime-dark
+      gl.uniform3f(gl.getUniformLocation(prog,'uB'),0.639,0.902,0.208);  // lime
+      gl.uniform3f(gl.getUniformLocation(prog,'uC'),0.396,0.639,0.051);  // lime-dark
+      gl.uniform1f(uAmp,1.2);
+      gl.uniform1f(uBlend,0.6);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+
+      host.appendChild(canvas);
+      host.classList.add('aurora--live');
+
+      function resize(){
+        var dpr=Math.min(window.devicePixelRatio||1,2);
+        var w=Math.max(1,Math.round(host.clientWidth*dpr));
+        var hgt=Math.max(1,Math.round(host.clientHeight*dpr));
+        if(canvas.width!==w||canvas.height!==hgt){
+          canvas.width=w; canvas.height=hgt;
+          gl.viewport(0,0,w,hgt);
+          gl.uniform2f(uRes,w,hgt);
+        }
+      }
+      resize();
+
+      var visible=false, raf=null, t0=performance.now();
+      function frame(now){
+        if(!visible){ raf=null; return; }
+        resize();
+        gl.uniform1f(uTime,(now-t0)*0.001*0.3);        // speed 0.3, as on Mizan
+        gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES,0,3);
+        raf=requestAnimationFrame(frame);
+      }
+      /* only run while on screen; an idle GPU loop behind the fold is waste */
+      if('IntersectionObserver' in window){
+        new IntersectionObserver(function(entries){
+          visible=entries[0].isIntersecting;
+          if(visible && raf===null) raf=requestAnimationFrame(frame);
+        },{threshold:0}).observe(host);
+      } else { visible=true; raf=requestAnimationFrame(frame); }
+
+      document.addEventListener('visibilitychange',function(){
+        if(document.hidden){ visible=false; }
+        else if(!visible){ visible=true; if(raf===null) raf=requestAnimationFrame(frame); }
+      });
+      window.addEventListener('resize',resize,{passive:true});
+    });
+  })();
+
+  /* keep any open panel correctly sized when the layout reflows */
+  var reflow;
+  window.addEventListener('resize', function(){
+    clearTimeout(reflow);
+    reflow = setTimeout(function(){
+      document.querySelectorAll('.faq__q[aria-expanded="true"]').forEach(function(q){
+        var panel = document.getElementById(q.getAttribute('aria-controls'));
+        if(panel) panel.style.maxHeight = panel.scrollHeight + 'px';
+      });
+      document.querySelectorAll('.xrow[data-open="1"]').forEach(function(r){
+        var body = document.getElementById(r.querySelector('.xrow__hd').getAttribute('aria-controls'));
+        if(body){ body.style.maxHeight = 'none'; body.style.maxHeight = body.scrollHeight + 'px'; }
+      });
+    }, 120);
+  }, {passive:true});
+})();
+</script>
+<script>
+/* Ask section: cycle through demo conversations, each playing gradually, while in view */
+(function(){
+  var chat=document.querySelector('#ask .chat'); if(!chat) return;
+  var body=chat.querySelector('.chat__body'); if(!body) return;
+  var convos=[].slice.call(body.querySelectorAll('.convo')); if(!convos.length) return;
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) return; /* first conversation stays shown, static */
+
+  var typing=document.createElement('div');
+  typing.className='msg msg--a msg--typing'; typing.setAttribute('aria-hidden','true');
+  typing.innerHTML='<span class="msg__av" aria-hidden="true">IL</span><div class="msg__b"><span class="typing"><i></i><i></i><i></i></span></div>';
+
+  var timers=[];
+  function clearAll(){ timers.forEach(clearTimeout); timers=[]; }
+  function at(ms,fn){ timers.push(setTimeout(fn,ms)); }
+  function hideTyping(){ typing.classList.remove('show'); if(typing.parentNode) typing.parentNode.removeChild(typing); }
+  function hideAll(){
+    convos.forEach(function(c){ c.classList.remove('active'); [].forEach.call(c.querySelectorAll('.msg'),function(m){ m.classList.remove('show'); }); });
+    hideTyping();
+  }
+
+  var ci=0;
+  function playConvo(){
+    clearAll(); hideAll();
+    var convo=convos[ci]; convo.classList.add('active');
+    var msgs=[].slice.call(convo.querySelectorAll('.msg'));
+    var t=650;
+    msgs.forEach(function(m){
+      if(m.classList.contains('msg--a')){
+        at(t, function(){ convo.insertBefore(typing,m); typing.classList.add('show'); });
+        t+=950;
+        at(t, function(){ hideTyping(); m.classList.add('show'); });
+        t+=2200;
+      } else {
+        at(t, function(){ m.classList.add('show'); });
+        t+=1150;
+      }
+    });
+    at(t+2600, function(){ ci=(ci+1)%convos.length; playConvo(); }); /* next conversation */
+  }
+
+  var playing=false;
+  function setup(){
+    chat.classList.add('chat--seq');
+    /* lock body height to the tallest conversation so switching never shifts layout */
+    var max=0;
+    convos.forEach(function(c){
+      convos.forEach(function(x){ x.classList.remove('active'); });
+      c.classList.add('active');
+      var mm=[].slice.call(c.querySelectorAll('.msg')); mm.forEach(function(m){ m.classList.add('show'); });
+      if(body.offsetHeight>max) max=body.offsetHeight;
+      mm.forEach(function(m){ m.classList.remove('show'); });
+    });
+    convos.forEach(function(c){ c.classList.remove('active'); });
+    body.style.height=max+'px';
+    var io=new IntersectionObserver(function(es){
+      var e=es[0];
+      if(e.isIntersecting){ if(!playing){ playing=true; ci=0; playConvo(); } }
+      else { playing=false; clearAll(); }
+    },{threshold:0.4});
+    io.observe(chat);
+  }
+  if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(setup); } else { setup(); }
+})();
+</script>
+</body>
+</html>
