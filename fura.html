@@ -54,7 +54,7 @@
   .hero__cta{margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
   .hero__meta{margin-top:26px;font-family:var(--fm);font-size:13px;color:var(--fg2);display:flex;gap:9px;align-items:center;justify-content:center}
   .hero__meta .dot{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(163,230,53,.16)}
-  .stage{position:relative;z-index:2;margin:46px auto 0;width:100%;max-width:1000px;height:clamp(560px,68vw,760px)}
+  .stage{position:relative;z-index:2;margin:46px auto 0;width:100%;max-width:1200px;height:clamp(480px,52vw,640px)}
   .stage__core{position:absolute;inset:0;display:grid;place-items:center;z-index:4}
   .stage__ring{width:clamp(180px,22vw,272px);height:clamp(180px,22vw,272px);border-radius:50%;border:1px solid rgba(163,230,53,.3);
     display:grid;place-items:center;box-shadow:0 0 90px rgba(163,230,53,.22),inset 0 0 60px rgba(163,230,53,.08)}
@@ -180,7 +180,7 @@
     .nav__links{display:none}
     .stats{grid-template-columns:1fr 1fr}
     .cards,.mockrow{grid-template-columns:1fr}
-    .stage{transform:scale(.42);height:clamp(320px,80vw,420px);margin-top:0;transform-origin:center top}
+    .stage{transform:scale(.31);height:clamp(300px,72vw,400px);margin-top:0;transform-origin:center top}
     .nrow{grid-template-columns:1fr auto} .nrow .tag{grid-column:1/-1;width:auto;margin-bottom:-8px}
     .vidcard{display:none}
   }
@@ -210,20 +210,21 @@
   <div class="stage">
     <div class="stage__core"><div class="stage__ring"><svg class="wm wm--ring" style="color:var(--lime)"><use href="#wm"/></svg></div></div>
     <div class="orbit" style="--d:500px;--a:0deg"><div class="ow"><span class="orb"><span class="ic">◍</span><span class="tx"><span class="n">1.1M</span><span class="l">players scored daily</span></span></span></div></div>
-    <div class="orbit" style="--d:720px;--a:30deg"><div class="ow"><span class="orb"><span class="ic">↑</span><span class="tx"><span class="n">38%</span><span class="l">less onboarding friction</span></span></span></div></div>
-    <div class="orbit" style="--d:520px;--a:60deg"><div class="ow"><span class="orb"><span class="ic">↗</span><span class="tx"><span class="n">9.5%</span><span class="l">more revenue / install</span></span></span></div></div>
-    <div class="orbit" style="--d:730px;--a:90deg"><div class="ow"><span class="orb"><span class="ic">≈</span><span class="tx"><span class="n">$18.4K</span><span class="l">top move, per month</span></span></span></div></div>
-    <div class="orbit" style="--d:520px;--a:120deg"><div class="ow"><span class="orb"><span class="ic">✓</span><span class="tx"><span class="n">$1.5M</span><span class="l">found per year</span></span></span></div></div>
-    <div class="orbit" style="--d:720px;--a:150deg"><div class="ow"><span class="orb"><span class="ic">↓</span><span class="tx"><span class="n">−60%</span><span class="l">churn, caught early</span></span></span></div></div>
+    <div class="orbit" style="--d:660px;--a:32deg"><div class="ow"><span class="orb"><span class="ic">↑</span><span class="tx"><span class="n">38%</span><span class="l">less onboarding friction</span></span></span></div></div>
+    <div class="orbit" style="--d:900px;--a:62deg"><div class="ow"><span class="orb"><span class="ic">↗</span><span class="tx"><span class="n">9.5%</span><span class="l">more revenue / install</span></span></span></div></div>
+    <div class="orbit" style="--d:1020px;--a:90deg"><div class="ow"><span class="orb"><span class="ic">≈</span><span class="tx"><span class="n">$18.4K</span><span class="l">top move, per month</span></span></span></div></div>
+    <div class="orbit" style="--d:900px;--a:118deg"><div class="ow"><span class="orb"><span class="ic">✓</span><span class="tx"><span class="n">$1.5M</span><span class="l">found per year</span></span></span></div></div>
+    <div class="orbit" style="--d:660px;--a:148deg"><div class="ow"><span class="orb"><span class="ic">↓</span><span class="tx"><span class="n">−60%</span><span class="l">churn, caught early</span></span></span></div></div>
     <div class="orbit" style="--d:500px;--a:180deg"><div class="ow"><span class="orb"><span class="ic">∅</span><span class="tx"><span class="n">0</span><span class="l">ML hires needed</span></span></span></div></div>
-    <div class="orbit" style="--d:720px;--a:210deg"><div class="ow"><span class="orb"><span class="ic">⎇</span><span class="tx"><span class="n">3</span><span class="l">live titles in production</span></span></span></div></div>
-    <div class="orbit" style="--d:520px;--a:240deg"><div class="ow"><span class="orb"><span class="ic">⧗</span><span class="tx"><span class="n">&lt;1 day</span><span class="l">to first predictions</span></span></span></div></div>
-    <div class="orbit" style="--d:730px;--a:270deg"><div class="ow"><span class="orb"><span class="ic">Σ</span><span class="tx"><span class="n">100M</span><span class="l">events read</span></span></span></div></div>
-    <div class="orbit" style="--d:520px;--a:300deg"><div class="ow"><span class="orb"><span class="ic">▤</span><span class="tx"><span class="n">6,319</span><span class="l">players tested</span></span></span></div></div>
-    <div class="orbit" style="--d:720px;--a:330deg"><div class="ow"><span class="orb"><span class="ic">⇄</span><span class="tx"><span class="n">A/B</span><span class="l">measured vs control</span></span></span></div></div>
-    <div class="orbit" style="--d:610px;--a:15deg"><div class="ow"><span class="orb orb--dot"></span></div></div>
-    <div class="orbit" style="--d:620px;--a:135deg"><div class="ow"><span class="orb orb--ring"></span></div></div>
-    <div class="orbit" style="--d:610px;--a:255deg"><div class="ow"><span class="orb orb--dot"></span></div></div>
+    <div class="orbit" style="--d:660px;--a:212deg"><div class="ow"><span class="orb"><span class="ic">⎇</span><span class="tx"><span class="n">3</span><span class="l">live titles in production</span></span></span></div></div>
+    <div class="orbit" style="--d:900px;--a:242deg"><div class="ow"><span class="orb"><span class="ic">⧗</span><span class="tx"><span class="n">&lt;1 day</span><span class="l">to first predictions</span></span></span></div></div>
+    <div class="orbit" style="--d:1020px;--a:270deg"><div class="ow"><span class="orb"><span class="ic">Σ</span><span class="tx"><span class="n">100M</span><span class="l">events read</span></span></span></div></div>
+    <div class="orbit" style="--d:900px;--a:298deg"><div class="ow"><span class="orb"><span class="ic">▤</span><span class="tx"><span class="n">6,319</span><span class="l">players tested</span></span></span></div></div>
+    <div class="orbit" style="--d:660px;--a:328deg"><div class="ow"><span class="orb"><span class="ic">⇄</span><span class="tx"><span class="n">A/B</span><span class="l">measured vs control</span></span></span></div></div>
+    <div class="orbit" style="--d:780px;--a:16deg"><div class="ow"><span class="orb orb--dot"></span></div></div>
+    <div class="orbit" style="--d:820px;--a:135deg"><div class="ow"><span class="orb orb--ring"></span></div></div>
+    <div class="orbit" style="--d:780px;--a:196deg"><div class="ow"><span class="orb orb--dot"></span></div></div>
+    <div class="orbit" style="--d:820px;--a:315deg"><div class="ow"><span class="orb orb--ring"></span></div></div>
   </div>
 </div>
 <div class="vidcard"><span class="thumb">▶</span>Why Ilara is different</div>
