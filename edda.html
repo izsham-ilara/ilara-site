@@ -318,9 +318,12 @@
   var askMini=document.querySelector('.pcard--c .mini');
   if(askMini){
     askMini.classList.add('ask-seq');
-    var lines=[].slice.call(askMini.children), delays=[350,1500,2800];
+    var lines=[].slice.call(askMini.children), delays=[350,1500,2800], aStarted=false;
     function runAsk(){ lines.forEach(function(l){ l.classList.remove('show'); }); lines.forEach(function(l,i){ setTimeout(function(){ l.classList.add('show'); }, delays[i]||350); }); setTimeout(runAsk, 6500); }
-    var io2=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ io2.disconnect(); runAsk(); } }); },{threshold:.35}); io2.observe(askMini.closest('.pcard'));
+    function startAsk(){ if(aStarted) return; aStarted=true; runAsk(); }
+    var io2=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ io2.disconnect(); startAsk(); } }); },{threshold:.15}); io2.observe(askMini.closest('.pcard'));
+    /* safety: never leave the REPL lines stuck hidden if the observer never fires */
+    setTimeout(function(){ if(!aStarted){ aStarted=true; lines.forEach(function(l){ l.classList.add('show'); }); } }, 2600);
   }
 })();
 </script>

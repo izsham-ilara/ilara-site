@@ -410,7 +410,10 @@
 
   /* start both when the section scrolls into view */
   var started=false;
-  var io2=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !started){ started=true; setInterval(tickQ,3600); runChat(); } }); },{threshold:.25});
+  function startAsk(){ if(started) return; started=true; setInterval(tickQ,3600); runChat(); }
+  var io2=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ started||startAsk(); } }); },{threshold:.15});
   io2.observe(document.getElementById('ask'));
+  /* safety: never leave the chat bubbles stuck hidden if the observer never fires */
+  setTimeout(function(){ if(!started){ started=true; bubs.forEach(function(b){ b.classList.add('show'); }); } }, 2600);
 })();
 </script>
