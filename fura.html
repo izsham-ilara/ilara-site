@@ -56,7 +56,7 @@
   .hero__meta .dot{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(163,230,53,.16)}
   .stage{position:relative;z-index:2;margin:46px auto 0;width:100%;max-width:840px;height:clamp(460px,58vw,640px)}
   .stage__core{position:absolute;inset:0;display:grid;place-items:center;z-index:4}
-  .stage__ring{width:clamp(150px,20vw,230px);height:clamp(150px,20vw,230px);border-radius:50%;border:1px solid rgba(163,230,53,.3);
+  .stage__ring{width:clamp(180px,22vw,272px);height:clamp(180px,22vw,272px);border-radius:50%;border:1px solid rgba(163,230,53,.3);
     display:grid;place-items:center;box-shadow:0 0 90px rgba(163,230,53,.22),inset 0 0 60px rgba(163,230,53,.08)}
   .stage__ring b{font-family:var(--fd);font-weight:800;font-size:clamp(26px,3.4vw,42px);letter-spacing:.1em;color:#fff}
   /* orbit system */
@@ -66,13 +66,13 @@
   @keyframes orbSpin{to{transform:rotate(calc(var(--a,0deg) + 360deg))}}
   @keyframes orbSpinR{to{transform:rotate(calc(var(--a,0deg) - 360deg))}}
   .ow{position:absolute;top:0;left:50%;transform:translateX(-50%)}
-  .orb{display:flex;align-items:center;gap:7px;transform:rotate(calc(-1 * var(--a,0deg)));
-    background:rgba(255,255,255,.07);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);
-    border-radius:100px;padding:8px 14px;font-family:var(--fm);font-size:12px;color:#fff;white-space:nowrap;box-shadow:0 16px 40px -22px rgba(0,0,0,.7)}
-  .orbit.rev .orb{animation-name:orbCR}
-  @keyframes orbC{to{transform:rotate(calc(-1 * var(--a,0deg) - 360deg))}}
-  @keyframes orbCR{to{transform:rotate(calc(-1 * var(--a,0deg) + 360deg))}}
-  .orb .d{width:6px;height:6px;border-radius:50%;background:var(--lime);flex:none}
+  .orb{display:flex;align-items:center;gap:13px;transform:rotate(calc(-1 * var(--a,0deg)));
+    background:rgba(255,255,255,.07);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.16);
+    border-radius:16px;padding:14px 20px;text-align:left;color:#fff;white-space:nowrap;box-shadow:0 24px 54px -24px rgba(0,0,0,.72)}
+  .orb .ic{width:40px;height:40px;border-radius:11px;background:rgba(163,230,53,.16);display:grid;place-items:center;color:var(--lime);flex:none;font-family:var(--fm);font-size:16px;font-weight:700}
+  .orb .tx{display:flex;flex-direction:column}
+  .orb .n{font-family:var(--fd);font-weight:700;font-size:19px;letter-spacing:-.015em;line-height:1.1}
+  .orb .l{font-size:12.5px;color:var(--fg2);margin-top:1px}
   .orb--dot{padding:0;width:11px;height:11px;border-radius:50%;background:var(--lime);border:0;box-shadow:0 0 16px rgba(163,230,53,.85);backdrop-filter:none;-webkit-backdrop-filter:none}
   .orb--ring{padding:0;width:10px;height:10px;border-radius:50%;background:transparent;border:1.5px solid var(--lime);box-shadow:0 0 12px rgba(163,230,53,.5);backdrop-filter:none;-webkit-backdrop-filter:none}
   .vidcard{position:absolute;left:clamp(20px,4vw,44px);bottom:34px;z-index:4;display:flex;align-items:center;gap:12px;font-family:var(--fm);font-size:12.5px;color:var(--fg2)}
@@ -209,16 +209,18 @@
   <div class="hero__meta rv"><span class="dot"></span>Scoring 1.1M players daily across three live titles</div>
   <div class="stage">
     <div class="stage__core"><div class="stage__ring"><svg class="wm wm--ring" style="color:var(--lime)"><use href="#wm"/></svg></div></div>
-    <div class="orbit" style="--d:330px;--dur:34s;--a:14deg"><div class="ow"><span class="orb"><span class="d"></span>1.1M players / day</span></div></div>
-    <div class="orbit rev" style="--d:520px;--dur:52s;--a:76deg"><div class="ow"><span class="orb"><span class="d"></span>38% less friction</span></div></div>
-    <div class="orbit" style="--d:380px;--dur:40s;--a:140deg"><div class="ow"><span class="orb"><span class="d"></span>$18.4K/mo top move</span></div></div>
-    <div class="orbit rev" style="--d:600px;--dur:62s;--a:202deg"><div class="ow"><span class="orb"><span class="d"></span>−60% churn, caught early</span></div></div>
-    <div class="orbit" style="--d:440px;--dur:46s;--a:264deg"><div class="ow"><span class="orb"><span class="d"></span>0 ML hires</span></div></div>
-    <div class="orbit rev" style="--d:640px;--dur:70s;--a:326deg"><div class="ow"><span class="orb"><span class="d"></span>measured vs control</span></div></div>
-    <div class="orbit rev" style="--d:280px;--dur:30s;--a:48deg"><div class="ow"><span class="orb orb--dot"></span></div></div>
-    <div class="orbit" style="--d:600px;--dur:66s;--a:168deg"><div class="ow"><span class="orb orb--ring"></span></div></div>
-    <div class="orbit" style="--d:250px;--dur:26s;--a:298deg"><div class="ow"><span class="orb orb--dot"></span></div></div>
-    <div class="orbit rev" style="--d:470px;--dur:56s;--a:110deg"><div class="ow"><span class="orb orb--ring"></span></div></div>
+    <div class="orbit" style="--d:460px;--a:0deg"><div class="ow"><span class="orb"><span class="ic">◍</span><span class="tx"><span class="n">1.1M</span><span class="l">players scored daily</span></span></span></div></div>
+    <div class="orbit" style="--d:650px;--a:48deg"><div class="ow"><span class="orb"><span class="ic">↑</span><span class="tx"><span class="n">38%</span><span class="l">less onboarding friction</span></span></span></div></div>
+    <div class="orbit" style="--d:600px;--a:90deg"><div class="ow"><span class="orb"><span class="ic">≈</span><span class="tx"><span class="n">$18.4K</span><span class="l">top move, per month</span></span></span></div></div>
+    <div class="orbit" style="--d:650px;--a:135deg"><div class="ow"><span class="orb"><span class="ic">↓</span><span class="tx"><span class="n">−60%</span><span class="l">churn, caught early</span></span></span></div></div>
+    <div class="orbit" style="--d:460px;--a:180deg"><div class="ow"><span class="orb"><span class="ic">∅</span><span class="tx"><span class="n">0</span><span class="l">ML hires needed</span></span></span></div></div>
+    <div class="orbit" style="--d:650px;--a:225deg"><div class="ow"><span class="orb"><span class="ic">⎇</span><span class="tx"><span class="n">3</span><span class="l">live titles in production</span></span></span></div></div>
+    <div class="orbit" style="--d:600px;--a:270deg"><div class="ow"><span class="orb"><span class="ic">Σ</span><span class="tx"><span class="n">100M</span><span class="l">events read</span></span></span></div></div>
+    <div class="orbit" style="--d:650px;--a:315deg"><div class="ow"><span class="orb"><span class="ic">✓</span><span class="tx"><span class="n">A/B</span><span class="l">measured vs control</span></span></span></div></div>
+    <div class="orbit" style="--d:540px;--a:24deg"><div class="ow"><span class="orb orb--dot"></span></div></div>
+    <div class="orbit" style="--d:560px;--a:158deg"><div class="ow"><span class="orb orb--ring"></span></div></div>
+    <div class="orbit" style="--d:520px;--a:205deg"><div class="ow"><span class="orb orb--dot"></span></div></div>
+    <div class="orbit" style="--d:540px;--a:338deg"><div class="ow"><span class="orb orb--ring"></span></div></div>
   </div>
 </div>
 <div class="vidcard"><span class="thumb">▶</span>Why Ilara is different</div>
