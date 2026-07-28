@@ -135,6 +135,15 @@
   .foot__cols a{display:block;font-size:14px;margin-bottom:9px} .foot__cols a:hover{color:#fff}
   .foot__base{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--fm);font-size:12px}
 
+  /* Ilara identity */
+  .wm{height:20px;width:auto;fill:currentColor;display:block}
+  .wm--ring{height:clamp(24px,3.1vw,40px)} .wm--foot{height:26px}
+  .brand{display:inline-flex;align-items:center;color:#fff}
+  .brandtag{display:inline-flex;align-items:center;gap:10px;font-family:var(--fm);font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin-bottom:20px}
+  .brandtag .sq{width:8px;height:8px;border-radius:2px;background:var(--lime);box-shadow:0 0 0 4px rgba(163,230,53,.16)}
+  .chip{background:var(--lime);color:var(--lime-ink);font-family:var(--fm);font-weight:700;font-size:9.5px;padding:1.5px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.05em;margin-right:7px;vertical-align:1px}
+  .foot__tag{margin-top:14px;font-family:var(--fm);font-size:12.5px;color:var(--lime)}
+  .foot__tag2{margin-top:6px;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--fg2)}
   .rv{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
   .rv.in{opacity:1;transform:none}
 
@@ -149,8 +158,10 @@
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rv{opacity:1;transform:none;transition:none}.gpill{animation:none}}
 </style>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="wm" viewBox="0 0 1056.84 381.52"><path d="M32.21,13.97h77.58v346.83H32.21V13.97Z"/><path d="M478.04,14.5c66.31,0,98.8,43.76,98.8,103.44v188.32c0,39.79-19.89,59.68-59.68,59.68h-177.04c-59.68,0-87.53-36.47-87.53-109.41,0-66.31,27.85-109.41,87.53-109.41h159.14v-22.54c0-33.15-15.91-50.39-49.07-50.39h-171.74V14.5h199.59ZM369.96,206.79c-26.52,0-37.13,16.58-37.13,49.73s10.61,49.73,37.13,49.73h109.41c13.26,0,19.89-6.63,19.89-19.89v-79.57h-129.3Z"/><path d="M602.66,147.12c0-94.16,47.74-132.62,141.9-132.62h52.38v59.68h-32.49c-62.33,0-84.21,31.17-84.21,93.5v198.26h-77.58v-218.82Z"/><path d="M934.84,14.5c66.31,0,98.8,43.76,98.8,103.44v188.32c0,39.79-19.89,59.68-59.68,59.68h-177.04c-59.68,0-87.53-36.47-87.53-109.41,0-66.31,27.85-109.41,87.53-109.41h159.14v-22.54c0-33.15-15.91-50.39-49.07-50.39h-171.74V14.5h199.59ZM826.76,206.79c-26.52,0-37.13,16.58-37.13,49.73s10.61,49.73,37.13,49.73h109.41c13.26,0,19.89-6.63,19.89-19.89v-79.57h-129.3Z"/><path d="M133.37,14.05h77.58v198.26c0,62.33,21.88,93.5,84.21,93.5h32.49v59.68h-52.38c-94.16,0-141.9-38.46-141.9-132.62V14.05Z"/></symbol></svg>
+
 <div class="nav"><div class="wrap nav__in">
-  <span class="brand">ILARA</span>
+  <span class="brand"><svg class="wm"><use href="#wm"/></svg></span>
   <nav class="nav__links">
     <a href="#studios"><span class="mk"></span>Studios</a>
     <a href="#teams"><span class="mk"></span>Teams</a>
@@ -161,6 +172,7 @@
 </div></div>
 
 <header class="hero"><div class="wrap hero__in">
+  <div class="brandtag rv"><span class="sq"></span>Decisions, not dashboards</div>
   <div class="eyebrow rv">Ilara is the decision layer for live games</div>
   <h1 class="rv">We stop players leaving<br>at the moment <span class="lm">they decide.</span></h1>
   <div class="hero__cta rv"><a class="btn-out" href="#studios">Show me how</a></div>
@@ -169,7 +181,7 @@
     <div class="gpill gp2"><span class="ic">↑</span><div><div class="n">38%</div><div class="l">less onboarding friction</div></div></div>
     <div class="gpill gp3"><span class="ic">≈</span><div><div class="n">$18.4K/mo</div><div class="l">top move, this week</div></div></div>
     <div class="gpill gp4"><span class="ic">0</span><div><div class="n">0 ML hires</div><div class="l">needed to run it</div></div></div>
-    <div class="stage__core"><div class="stage__ring"><b>ILARA</b></div></div>
+    <div class="stage__core"><div class="stage__ring"><svg class="wm wm--ring" style="color:var(--lime)"><use href="#wm"/></svg></div></div>
   </div>
 </div>
 <div class="vidcard"><span class="thumb">▶</span>Why Ilara is different</div>
@@ -219,10 +231,10 @@
     </div>
     <div class="mock rv">
       <div class="mock__h"><span class="sq"></span>Decision queue · WK 29</div>
-      <div class="notif"><span class="av">01</span><div><div class="t">Rescue paying players going cold</div><div class="s">spend −60% in 7 days · 4,120 players</div></div><span class="v">$18.4K</span></div>
-      <div class="notif"><span class="av">02</span><div><div class="t">Loot box 45s after a match win</div><div class="s">154,018 win→buy paths / week</div></div><span class="v">$12.9K</span></div>
-      <div class="notif"><span class="av">03</span><div><div class="t">Offer to likely payers</div><div class="s">top 1% concentrate the spend</div></div><span class="v">$9.7K</span></div>
-      <div class="notif"><span class="av">04</span><div><div class="t">Stop spending on the already-gone</div><div class="s">0% ever came back</div></div><span class="v">$4.1K</span></div>
+      <div class="notif"><span class="av">01</span><div><div class="t">Rescue paying players going cold</div><div class="s"><span class="chip">why</span>spend −60% in 7 days · 4,120 players</div></div><span class="v">$18.4K</span></div>
+      <div class="notif"><span class="av">02</span><div><div class="t">Loot box 45s after a match win</div><div class="s"><span class="chip">why</span>154,018 win→buy paths / week</div></div><span class="v">$12.9K</span></div>
+      <div class="notif"><span class="av">03</span><div><div class="t">Offer to likely payers</div><div class="s"><span class="chip">why</span>top 1% concentrate the spend</div></div><span class="v">$9.7K</span></div>
+      <div class="notif"><span class="av">04</span><div><div class="t">Stop spending on the already-gone</div><div class="s"><span class="chip">why</span>0% ever came back</div></div><span class="v">$4.1K</span></div>
     </div>
   </div>
 </div></section>
@@ -260,7 +272,7 @@
 
 <footer><div class="wrap">
   <div class="foot__top">
-    <div><div class="foot__brand">ILARA</div><div style="margin-top:14px;font-family:var(--serif);font-style:italic;font-size:16px;color:var(--fg2)">The decision layer for live mobile games.</div></div>
+    <div><div class="foot__brand"><svg class="wm wm--foot"><use href="#wm"/></svg></div><div class="foot__tag">Decisions, not dashboards.</div><div class="foot__tag2">The decision layer for live mobile games.</div></div>
     <div class="foot__cols">
       <div><h4>Platform</h4><a href="#studios">Studios</a><a href="#teams">Teams</a><a href="#ask">Ask Ilara</a><a href="#proof">Proof</a></div>
       <div><h4>Company</h4><a href="#news">Newsroom</a><a href="#book">About</a><a href="#book">Contact</a></div>
