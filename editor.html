@@ -8,11 +8,11 @@
 <style>
   :root{
     --bg:#0e0e10; --panel:#151517; --panel2:#1b1b1e; --line:#26262a; --line2:#303036;
-    --dim:#4c4c52; --dim2:#343439; --fg:#e9e9ec; --fg2:#9a9aa0; --fg3:#6f6f76;
+    --dim:#4c4c52; --ghost:#191a1e; --ascii:#1a1b1e; --fg:#e9e9ec; --fg2:#9a9aa0; --fg3:#6f6f76;
     --lime:#a3e635; --lime-d:#8fce22; --amber:#e2a13c;
     --fm:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
     --fd:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-    --bar:42px; --stat:30px; --ease:cubic-bezier(.2,.7,.2,1);
+    --bar:42px; --stat:30px; --gut:clamp(46px,5vw,68px); --ease:cubic-bezier(.2,.7,.2,1);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth;scroll-padding-top:calc(var(--bar) + 14px)}
@@ -51,15 +51,26 @@
   @keyframes pz{0%,100%{opacity:1}50%{opacity:.35}}
   .status b{color:var(--fg2);font-weight:500}
 
+  /* ---- document: continuous gutter + ascii + content ---- */
+  .doc{display:flex;position:relative}
+  .doc__gutter{flex:none;width:var(--gut);background:var(--panel);border-right:1px solid var(--line);
+    font-family:var(--fm);font-size:12px;line-height:1.55;color:var(--dim);text-align:right;padding-right:12px;user-select:none;overflow:hidden}
+  .doc__gutter b{display:block;font-weight:400}
+  .doc__gutter b.lm{color:var(--lime)}
+  .doc__body{flex:1;position:relative;min-width:0;overflow:hidden}
+  .asciibg{position:absolute;inset:0;font-family:var(--fm);font-size:12px;line-height:1.55;color:var(--ascii);
+    white-space:pre;overflow:hidden;pointer-events:none;padding:0 0 0 18px;letter-spacing:.5px;z-index:0}
+  .asciibg .lm{color:rgba(163,230,53,.13)}
+
   /* ---- hero ---- */
   .hero{position:relative;height:calc(100dvh - var(--bar) - var(--stat));min-height:520px;display:flex;overflow:hidden;border-bottom:1px solid var(--line)}
-  .gutter{flex:none;width:clamp(46px,5vw,68px);background:var(--panel);border-right:1px solid var(--line);
+  .hgut{flex:none;width:var(--gut);background:var(--panel);border-right:1px solid var(--line);
     font-family:var(--fm);font-size:12px;line-height:1.55;color:var(--dim);text-align:right;padding:14px 12px 0 0;overflow:hidden;user-select:none}
-  .gutter b{display:block;font-weight:400}
-  .gutter b.cur{color:var(--lime)}
+  .hgut b{display:block;font-weight:400}
+  .hgut b.cur{color:var(--lime)}
   .canvas{flex:1;position:relative;overflow:hidden}
   .ascii{position:absolute;inset:0;padding:14px 0 0 16px;font-family:var(--fm);font-size:12px;line-height:1.55;
-    color:var(--dim2);white-space:pre;overflow:hidden;pointer-events:none;letter-spacing:.5px}
+    color:#242429;white-space:pre;overflow:hidden;pointer-events:none;letter-spacing:.5px}
   .ascii .lm{color:var(--lime);opacity:.85}
   .canvas::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 88% 96%, rgba(163,230,53,.10), transparent 55%)}
   .canvas::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
@@ -68,7 +79,7 @@
   .tl{top:clamp(24px,5vh,60px);left:clamp(20px,4vw,64px);z-index:3;pointer-events:auto}
   .kick{font-family:var(--fm);font-size:12.5px;color:var(--fg3);margin-bottom:16px}
   .kick .c{color:var(--lime)}
-  .tl h1{font-family:var(--fd);font-weight:600;font-size:clamp(34px,6vw,74px);line-height:.98;letter-spacing:-.03em;color:var(--fg)}
+  .tl h1{font-family:var(--fd);font-weight:700;font-size:clamp(36px,6.4vw,80px);line-height:.95;letter-spacing:-.035em;color:var(--fg)}
   .tl h1 .strike{color:var(--fg3);text-decoration:line-through;text-decoration-color:var(--lime);text-decoration-thickness:3px}
   .tl .sub{margin-top:20px;font-family:var(--fm);font-size:13px;color:var(--fg2);max-width:34ch;line-height:1.6}
   .tl .sub .c{color:var(--lime)}
@@ -78,64 +89,64 @@
   .br-word .w{font-family:var(--fd);font-weight:800;font-size:clamp(120px,25vw,420px);line-height:.74;letter-spacing:-.05em;color:var(--lime);display:block}
   .br-word .tagm{font-family:var(--fm);font-size:12px;color:var(--fg3);margin-bottom:6px;margin-right:8px}
 
-  /* ---- section system ---- */
-  main{border-left:1px solid var(--line)}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(22px,5vw,64px)}
-  .sec{padding-block:clamp(64px,9vw,120px);border-top:1px solid var(--line);position:relative}
-  .sec:first-child{border-top:0}
-  .sk{font-family:var(--fm);font-size:12.5px;color:var(--fg3);margin-bottom:20px;letter-spacing:.02em}
+  /* ---- sections (finethought treatment) ---- */
+  main{position:relative;z-index:1}
+  .sec{position:relative;overflow:hidden;padding:clamp(72px,11vw,150px) clamp(22px,5vw,72px);border-bottom:1px solid var(--line)}
+  .sec__in{position:relative;z-index:2;max-width:1080px}
+  .ghost{position:absolute;z-index:0;font-family:var(--fd);font-weight:800;color:var(--ghost);
+    font-size:clamp(120px,23vw,380px);line-height:.72;letter-spacing:-.05em;pointer-events:none;user-select:none;bottom:-.08em;white-space:nowrap}
+  .ghost--r{right:-.06em} .ghost--l{left:-.04em}
+  .sk{font-family:var(--fm);font-size:12.5px;color:var(--fg3);margin-bottom:22px;letter-spacing:.02em}
   .sk .c{color:var(--lime)}
-  .st{font-family:var(--fd);font-weight:600;font-size:clamp(28px,4.4vw,52px);line-height:1.02;letter-spacing:-.03em;max-width:20ch}
-  .sp{margin-top:20px;font-size:clamp(15px,1.6vw,17px);color:var(--fg2);line-height:1.62;max-width:60ch}
+  .st{font-family:var(--fd);font-weight:700;font-size:clamp(34px,5.6vw,68px);line-height:.98;letter-spacing:-.035em;max-width:18ch}
+  .sp{margin-top:22px;font-size:clamp(15px,1.7vw,18px);color:var(--fg2);line-height:1.6;max-width:58ch}
   .sp b{color:var(--fg);font-weight:600}
 
-  /* stat row */
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);margin-top:48px}
-  .stat .n{font-family:var(--fd);font-weight:700;font-size:clamp(40px,6vw,72px);line-height:1;letter-spacing:-.03em}
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,3.5vw,52px);margin-top:56px}
+  .stat .n{font-family:var(--fd);font-weight:800;font-size:clamp(52px,8vw,104px);line-height:.9;letter-spacing:-.04em}
   .stat .n.amber{color:var(--amber)} .stat .n.lime{color:var(--lime)}
-  .stat .c{margin-top:12px;font-size:13.5px;color:var(--fg2);line-height:1.5;max-width:26ch;font-family:var(--fm)}
+  .stat .c{margin-top:16px;font-size:13px;color:var(--fg2);line-height:1.5;max-width:26ch;font-family:var(--fm)}
 
-  /* panels / cards */
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px}
-  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:44px}
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:border-color .25s,transform .25s}
-  .panel:hover{border-color:var(--line2);transform:translateY(-3px)}
-  .panel__b{padding:22px}
-  .panel__k{font-family:var(--fm);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--lime)}
-  .panel__t{margin-top:12px;font-family:var(--fd);font-weight:600;font-size:20px;letter-spacing:-.02em;line-height:1.15}
-  .panel__d{margin-top:12px;font-size:14px;color:var(--fg2);line-height:1.55}
-  .panel__hd{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--panel2);
-    font-family:var(--fm);font-size:11.5px;color:var(--fg3)}
-  .panel__hd .dot{width:7px;height:7px;border-radius:2px;background:var(--lime)}
-  .num{font-family:var(--fm);font-size:12px;color:var(--fg3)}
+  /* flat blocks (predict/who/pricing) */
+  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:56px;border-top:1px solid var(--line)}
+  .cols--2{grid-template-columns:repeat(2,1fr)}
+  .blk{padding:30px 26px 34px 0;border-top:1px solid transparent;margin-top:-1px;position:relative;transition:border-color .25s}
+  .cols .blk{border-left:1px solid var(--line);padding-left:26px}
+  .cols .blk:first-child{border-left:0;padding-left:0}
+  .blk::before{content:"";position:absolute;top:-1px;left:0;width:38px;height:2px;background:var(--lime);opacity:0;transition:opacity .25s}
+  .blk:hover::before{opacity:1}
+  .blk__k{font-family:var(--fm);font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--lime)}
+  .blk__t{margin-top:16px;font-family:var(--fd);font-weight:700;font-size:clamp(20px,2.2vw,26px);letter-spacing:-.02em;line-height:1.08}
+  .blk__d{margin-top:14px;font-size:14px;color:var(--fg2);line-height:1.58}
 
-  /* terminal (ask) */
-  .term{margin-top:44px;background:#0b0b0d;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-family:var(--fm)}
+  /* terminal */
+  .term{margin-top:52px;background:#0a0a0c;border:1px solid var(--line);overflow:hidden;font-family:var(--fm);max-width:840px}
   .term__bar{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:11.5px;color:var(--fg3)}
   .term__bar .d{width:11px;height:11px;border-radius:50%;background:var(--dim)}
   .term__b{padding:20px 20px 24px}
   .term .q{color:var(--fg);font-size:14px;margin-top:18px}
   .term .q:first-child{margin-top:0}
   .term .q .p{color:var(--lime);margin-right:8px}
-  .term .a{color:var(--fg2);font-size:13.5px;line-height:1.65;margin-top:10px;padding-left:20px;border-left:2px solid var(--line2);max-width:70ch}
+  .term .a{color:var(--fg2);font-size:13.5px;line-height:1.65;margin-top:10px;padding-left:20px;border-left:2px solid var(--line2);max-width:66ch}
   .term .a b{color:var(--fg);font-weight:500}
   .term .a .hl{color:var(--amber)}
   .term .ok{color:var(--lime)}
 
-  /* import list (how) */
-  .imports{margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:10px 40px;max-width:760px}
-  .imp{font-family:var(--fm);font-size:13.5px;color:var(--fg2);padding:10px 0;border-bottom:1px solid var(--line)}
+  /* how steps + imports */
+  .steps{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+  .step{padding:30px 26px 0 0;border-left:1px solid var(--line);padding-left:26px}
+  .step:first-child{border-left:0;padding-left:0}
+  .step__n{font-family:var(--fm);font-size:11px;color:var(--lime);letter-spacing:.1em;text-transform:uppercase}
+  .step__t{margin-top:12px;font-family:var(--fd);font-weight:700;font-size:clamp(19px,2vw,23px);letter-spacing:-.02em;line-height:1.1}
+  .step__d{margin-top:12px;font-size:13.5px;color:var(--fg2);line-height:1.55}
+  .imports{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;gap:0 44px;max-width:800px}
+  .imp{font-family:var(--fm);font-size:13.5px;color:var(--fg2);padding:12px 0;border-bottom:1px solid var(--line)}
   .imp .kw{color:var(--lime)} .imp .str{color:var(--amber)}
 
-  /* steps (how) */
-  .steps{margin-top:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-  .step__n{font-family:var(--fm);font-size:11px;color:var(--lime);letter-spacing:.12em;text-transform:uppercase}
-  .step__t{margin-top:10px;font-family:var(--fd);font-weight:600;font-size:19px;letter-spacing:-.02em}
-  .step__d{margin-top:10px;font-size:13.5px;color:var(--fg2);line-height:1.55}
-
-  /* test output (proof) */
-  .tests{margin-top:44px;background:#0b0b0d;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-family:var(--fm);font-size:13.5px}
-  .test{display:flex;align-items:baseline;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  /* proof tests */
+  .tests{margin-top:52px;background:#0a0a0c;border:1px solid var(--line);overflow:hidden;font-family:var(--fm);font-size:13.5px;max-width:920px}
+  .test{display:flex;align-items:baseline;gap:12px;padding:15px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
   .test:last-child{border-bottom:0}
   .test .mk{width:16px;flex:none;font-weight:700}
   .test .mk.pass{color:var(--lime)} .test .mk.warn{color:var(--amber)} .test .mk.fail{color:var(--fg3)}
@@ -144,51 +155,49 @@
   .test .tag.pass{color:var(--lime)} .test .tag.warn{color:var(--amber)}
 
   /* pricing */
-  .price{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:44px}
-  .price .panel__b{padding:26px}
-  .price .amt{font-family:var(--fd);font-weight:700;font-size:26px;margin-top:16px;letter-spacing:-.02em}
-  .price .amt span{font-family:var(--fm);font-size:13px;color:var(--fg3);font-weight:400}
-  .price ul{list-style:none;margin-top:16px;display:grid;gap:9px}
+  .price .blk__t{font-size:clamp(22px,2.6vw,30px)}
+  .price ul{list-style:none;margin-top:18px;display:grid;gap:10px}
   .price li{font-size:13.5px;color:var(--fg2);padding-left:20px;position:relative;line-height:1.4}
   .price li::before{content:"+";position:absolute;left:0;color:var(--lime);font-family:var(--fm)}
+  .price .meta{font-family:var(--fm);font-size:12px;color:var(--fg3);margin-top:8px}
 
   /* faq */
-  .faq{margin-top:40px;border-top:1px solid var(--line)}
-  .fq{border-bottom:1px solid var(--line);padding:22px 0}
-  .fq__q{display:flex;gap:12px;font-family:var(--fd);font-weight:600;font-size:clamp(16px,2vw,20px);letter-spacing:-.01em}
-  .fq__q .c{color:var(--lime);font-family:var(--fm);font-size:.8em;padding-top:.25em}
-  .fq__a{margin-top:12px;padding-left:28px;font-size:14.5px;color:var(--fg2);line-height:1.6;max-width:64ch}
+  .faq{margin-top:48px;border-top:1px solid var(--line)}
+  .fq{border-bottom:1px solid var(--line);padding:26px 0}
+  .fq__q{display:flex;gap:14px;font-family:var(--fd);font-weight:700;font-size:clamp(18px,2.2vw,26px);letter-spacing:-.02em;line-height:1.1}
+  .fq__q .c{color:var(--lime);font-family:var(--fm);font-size:.6em;padding-top:.5em}
+  .fq__a{margin-top:14px;padding-left:32px;font-size:14.5px;color:var(--fg2);line-height:1.6;max-width:64ch}
 
   /* run / cta */
-  .cta{text-align:center;padding-block:clamp(70px,10vw,130px)}
-  .cta .prompt{font-family:var(--fm);font-size:clamp(15px,2.4vw,22px);color:var(--fg2);margin-bottom:28px}
+  .cta{text-align:center;padding:clamp(90px,14vw,180px) clamp(22px,5vw,72px)}
+  .cta .prompt{font-family:var(--fm);font-size:clamp(15px,2.4vw,22px);color:var(--fg2);margin-bottom:30px}
   .cta .prompt .p{color:var(--lime)} .cta .prompt .fl{color:var(--amber)}
-  .cta h2{font-family:var(--fd);font-weight:700;font-size:clamp(34px,6vw,68px);letter-spacing:-.03em;line-height:1;color:var(--fg)}
-  .cta__btns{margin-top:34px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .btn{font-family:var(--fm);font-size:14px;font-weight:500;padding:14px 26px;border-radius:9px;cursor:pointer;transition:transform .15s,background .2s,border-color .2s;border:1px solid var(--line2)}
+  .cta h2{font-family:var(--fd);font-weight:800;font-size:clamp(44px,10vw,140px);letter-spacing:-.045em;line-height:.9;color:var(--fg)}
+  .cta__btns{margin-top:40px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{font-family:var(--fm);font-size:14px;font-weight:500;padding:14px 26px;cursor:pointer;transition:transform .15s,background .2s,border-color .2s,color .2s;border:1px solid var(--line2)}
   .btn--pri{background:var(--lime);color:#0d0d0e;border-color:var(--lime)}
   .btn--pri:hover{background:#b6ef4d;transform:translateY(-2px)}
   .btn--ghost{background:transparent;color:var(--fg)}
   .btn--ghost:hover{border-color:var(--lime);color:var(--lime)}
 
-  /* footer */
-  footer{border-top:1px solid var(--line);padding:36px 0 40px;font-family:var(--fm);font-size:12.5px;color:var(--fg3)}
-  .foot{max-width:1180px;margin:0 auto;padding:0 clamp(22px,5vw,64px);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
-  .foot .lm{color:var(--lime)}
-  .foot a:hover{color:var(--fg)}
+  footer{padding:34px clamp(22px,5vw,72px) 40px;font-family:var(--fm);font-size:12.5px;color:var(--fg3);
+    display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+  footer .lm{color:var(--lime)}
+  footer a:hover{color:var(--fg)}
 
-  /* reveal */
   .rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
   .rv.in{opacity:1;transform:none}
 
   @media (max-width:820px){
-    .stats,.grid3,.steps{grid-template-columns:1fr}
-    .grid2,.price,.imports{grid-template-columns:1fr}
+    .stats,.cols,.steps{grid-template-columns:1fr}
+    .cols--2,.imports{grid-template-columns:1fr}
+    .cols .blk,.step{border-left:0;padding-left:0}
     .tab--hide{display:none}
     .runbtn span{display:none}
     .status .seg--hide{display:none}
     .br-word .w{font-size:32vw}
     .tl .sub{max-width:26ch}
+    .ghost{font-size:34vw}
   }
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
@@ -214,7 +223,7 @@
 </div>
 
 <div class="hero" id="top">
-  <div class="gutter" id="gutter"></div>
+  <div class="hgut" id="hgut"></div>
   <div class="canvas">
     <pre class="ascii" id="ascii" aria-hidden="true"></pre>
     <div class="ov tl">
@@ -226,134 +235,158 @@
   </div>
 </div>
 
-<main>
-  <!-- PROBLEM -->
-  <section class="sec" id="problem"><div class="wrap">
-    <div class="sk rv"><span class="c">//</span> problem</div>
-    <h2 class="st rv">Three in four players leave. You find out too late to act.</h2>
-    <p class="sp rv">It's rarely the game. Nobody can watch a million players one at a time, so retention budget gets sprayed at everyone, and the players worth saving walk out unnoticed.</p>
-    <div class="stats">
-      <div class="stat rv"><div class="n amber">38.7%</div><div class="c">of installs never seen again after day zero</div></div>
-      <div class="stat rv"><div class="n amber">0%</div><div class="c">of the most at-risk group ever came back on their own</div></div>
-      <div class="stat rv"><div class="n amber">weekly</div><div class="c">a fresh set of calls, made or not</div></div>
-    </div>
-  </div></section>
+<div class="doc">
+  <div class="doc__gutter" id="dgut" aria-hidden="true"></div>
+  <div class="doc__body">
+    <pre class="asciibg" id="asciibg" aria-hidden="true"></pre>
+    <main>
+      <section class="sec" id="problem">
+        <span class="ghost ghost--r" aria-hidden="true">leave</span>
+        <div class="sec__in">
+          <div class="sk rv"><span class="c">//</span> problem</div>
+          <h2 class="st rv">Three in four players leave. You find out too late to act.</h2>
+          <p class="sp rv">It's rarely the game. Nobody can watch a million players one at a time, so retention budget gets sprayed at everyone, and the players worth saving walk out unnoticed.</p>
+          <div class="stats">
+            <div class="stat rv"><div class="n amber">38.7%</div><div class="c">of installs never seen again after day zero</div></div>
+            <div class="stat rv"><div class="n amber">0%</div><div class="c">of the most at-risk group ever came back on their own</div></div>
+            <div class="stat rv"><div class="n amber">weekly</div><div class="c">a fresh set of calls, made or not</div></div>
+          </div>
+        </div>
+      </section>
 
-  <!-- DECIDE -->
-  <section class="sec" id="decide"><div class="wrap">
-    <div class="sk rv"><span class="c">//</span> the fix</div>
-    <h2 class="st rv">Ilara decides, so your team doesn't have to guess.</h2>
-    <p class="sp rv">It scores every player every day, works out who's about to leave or spend, and turns that into a ranked list of moves with a dollar value on each. Your team approves the move instead of designing it.</p>
-    <div class="grid3">
-      <div class="panel rv"><div class="panel__b"><div class="panel__k">predict()</div><div class="panel__t">Who's leaving, who's about to pay.</div><div class="panel__d">Every player scored daily, before they act, on signals your team can't watch by hand.</div></div></div>
-      <div class="panel rv"><div class="panel__b"><div class="panel__k">decide()</div><div class="panel__t">The week's moves, ranked by money.</div><div class="panel__d">Not a chart. A short list of specific plays, each priced, each with the reason attached.</div></div></div>
-      <div class="panel rv"><div class="panel__b"><div class="panel__k">act()</div><div class="panel__t">Ship it, measured against a control.</div><div class="panel__d">Approve and it ships. What comes back is earned dollars, tested against a holdout, not a projection.</div></div></div>
-    </div>
-  </div></section>
+      <section class="sec" id="decide">
+        <span class="ghost ghost--l" aria-hidden="true">decide</span>
+        <div class="sec__in">
+          <div class="sk rv"><span class="c">//</span> the fix</div>
+          <h2 class="st rv">Ilara decides, so your team doesn't have to guess.</h2>
+          <p class="sp rv">It scores every player every day, works out who's about to leave or spend, and turns that into a ranked list of moves with a dollar value on each. Your team approves the move instead of designing it.</p>
+          <div class="cols">
+            <div class="blk rv"><div class="blk__k">predict()</div><div class="blk__t">Who's leaving, who's about to pay.</div><div class="blk__d">Every player scored daily, before they act, on signals your team can't watch by hand.</div></div>
+            <div class="blk rv"><div class="blk__k">decide()</div><div class="blk__t">The week's moves, ranked by money.</div><div class="blk__d">Not a chart. A short list of specific plays, each priced, each with the reason attached.</div></div>
+            <div class="blk rv"><div class="blk__k">act()</div><div class="blk__t">Ship it, measured against a control.</div><div class="blk__d">Approve and it ships. What comes back is earned dollars, tested against a holdout, not a projection.</div></div>
+          </div>
+        </div>
+      </section>
 
-  <!-- ASK -->
-  <section class="sec" id="ask"><div class="wrap">
-    <div class="sk rv"><span class="c">//</span> ask</div>
-    <h2 class="st rv">Ask it like you'd ask your best analyst.</h2>
-    <p class="sp rv">Answers come from your live game data, with the chart and the next move attached. No query language, no analyst in the loop.</p>
-    <div class="term rv">
-      <div class="term__bar"><span class="d"></span><span class="d" style="background:var(--dim2)"></span><span class="d" style="background:var(--dim2)"></span>&nbsp;ask ilara · live title · 265,832 players</div>
-      <div class="term__b">
-        <div class="q"><span class="p">&gt;</span>why did revenue dip on the 14th?</div>
-        <div class="a">Your alliance event ended on the 13th. Revenue from alliance-active players fell <span class="hl">−38%</span> the next day and hasn't recovered. That's <b>−$4.1K</b> so far.</div>
-        <div class="q"><span class="p">&gt;</span>is that just seasonality?</div>
-        <div class="a">No. Players with no alliance held flat over the same window, so the drop is tied to the event ending, not the calendar.</div>
-        <div class="q"><span class="p">&gt;</span>queue the fix</div>
-        <div class="a"><span class="ok">✓ queued</span> · rolling alliance mini-event · est. <b>+$4.1K/mo</b> · control group 10% · ready to ship</div>
-      </div>
-    </div>
-  </div></section>
+      <section class="sec" id="ask">
+        <span class="ghost ghost--r" aria-hidden="true">ask</span>
+        <div class="sec__in">
+          <div class="sk rv"><span class="c">//</span> ask</div>
+          <h2 class="st rv">Ask it like you'd ask your best analyst.</h2>
+          <p class="sp rv">Answers come from your live game data, with the chart and the next move attached. No query language, no analyst in the loop.</p>
+          <div class="term rv">
+            <div class="term__bar"><span class="d"></span><span class="d" style="background:#242429"></span><span class="d" style="background:#242429"></span>&nbsp;ask ilara · live title · 265,832 players</div>
+            <div class="term__b">
+              <div class="q"><span class="p">&gt;</span>why did revenue dip on the 14th?</div>
+              <div class="a">Your alliance event ended on the 13th. Revenue from alliance-active players fell <span class="hl">−38%</span> the next day and hasn't recovered. That's <b>−$4.1K</b> so far.</div>
+              <div class="q"><span class="p">&gt;</span>is that just seasonality?</div>
+              <div class="a">No. Players with no alliance held flat over the same window, so the drop is tied to the event ending, not the calendar.</div>
+              <div class="q"><span class="p">&gt;</span>queue the fix</div>
+              <div class="a"><span class="ok">✓ queued</span> · rolling alliance mini-event · est. <b>+$4.1K/mo</b> · control group 10% · ready to ship</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <!-- WHO -->
-  <section class="sec" id="who"><div class="wrap">
-    <div class="sk rv"><span class="c">//</span> who it's for</div>
-    <h2 class="st rv">Every team gets the version they can act on.</h2>
-    <p class="sp rv">One set of predictions, read three ways. The C-suite makes the call, product sees what to build, analytics gets every assumption exposed.</p>
-    <div class="grid3">
-      <div class="panel rv"><div class="panel__b"><div class="panel__k">C-Suite</div><div class="panel__t">Make the call, not the calculation.</div><div class="panel__d">One line, one confidence level, one recommended action. No dashboard to interpret, no analyst to translate. The decision arrives already made.</div></div></div>
-      <div class="panel rv"><div class="panel__b"><div class="panel__k">Product Team</div><div class="panel__t">What to build next, and what to stop building.</div><div class="panel__d">Demand signals mapped to roadmap items. See which features the forecast is actually pulling toward before you commit a sprint to them.</div></div></div>
-      <div class="panel rv"><div class="panel__b"><div class="panel__k">Analytics Team</div><div class="panel__t">Every assumption, exposed.</div><div class="panel__d">The full read-out. Inputs, weights, model confidence, the data lineage behind every number. Audit it, challenge it, feed it back in.</div></div></div>
-    </div>
-  </div></section>
+      <section class="sec" id="who">
+        <span class="ghost ghost--l" aria-hidden="true">teams</span>
+        <div class="sec__in">
+          <div class="sk rv"><span class="c">//</span> who it's for</div>
+          <h2 class="st rv">Every team gets the version they can act on.</h2>
+          <p class="sp rv">One set of predictions, read three ways. The C-suite makes the call, product sees what to build, analytics gets every assumption exposed.</p>
+          <div class="cols">
+            <div class="blk rv"><div class="blk__k">C-Suite</div><div class="blk__t">Make the call, not the calculation.</div><div class="blk__d">One line, one confidence level, one recommended action. No dashboard to interpret, no analyst to translate. The decision arrives already made.</div></div>
+            <div class="blk rv"><div class="blk__k">Product Team</div><div class="blk__t">What to build next, and what to stop building.</div><div class="blk__d">Demand signals mapped to roadmap items. See which features the forecast is actually pulling toward before you commit a sprint to them.</div></div>
+            <div class="blk rv"><div class="blk__k">Analytics Team</div><div class="blk__t">Every assumption, exposed.</div><div class="blk__d">The full read-out. Inputs, weights, model confidence, the data lineage behind every number. Audit it, challenge it, feed it back in.</div></div>
+          </div>
+        </div>
+      </section>
 
-  <!-- HOW -->
-  <section class="sec" id="how"><div class="wrap">
-    <div class="sk rv"><span class="c">//</span> live in days, not months</div>
-    <h2 class="st rv">You skip the warm-up, the integration and the data-science hire.</h2>
-    <div class="steps">
-      <div class="step rv"><div class="step__n">step one · connect</div><div class="step__t">Send a data export, or drop in the SDK.</div><div class="step__d">Whatever you already collect is enough. No new instrumentation.</div></div>
-      <div class="step rv"><div class="step__n">step two · score</div><div class="step__t">Predictions stood up cold, in under a day.</div><div class="step__d">On players we've never seen, on a game we've never scored. No feature engineering.</div></div>
-      <div class="step rv"><div class="step__n">step three · act</div><div class="step__t">A ranked, priced list of moves.</div><div class="step__d">Approve them, and we measure what each one earned against a control.</div></div>
-    </div>
-    <div class="imports rv">
-      <div class="imp"><span class="kw">import</span> events <span class="kw">from</span> <span class="str">'devtodev'</span></div>
-      <div class="imp"><span class="kw">import</span> events <span class="kw">from</span> <span class="str">'firebase / ga4'</span></div>
-      <div class="imp"><span class="kw">import</span> events <span class="kw">from</span> <span class="str">'daily-csv / s3'</span></div>
-      <div class="imp"><span class="kw">import</span> events <span class="kw">from</span> <span class="str">'sdk / rest'</span></div>
-    </div>
-  </div></section>
+      <section class="sec" id="how">
+        <span class="ghost ghost--r" aria-hidden="true">days</span>
+        <div class="sec__in">
+          <div class="sk rv"><span class="c">//</span> live in days, not months</div>
+          <h2 class="st rv">You skip the warm-up, the integration and the data-science hire.</h2>
+          <div class="steps">
+            <div class="step rv"><div class="step__n">step one · connect</div><div class="step__t">Send a data export, or drop in the SDK.</div><div class="step__d">Whatever you already collect is enough. No new instrumentation.</div></div>
+            <div class="step rv"><div class="step__n">step two · score</div><div class="step__t">Predictions stood up cold, in under a day.</div><div class="step__d">On players we've never seen, on a game we've never scored. No feature engineering.</div></div>
+            <div class="step rv"><div class="step__n">step three · act</div><div class="step__t">A ranked, priced list of moves.</div><div class="step__d">Approve them, and we measure what each one earned against a control.</div></div>
+          </div>
+          <div class="imports rv">
+            <div class="imp"><span class="kw">import</span> events <span class="kw">from</span> <span class="str">'devtodev'</span></div>
+            <div class="imp"><span class="kw">import</span> events <span class="kw">from</span> <span class="str">'firebase / ga4'</span></div>
+            <div class="imp"><span class="kw">import</span> events <span class="kw">from</span> <span class="str">'daily-csv / s3'</span></div>
+            <div class="imp"><span class="kw">import</span> events <span class="kw">from</span> <span class="str">'sdk / rest'</span></div>
+          </div>
+        </div>
+      </section>
 
-  <!-- PROOF -->
-  <section class="sec" id="proof"><div class="wrap">
-    <div class="sk rv"><span class="c">//</span> proof · Reliance Games · 6,319 players</div>
-    <h2 class="st rv">We ran it on a live game. Here's what happened.</h2>
-    <p class="sp rv">One controlled test on a live title: a control group and two identical treatment groups, so the result validates itself.</p>
-    <div class="stats">
-      <div class="stat rv"><div class="n lime">38%</div><div class="c">less onboarding friction, or one in thirteen installs rescued</div></div>
-      <div class="stat rv"><div class="n lime">9.5%</div><div class="c">more revenue per install, retention flat at every horizon</div></div>
-      <div class="stat rv"><div class="n lime">$1.5M</div><div class="c">a year found across the wider engagement</div></div>
-    </div>
-    <div class="tests rv">
-      <div class="test"><span class="mk pass">✓</span><span class="lbl">onboarding friction cut 38%</span><span class="tag pass">proven</span></div>
-      <div class="test"><span class="mk warn">~</span><span class="lbl">repeat purchases up 44% → 56%</span><span class="tag warn">strong pattern</span></div>
-      <div class="test"><span class="mk fail">·</span><span class="lbl">revenue per install $0.39 → $0.46</span><span class="tag">early trend</span></div>
-      <div class="test"><span class="mk fail">✗</span><span class="lbl">day-1 paying conversion — the primary metric</span><span class="tag">no lift · we led with it</span></div>
-    </div>
-  </div></section>
+      <section class="sec" id="proof">
+        <span class="ghost ghost--l" aria-hidden="true">proof</span>
+        <div class="sec__in">
+          <div class="sk rv"><span class="c">//</span> proof · Reliance Games · 6,319 players</div>
+          <h2 class="st rv">We ran it on a live game. Here's what happened.</h2>
+          <p class="sp rv">One controlled test on a live title: a control group and two identical treatment groups, so the result validates itself.</p>
+          <div class="stats">
+            <div class="stat rv"><div class="n lime">38%</div><div class="c">less onboarding friction, or one in thirteen installs rescued</div></div>
+            <div class="stat rv"><div class="n lime">9.5%</div><div class="c">more revenue per install, retention flat at every horizon</div></div>
+            <div class="stat rv"><div class="n lime">$1.5M</div><div class="c">a year found across the wider engagement</div></div>
+          </div>
+          <div class="tests rv">
+            <div class="test"><span class="mk pass">✓</span><span class="lbl">onboarding friction cut 38%</span><span class="tag pass">proven</span></div>
+            <div class="test"><span class="mk warn">~</span><span class="lbl">repeat purchases up 44% → 56%</span><span class="tag warn">strong pattern</span></div>
+            <div class="test"><span class="mk fail">·</span><span class="lbl">revenue per install $0.39 → $0.46</span><span class="tag">early trend</span></div>
+            <div class="test"><span class="mk fail">✗</span><span class="lbl">day-1 paying conversion — the primary metric</span><span class="tag">no lift · we led with it</span></div>
+          </div>
+        </div>
+      </section>
 
-  <!-- PRICING -->
-  <section class="sec" id="pricing"><div class="wrap">
-    <div class="sk rv"><span class="c">//</span> pricing</div>
-    <h2 class="st rv">Start with a teardown. Scale into the platform.</h2>
-    <p class="sp rv">Send us data, we come back with findings you can check. If the numbers are there, the platform is how you keep acting on them.</p>
-    <div class="price">
-      <div class="panel rv"><div class="panel__b"><div class="panel__k">teardown</div><div class="amt">Paid build <span>· one title</span></div><ul><li>Your data, scored cold in days</li><li>A ranked, priced list of moves</li><li>Findings you can check against a control</li><li>No platform commitment</li></ul></div></div>
-      <div class="panel rv" style="border-color:var(--line2)"><div class="panel__b"><div class="panel__k" style="color:var(--lime)">platform</div><div class="amt">Annual · managed <span>· quoted per studio</span></div><ul><li>Daily scoring across your live titles</li><li>The decision queue, in your workflow</li><li>Causal A/B on every move</li><li>Priced off your own economics, within guardrails</li></ul></div></div>
-    </div>
-  </div></section>
+      <section class="sec" id="pricing">
+        <span class="ghost ghost--r" aria-hidden="true">scale</span>
+        <div class="sec__in">
+          <div class="sk rv"><span class="c">//</span> pricing</div>
+          <h2 class="st rv">Start with a teardown. Scale into the platform.</h2>
+          <p class="sp rv">Send us data, we come back with findings you can check. If the numbers are there, the platform is how you keep acting on them.</p>
+          <div class="cols cols--2 price">
+            <div class="blk rv"><div class="blk__k">teardown</div><div class="blk__t">Paid build</div><div class="meta">one title · no platform commitment</div><ul><li>Your data, scored cold in days</li><li>A ranked, priced list of moves</li><li>Findings you can check against a control</li></ul></div>
+            <div class="blk rv"><div class="blk__k">platform</div><div class="blk__t">Annual · managed</div><div class="meta">quoted per studio, within guardrails</div><ul><li>Daily scoring across your live titles</li><li>The decision queue, in your workflow</li><li>Causal A/B on every move</li><li>Priced off your own economics</li></ul></div>
+          </div>
+        </div>
+      </section>
 
-  <!-- FAQ -->
-  <section class="sec" id="faq"><div class="wrap">
-    <div class="sk rv"><span class="c">//</span> faq</div>
-    <h2 class="st rv">The questions a technical buyer asks.</h2>
-    <div class="faq rv">
-      <div class="fq"><div class="fq__q"><span class="c">01</span>How much history do you need?</div><div class="fq__a">Whatever you already collect. We stand predictions up on your existing events, cold, without new instrumentation or feature engineering.</div></div>
-      <div class="fq"><div class="fq__q"><span class="c">02</span>How do you prove a number is real?</div><div class="fq__a">Every prediction is tested on players it has never seen, and every play runs against a control group. What comes back is earned dollars measured against that control. When a test misses, we say so.</div></div>
-      <div class="fq"><div class="fq__q"><span class="c">03</span>Do we need an ML team?</div><div class="fq__a">No. That's the point. Ilara is the decision layer a studio gets without hiring one, standing models up in days rather than the six-month integration and the data-science hire.</div></div>
-      <div class="fq"><div class="fq__q"><span class="c">04</span>Does it replace our tools?</div><div class="fq__a">No. It reads the same game data your team already collects and writes decisions back into the places they already act. It's the layer on top, not a rip-and-replace.</div></div>
-    </div>
-  </div></section>
+      <section class="sec" id="faq">
+        <span class="ghost ghost--l" aria-hidden="true">faq</span>
+        <div class="sec__in">
+          <div class="sk rv"><span class="c">//</span> faq</div>
+          <h2 class="st rv">The questions a technical buyer asks.</h2>
+          <div class="faq rv">
+            <div class="fq"><div class="fq__q"><span class="c">01</span>How much history do you need?</div><div class="fq__a">Whatever you already collect. We stand predictions up on your existing events, cold, without new instrumentation or feature engineering.</div></div>
+            <div class="fq"><div class="fq__q"><span class="c">02</span>How do you prove a number is real?</div><div class="fq__a">Every prediction is tested on players it has never seen, and every play runs against a control group. What comes back is earned dollars measured against that control. When a test misses, we say so.</div></div>
+            <div class="fq"><div class="fq__q"><span class="c">03</span>Do we need an ML team?</div><div class="fq__a">No. That's the point. Ilara is the decision layer a studio gets without hiring one, standing models up in days rather than the six-month integration and the data-science hire.</div></div>
+            <div class="fq"><div class="fq__q"><span class="c">04</span>Does it replace our tools?</div><div class="fq__a">No. It reads the same game data your team already collects and writes decisions back into the places they already act. It's the layer on top, not a rip-and-replace.</div></div>
+          </div>
+        </div>
+      </section>
 
-  <!-- RUN / CTA -->
-  <section class="cta" id="run"><div class="wrap">
-    <div class="prompt rv"><span class="p">$</span> ilara run <span class="fl">--game</span> your-title</div>
-    <h2 class="rv">Run it on your game.</h2>
-    <div class="cta__btns rv">
-      <a class="btn btn--pri" href="#top">Book the teardown →</a>
-      <a class="btn btn--ghost" href="#proof">See the proof</a>
-    </div>
-  </div></section>
-</main>
+      <section class="cta" id="run">
+        <span class="ghost ghost--r" aria-hidden="true" style="color:#141416">run</span>
+        <div class="sec__in" style="max-width:none;position:relative;z-index:2">
+          <div class="prompt rv"><span class="p">$</span> ilara run <span class="fl">--game</span> your-title</div>
+          <h2 class="rv">Run it on your game.</h2>
+          <div class="cta__btns rv">
+            <a class="btn btn--pri" href="#top">Book the teardown →</a>
+            <a class="btn btn--ghost" href="#proof">See the proof</a>
+          </div>
+        </div>
+      </section>
 
-<footer><div class="foot">
-  <div><span class="lm">●</span> ilara — the decision layer for live mobile games</div>
-  <div>Decisions, not dashboards. · <a href="#top">back to top ↑</a></div>
-</div></footer>
+      <footer>
+        <div><span class="lm">●</span> ilara — the decision layer for live mobile games</div>
+        <div>Decisions, not dashboards. · <a href="#top">back to top ↑</a></div>
+      </footer>
+    </main>
+  </div>
+</div>
 
 <div class="status">
   <div class="grp">
@@ -372,20 +405,16 @@
 
 <script>
 (function(){
-  /* ---- hero ascii + gutter ---- */
-  var canvas=document.querySelector('.canvas'), ascii=document.getElementById('ascii'), gutter=document.getElementById('gutter');
   var seed=1337; function rnd(){ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; }
   function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
-  function build(){
-    seed=1337; var cw=7.3, lh=12*1.55;
-    var cols=Math.ceil(canvas.clientWidth/cw)+4, rows=Math.ceil(canvas.clientHeight/lh)+2;
+  function makeAscii(cols,rows,limeRate){
     var runs=['/','=','*','+','-','\\','~','#'], lines=[];
     for(var r=0;r<rows;r++){
       var cell=new Array(cols).fill(' '), lime=new Array(cols).fill(false);
       for(var c=0;c<cols;c+=13){ if(rnd()>0.18) cell[c]='/'; }
       var x=0;
       while(x<cols){
-        if(rnd()<0.13){ var ch=runs[(rnd()*runs.length)|0], len=2+((rnd()*24)|0), il=rnd()<0.05;
+        if(rnd()<0.13){ var ch=runs[(rnd()*runs.length)|0], len=2+((rnd()*24)|0), il=rnd()<limeRate;
           for(var k=0;k<len&&x+k<cols;k++){ cell[x+k]=ch; if(il) lime[x+k]=true; } x+=len+2;
         } else x+=1+((rnd()*9)|0);
       }
@@ -395,22 +424,40 @@
       if(run) html+=cur?'<span class="lm">'+esc(run)+'</span>':esc(run);
       lines.push(html);
     }
-    ascii.innerHTML=lines.join('\n');
-    var g=''; for(var i=1;i<=rows;i++){ g+='<b'+(i===1?' class="cur"':'')+'>'+(i<10?'0'+i:i)+'</b>'; } gutter.innerHTML=g;
+    return lines;
   }
-  if(canvas){ build(); var t; addEventListener('resize', function(){ clearTimeout(t); t=setTimeout(build,150); }); }
 
-  /* ---- scroll reveal ---- */
+  var CW=7.3, LH=12*1.55;
+  var hero=document.querySelector('.canvas'), ascii=document.getElementById('ascii'), hgut=document.getElementById('hgut');
+  var docBody=document.querySelector('.doc__body'), asciibg=document.getElementById('asciibg'), dgut=document.getElementById('dgut');
+
+  function build(){
+    seed=1337;
+    // hero
+    var hc=Math.ceil(hero.clientWidth/CW)+4, hr=Math.ceil(hero.clientHeight/LH)+2;
+    ascii.innerHTML=makeAscii(hc,hr,0.05).join('\n');
+    var g=''; for(var i=1;i<=hr;i++){ g+='<b'+(i===1?' class="cur"':'')+'>'+(i<10?'0'+i:i)+'</b>'; } hgut.innerHTML=g;
+    // document body (continuous, continues numbering from hero)
+    var dc=Math.ceil(docBody.clientWidth/CW)+4, dr=Math.ceil(docBody.clientHeight/LH)+2;
+    asciibg.innerHTML=makeAscii(dc,dr,0.06).join('\n');
+    var start=hr+1, gg='';
+    for(var j=0;j<dr;j++){ var n=start+j; gg+='<b'+((n%20===0)?' class="lm"':'')+'>'+(n<10?'0'+n:(n<100?'0'+n:n))+'</b>'; }
+    dgut.innerHTML=gg;
+  }
+  build();
+  var t; addEventListener('resize', function(){ clearTimeout(t); t=setTimeout(build,180); });
+
+  /* reveal */
   var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:.14,rootMargin:'0px 0px -8% 0px'});
   document.querySelectorAll('.rv').forEach(function(e){ io.observe(e); });
 
-  /* ---- active tab + Ln on scroll ---- */
+  /* active tab + Ln */
   var tabs=[].slice.call(document.querySelectorAll('.tab[data-sec]'));
   var secs=tabs.map(function(t){ return document.getElementById(t.getAttribute('data-sec')); });
   var ln=document.querySelector('#lncol b');
   function onScroll(){
     var y=scrollY+80, act=0;
-    secs.forEach(function(s,i){ if(s && s.offsetTop<=y) act=i; });
+    secs.forEach(function(s,i){ if(s && s.getBoundingClientRect().top+scrollY<=y) act=i; });
     tabs.forEach(function(t,i){ t.classList.toggle('tab--on', i===act); });
     if(ln){ var n=Math.max(1,Math.round(scrollY/26)+1); ln.textContent=(n<10?'0':'')+n; }
   }
