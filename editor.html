@@ -1,0 +1,203 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ilara.js — the decision layer for live mobile games</title>
+<meta name="description" content="Ilara: the decision layer for live mobile games. Decisions, not dashboards.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e0e10; --panel:#151517; --panel2:#1b1b1e; --line:#26262a;
+    --dim:#4c4c52; --dim2:#343439; --fg:#e9e9ec; --fg2:#9a9aa0; --fg3:#6f6f76;
+    --lime:#a3e635; --lime-d:#8fce22;
+    --fm:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+    --fd:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--fg);font-family:var(--fd);overflow:hidden;-webkit-font-smoothing:antialiased}
+  ::selection{background:rgba(163,230,53,.28)}
+
+  .ed{height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
+
+  /* ---- top bar ---- */
+  .bar{display:flex;align-items:stretch;justify-content:space-between;height:42px;background:var(--panel);border-bottom:1px solid var(--line);flex:none}
+  .tabs{display:flex;align-items:stretch}
+  .tab{display:flex;align-items:center;gap:9px;padding:0 18px;font-family:var(--fm);font-size:12.5px;color:var(--fg3);
+    border-right:1px solid var(--line);cursor:pointer;position:relative;white-space:nowrap;transition:color .2s,background .2s}
+  .tab .dot{width:8px;height:8px;border-radius:2px;background:var(--dim)}
+  .tab:hover{color:var(--fg2)}
+  .tab--on{color:var(--fg);background:var(--bg)}
+  .tab--on .dot{background:var(--lime)}
+  .tab--on::after{content:"";position:absolute;left:0;right:0;top:-1px;height:2px;background:var(--lime)}
+  .tab .x{opacity:.35;font-size:13px}
+  .bar__r{display:flex;align-items:center;gap:4px;padding-right:8px}
+  .runbtn{display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:12px;font-weight:500;color:#0d0d0e;
+    background:var(--lime);border:0;border-radius:7px;padding:7px 13px;margin-right:6px;cursor:pointer;transition:transform .15s,background .2s;text-decoration:none}
+  .runbtn:hover{background:#b6ef4d;transform:translateY(-1px)}
+  .icn{width:30px;height:30px;display:grid;place-items:center;border-radius:6px;color:var(--fg3);cursor:pointer;transition:color .2s,background .2s}
+  .icn:hover{color:var(--fg);background:var(--panel2)}
+  .icn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6}
+
+  /* ---- body: gutter + canvas ---- */
+  .body{flex:1;display:flex;min-height:0;position:relative}
+  .gutter{flex:none;width:clamp(46px,5vw,68px);background:var(--panel);border-right:1px solid var(--line);
+    font-family:var(--fm);font-size:12px;line-height:1.55;color:var(--dim);text-align:right;
+    padding:14px 12px 0 0;overflow:hidden;user-select:none}
+  .gutter b{display:block;font-weight:400}
+  .gutter b.cur{color:var(--lime)}
+
+  .canvas{flex:1;position:relative;overflow:hidden}
+  .ascii{position:absolute;inset:0;padding:14px 0 0 16px;font-family:var(--fm);font-size:12px;line-height:1.55;
+    color:var(--dim2);white-space:pre;overflow:hidden;pointer-events:none;letter-spacing:.5px}
+  .ascii .lm{color:var(--lime);opacity:.85}
+  .ascii .br{color:var(--dim)}
+  .canvas::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 90% at 88% 96%, rgba(163,230,53,.10), transparent 55%)}
+  .canvas::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+    background:radial-gradient(74% 62% at 6% 16%, rgba(14,14,16,.86), rgba(14,14,16,.34) 42%, transparent 64%)}
+
+  /* ---- overlays ---- */
+  .ov{position:absolute;pointer-events:none}
+  .tl{top:clamp(26px,5vh,64px);left:clamp(20px,4vw,68px);z-index:3}
+  .kick{font-family:var(--fm);font-size:12.5px;color:var(--fg3);letter-spacing:.02em;margin-bottom:16px}
+  .kick .c{color:var(--lime)}
+  .tl h1{font-family:var(--fd);font-weight:600;font-size:clamp(34px,6vw,74px);line-height:.98;letter-spacing:-.03em;color:var(--fg)}
+  .tl h1 .strike{color:var(--fg3);text-decoration:line-through;text-decoration-color:var(--lime);text-decoration-thickness:3px}
+  .tl .sub{margin-top:20px;font-family:var(--fm);font-size:13px;color:var(--fg2);max-width:34ch;line-height:1.6}
+  .tl .sub .c{color:var(--lime)}
+  .cur-blink{display:inline-block;width:9px;height:1.05em;background:var(--lime);vertical-align:-2px;margin-left:3px;animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
+
+  .br-word{right:clamp(-14px,-1vw,0px);bottom:clamp(-18px,-2.4vw,-8px);z-index:2;text-align:right}
+  .br-word .w{font-family:var(--fd);font-weight:800;font-size:clamp(140px,27vw,460px);line-height:.74;
+    letter-spacing:-.05em;color:var(--lime);display:block}
+  .br-word .tagm{font-family:var(--fm);font-size:12px;color:var(--fg3);margin-bottom:6px;margin-right:8px}
+
+  /* ---- status bar ---- */
+  .status{flex:none;height:30px;background:var(--panel);border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;padding:0 6px;font-family:var(--fm);font-size:11px;color:var(--fg3)}
+  .status .grp{display:flex;align-items:center}
+  .status .seg{display:flex;align-items:center;gap:7px;padding:0 12px;height:100%;border-right:1px solid var(--line)}
+  .status .grp--r .seg{border-right:0;border-left:1px solid var(--line)}
+  .status .live{background:var(--lime);color:#0d0d0e;font-weight:700;padding:0 12px}
+  .status .live .pulse{width:7px;height:7px;border-radius:50%;background:#0d0d0e;animation:pz 1.6s ease-in-out infinite}
+  @keyframes pz{0%,100%{opacity:1}50%{opacity:.35}}
+  .status b{color:var(--fg2);font-weight:500}
+
+  @media (max-width:720px){
+    .tab{padding:0 12px;font-size:11.5px}
+    .tab--hide{display:none}
+    .runbtn span{display:none}
+    .tl .sub{max-width:26ch}
+    .br-word .w{font-size:34vw}
+    .status .seg--hide{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){.cur-blink,.status .live .pulse{animation:none}}
+</style>
+
+<div class="ed">
+  <div class="bar">
+    <div class="tabs">
+      <span class="tab tab--on"><span class="dot"></span>ilara.js<span class="x">×</span></span>
+      <span class="tab tab--hide"><span class="dot"></span>proof.js</span>
+      <span class="tab tab--hide"><span class="dot"></span>pricing.js</span>
+    </div>
+    <div class="bar__r">
+      <a class="runbtn" href="#"><span>Run it on your game</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#0d0d0e" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <span class="icn" title="Theme"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg></span>
+      <span class="icn" title="Panel"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></span>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="gutter" id="gutter"></div>
+    <div class="canvas">
+      <pre class="ascii" id="ascii" aria-hidden="true"></pre>
+
+      <div class="ov tl">
+        <div class="kick"><span class="c">//</span> the decision layer for live mobile games</div>
+        <h1>Decisions,<br>not <span class="strike">dashboards</span>.<span class="cur-blink" aria-hidden="true"></span></h1>
+        <div class="sub">Your dashboards tell you what happened. Ilara tells you what to do next <span class="c">—</span> the move, the price, the player, ready to ship.</div>
+      </div>
+
+      <div class="ov br-word" aria-hidden="true">
+        <div class="tagm">// scoring 1.1M players daily</div>
+        <span class="w">ilara</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="status">
+    <div class="grp">
+      <span class="seg live"><span class="pulse"></span>live</span>
+      <span class="seg"><span>⎇</span>&nbsp;3&nbsp;titles</span>
+      <span class="seg seg--hide">100M events</span>
+      <span class="seg seg--hide">0 ML hires</span>
+    </div>
+    <div class="grp grp--r">
+      <span class="seg seg--hide">causal A/B</span>
+      <span class="seg">Ln <b>01</b>, Col <b>14</b></span>
+      <span class="seg seg--hide">UTF-8</span>
+      <span class="seg"><span style="color:var(--lime)">●</span>&nbsp;ilara</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var canvas = document.querySelector('.canvas');
+  var ascii = document.getElementById('ascii');
+  var gutter = document.getElementById('gutter');
+
+  // deterministic-ish PRNG so it doesn't reshuffle jarringly on resize
+  var seed = 1337;
+  function rnd(){ seed = (seed*1103515245 + 12345) & 0x7fffffff; return seed/0x7fffffff; }
+
+  function build(){
+    seed = 1337;
+    var cw = 7.3, lh = 12*1.55;               // approx mono char width / line height at 12px
+    var cols = Math.ceil(canvas.clientWidth / cw) + 4;
+    var rows = Math.ceil(canvas.clientHeight / lh) + 2;
+    var runs = ['/','=','*','+','-','\\','~','#'];
+    var lines = [];
+    for(var r=0;r<rows;r++){
+      var cell = new Array(cols).fill(' ');
+      var lime = new Array(cols).fill(false);
+      // faint vertical grid
+      for(var c=0;c<cols;c+=13){ if(rnd()>0.18) cell[c]='/'; }
+      // horizontal runs
+      var x=0;
+      while(x<cols){
+        if(rnd()<0.13){
+          var ch = runs[(rnd()*runs.length)|0];
+          var len = 2 + ((rnd()*24)|0);
+          var isLime = rnd()<0.05;
+          for(var k=0;k<len && x+k<cols;k++){ cell[x+k]=ch; if(isLime) lime[x+k]=true; }
+          x += len + 2;
+        } else { x += 1 + ((rnd()*9)|0); }
+      }
+      // build html with lime spans grouped
+      var html='', run='', cur=false;
+      for(var c2=0;c2<cols;c2++){
+        var lit = lime[c2] && cell[c2]!==' ';
+        if(lit!==cur){ if(run) html += cur? '<span class="lm">'+esc(run)+'</span>' : esc(run); run=''; cur=lit; }
+        run += cell[c2];
+      }
+      if(run) html += cur? '<span class="lm">'+esc(run)+'</span>' : esc(run);
+      lines.push(html);
+    }
+    ascii.innerHTML = lines.join('\n');
+
+    // gutter line numbers
+    var g='';
+    for(var i=1;i<=rows;i++){ g += '<b'+(i===1?' class="cur"':'')+'>'+(i<10?'0'+i:i)+'</b>'; }
+    gutter.innerHTML = g;
+  }
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\\/g,'\\'); }
+
+  build();
+  var t; addEventListener('resize', function(){ clearTimeout(t); t=setTimeout(build, 150); });
+})();
+</script>
