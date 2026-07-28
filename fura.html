@@ -110,6 +110,11 @@
   .notif .t{font-weight:600;font-size:14.5px}
   .notif .s{font-size:13px;color:var(--fg2);margin-top:2px}
   .notif .v{margin-left:auto;font-family:var(--fm);font-weight:700;font-size:14px;color:var(--lime)}
+  .notif{transition:background .25s}
+  .notif.fresh{animation:qfresh 1.2s var(--ease)}
+  @keyframes qfresh{0%,14%{background:rgba(163,230,53,.13)}100%{background:transparent}}
+  .chat-seq .bub{opacity:0;visibility:hidden;transform:translateY(7px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+  .chat-seq .bub.show{opacity:1;visibility:visible;transform:none}
 
   /* newsroom list */
   .news{margin-top:56px;border-top:1px solid var(--line)}
@@ -284,7 +289,57 @@
 
 <script>
 (function(){
+  /* scroll reveal */
   var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:.12,rootMargin:'0px 0px -6% 0px'});
   document.querySelectorAll('.rv').forEach(function(e){ io.observe(e); });
+
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  var mocks = document.querySelectorAll('#ask .mock');
+  if(mocks.length < 2) return;
+  var chatMock = mocks[0], queueMock = mocks[1];
+
+  /* --- decision queue: continuously re-rank --- */
+  var qhead = queueMock.querySelector('.mock__h').outerHTML;
+  var notifs = [].slice.call(queueMock.querySelectorAll('.notif'));
+  var qdata = notifs.map(function(n){ return {t:n.querySelector('.t').innerHTML, s:n.querySelector('.s').innerHTML, v:n.querySelector('.v').innerHTML}; });
+  var order = qdata.map(function(_,i){return i;});
+  function pad(n){return (n<10?'0':'')+n;}
+  function renderQ(){
+    queueMock.innerHTML = qhead + order.map(function(idx,pos){
+      return '<div class="notif" data-k="'+idx+'"><span class="av">'+pad(pos+1)+'</span><div><div class="t">'+qdata[idx].t+'</div><div class="s">'+qdata[idx].s+'</div></div><span class="v">'+qdata[idx].v+'</span></div>';
+    }).join('');
+  }
+  function topsQ(){ var m={}; [].slice.call(queueMock.querySelectorAll('.notif')).forEach(function(n){ m[n.getAttribute('data-k')]=n.getBoundingClientRect().top; }); return m; }
+  renderQ();
+  function tickQ(){
+    if(document.hidden) return;
+    var before=topsQ(), moved=order[0];
+    order.push(order.shift()); renderQ(); var after=topsQ();
+    [].slice.call(queueMock.querySelectorAll('.notif')).forEach(function(n){
+      var k=n.getAttribute('data-k');
+      if(parseInt(k,10)===moved){ n.style.opacity='0'; n.style.transform='translateY(8px)'; }
+      else { n.style.transform='translateY('+(before[k]-after[k])+'px)'; }
+    });
+    void queueMock.offsetHeight;
+    [].slice.call(queueMock.querySelectorAll('.notif')).forEach(function(n){
+      n.style.transition='transform .5s cubic-bezier(.2,.7,.2,1),opacity .5s ease'; n.style.transform=''; n.style.opacity='';
+    });
+    var top=queueMock.querySelector('.notif'); if(top){ top.classList.add('fresh'); setTimeout(function(){ top.classList.remove('fresh'); },820); }
+  }
+
+  /* --- chat: progressive reveal, looping --- */
+  chatMock.classList.add('chat-seq');
+  var bubs = [].slice.call(chatMock.querySelectorAll('.bub'));
+  var delays=[350,1500,2900,4050], chatTimer;
+  function runChat(){
+    bubs.forEach(function(b){ b.classList.remove('show'); });
+    bubs.forEach(function(b,idx){ setTimeout(function(){ b.classList.add('show'); }, delays[idx]); });
+    chatTimer=setTimeout(runChat, 8000);
+  }
+
+  /* start both when the section scrolls into view */
+  var started=false;
+  var io2=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !started){ started=true; setInterval(tickQ,3600); runChat(); } }); },{threshold:.25});
+  io2.observe(document.getElementById('ask'));
 })();
 </script>
