@@ -54,10 +54,10 @@
   .hero__cta{margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
   .hero__meta{margin-top:26px;font-family:var(--fm);font-size:13px;color:var(--fg2);display:flex;gap:9px;align-items:center;justify-content:center}
   .hero__meta .dot{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(163,230,53,.16)}
-  .stagewrap{width:100%;display:flex;justify-content:center;margin-top:44px;overflow:hidden}
-  .stage{position:relative;width:1120px;height:540px;flex:none;transform-origin:top left}
+  .stagewrap{width:100%;display:flex;justify-content:center;margin-top:52px;overflow:hidden;padding:0 clamp(16px,3vw,40px)}
+  .stage{position:relative;width:1400px;height:560px;flex:none;transform-origin:top center}
   .stage__core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4}
-  .stage__ring{width:272px;height:272px;border-radius:50%;border:1px solid rgba(163,230,53,.3);
+  .stage__ring{width:300px;height:300px;border-radius:50%;border:1px solid rgba(163,230,53,.3);
     display:grid;place-items:center;box-shadow:0 0 90px rgba(163,230,53,.22),inset 0 0 60px rgba(163,230,53,.08)}
   .stage__ring b{font-family:var(--fd);font-weight:800;font-size:42px;letter-spacing:.1em;color:#fff}
   .pill{position:absolute;width:224px;display:flex;align-items:center;gap:13px;z-index:2;
@@ -201,24 +201,24 @@
   <p class="hero__sub rv">Your dashboards tell you what happened. Ilara tells you what to do next <span class="c">—</span> the move, the price, the player, ready to ship, measured against a control.</p>
   <div class="hero__cta rv"><a class="btn-lime" href="#book">Run it on your game</a><a class="btn-out" href="#studios">Show me how</a></div>
   <div class="hero__meta rv"><span class="dot"></span>Scoring 1.1M players daily across three live titles</div>
-  <div class="stagewrap"><div class="stage">
-    <div class="stage__core"><div class="stage__ring"><svg class="wm wm--ring" style="color:var(--lime)"><use href="#wm"/></svg></div></div>
-    <div class="pill" style="left:6px;top:26px"><span class="ic">▤</span><span class="tx"><span class="n">6,319</span><span class="l">players tested</span></span></div>
-    <div class="pill" style="left:6px;top:237px"><span class="ic">Σ</span><span class="tx"><span class="n">100M</span><span class="l">events read</span></span></div>
-    <div class="pill" style="left:6px;top:448px"><span class="ic">⧗</span><span class="tx"><span class="n">&lt;1 day</span><span class="l">to first score</span></span></div>
-    <div class="pill" style="left:890px;top:26px"><span class="ic">↗</span><span class="tx"><span class="n">9.5%</span><span class="l">more rev / install</span></span></div>
-    <div class="pill" style="left:890px;top:237px"><span class="ic">≈</span><span class="tx"><span class="n">$18.4K</span><span class="l">top move / month</span></span></div>
-    <div class="pill" style="left:890px;top:448px"><span class="ic">✓</span><span class="tx"><span class="n">$1.5M</span><span class="l">found per year</span></span></div>
-    <div class="pill" style="left:300px;top:12px"><span class="ic">⇄</span><span class="tx"><span class="n">A/B</span><span class="l">measured vs control</span></span></div>
-    <div class="pill" style="left:596px;top:12px"><span class="ic">↑</span><span class="tx"><span class="n">38%</span><span class="l">less friction</span></span></div>
-    <div class="pill" style="left:300px;top:462px"><span class="ic">∅</span><span class="tx"><span class="n">0</span><span class="l">ML hires needed</span></span></div>
-    <div class="pill" style="left:596px;top:462px"><span class="ic">↓</span><span class="tx"><span class="n">−60%</span><span class="l">churn caught early</span></span></div>
-    <span class="odot" style="left:246px;top:150px"></span>
-    <span class="oring" style="left:862px;top:150px"></span>
-    <span class="oring" style="left:246px;top:388px"></span>
-    <span class="odot" style="left:862px;top:388px"></span>
-  </div></div>
 </div>
+<div class="stagewrap"><div class="stage">
+  <div class="stage__core"><div class="stage__ring"><svg class="wm wm--ring" style="color:var(--lime)"><use href="#wm"/></svg></div></div>
+  <div class="pill" style="left:0;top:18px"><span class="ic">▤</span><span class="tx"><span class="n">6,319</span><span class="l">players tested</span></span></div>
+  <div class="pill" style="left:0;top:246px"><span class="ic">Σ</span><span class="tx"><span class="n">100M</span><span class="l">events read</span></span></div>
+  <div class="pill" style="left:0;top:474px"><span class="ic">⧗</span><span class="tx"><span class="n">&lt;1 day</span><span class="l">to first score</span></span></div>
+  <div class="pill" style="left:1176px;top:18px"><span class="ic">↗</span><span class="tx"><span class="n">9.5%</span><span class="l">more rev / install</span></span></div>
+  <div class="pill" style="left:1176px;top:246px"><span class="ic">≈</span><span class="tx"><span class="n">$18.4K</span><span class="l">top move / month</span></span></div>
+  <div class="pill" style="left:1176px;top:474px"><span class="ic">✓</span><span class="tx"><span class="n">$1.5M</span><span class="l">found per year</span></span></div>
+  <div class="pill" style="left:404px;top:4px"><span class="ic">⇄</span><span class="tx"><span class="n">A/B</span><span class="l">measured vs control</span></span></div>
+  <div class="pill" style="left:772px;top:4px"><span class="ic">↑</span><span class="tx"><span class="n">38%</span><span class="l">less friction</span></span></div>
+  <div class="pill" style="left:404px;top:488px"><span class="ic">∅</span><span class="tx"><span class="n">0</span><span class="l">ML hires needed</span></span></div>
+  <div class="pill" style="left:772px;top:488px"><span class="ic">↓</span><span class="tx"><span class="n">−60%</span><span class="l">churn caught early</span></span></div>
+  <span class="odot" style="left:310px;top:150px"></span>
+  <span class="oring" style="left:1090px;top:150px"></span>
+  <span class="oring" style="left:310px;top:410px"></span>
+  <span class="odot" style="left:1090px;top:410px"></span>
+</div></div>
 <div class="vidcard"><span class="thumb">▶</span>Why Ilara is different</div>
 </header>
 
@@ -340,11 +340,9 @@
       measure the hero viewport minus the wrap padding instead of stagewrap) */
   var sw=document.querySelector('.stagewrap'), st=document.querySelector('.stage');
   function fitStage(){ if(!sw||!st) return;
-    var hero=st.closest('.hero'), wrapEl=st.closest('.wrap');
-    var pad=wrapEl?(parseFloat(getComputedStyle(wrapEl).paddingLeft)+parseFloat(getComputedStyle(wrapEl).paddingRight)):0;
-    var avail=(hero?hero.clientWidth:innerWidth)-pad;
-    var s=Math.min(1, avail/1120);
-    st.style.transform='scale('+s+')'; sw.style.height=(540*s)+'px';
+    var cs=getComputedStyle(sw), avail=sw.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    var s=Math.min(1, avail/1400);
+    st.style.transform='scale('+s+')'; sw.style.height=(560*s)+'px';
   }
   fitStage(); addEventListener('resize', fitStage);
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fitStage);
