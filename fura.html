@@ -49,7 +49,11 @@
   .hero__in{position:relative;z-index:3}
   .hero h1{margin-top:20px;font-family:var(--fd);font-weight:700;font-size:clamp(38px,6.4vw,88px);line-height:1.0;letter-spacing:-.03em;max-width:16ch;margin-left:auto;margin-right:auto}
   .hero h1 .lm{color:var(--lime)}
-  .hero__cta{margin-top:34px}
+  .hero__sub{margin:24px auto 0;max-width:50ch;font-size:clamp(16px,1.7vw,19px);color:var(--fg2);line-height:1.55}
+  .hero__sub .c{color:var(--lime)}
+  .hero__cta{margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .hero__meta{margin-top:26px;font-family:var(--fm);font-size:13px;color:var(--fg2);display:flex;gap:9px;align-items:center;justify-content:center}
+  .hero__meta .dot{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(163,230,53,.16)}
   .stage{position:relative;z-index:2;margin:60px auto 0;max-width:1000px;height:clamp(220px,34vw,360px)}
   .gpill{position:absolute;display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.07);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
     border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:12px 16px;text-align:left;box-shadow:0 20px 50px -24px rgba(0,0,0,.7);animation:float 6s ease-in-out infinite}
@@ -192,7 +196,9 @@
   <div class="brandtag rv"><span class="sq"></span>Decisions, not dashboards</div>
   <div class="eyebrow rv">Ilara is the decision layer for live games</div>
   <h1 class="rv">We stop players leaving<br>at the moment <span class="lm">they decide.</span></h1>
-  <div class="hero__cta rv"><a class="btn-out" href="#studios">Show me how</a></div>
+  <p class="hero__sub rv">Your dashboards tell you what happened. Ilara tells you what to do next <span class="c">—</span> the move, the price, the player, ready to ship, measured against a control.</p>
+  <div class="hero__cta rv"><a class="btn-lime" href="#book">Run it on your game</a><a class="btn-out" href="#studios">Show me how</a></div>
+  <div class="hero__meta rv"><span class="dot"></span>Scoring 1.1M players daily across three live titles</div>
   <div class="stage">
     <div class="gpill gp1"><span class="ic">◍</span><div><div class="n">1.1M players</div><div class="l">scored daily</div></div></div>
     <div class="gpill gp2"><span class="ic">↑</span><div><div class="n">38%</div><div class="l">less onboarding friction</div></div></div>
