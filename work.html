@@ -11,7 +11,7 @@
     --lime:#a3e635; --lime-d:#7fb50f; --lime-ink:#0e1806;
     --fd:'Inter Tight',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
     --fm:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
-    --ease:cubic-bezier(.4,0,.1,1);
+    --ease:cubic-bezier(.19,1,.22,1);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{-webkit-font-smoothing:antialiased}
@@ -50,8 +50,7 @@
   /* GRID view */
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,1.2vw,16px)}
   .tile{position:relative;aspect-ratio:4/3;overflow:hidden;background:#0b0b0c;display:block;cursor:pointer}
-  .tile__viz{position:absolute;inset:0;transition:transform .6s var(--ease)}
-  .tile:hover .tile__viz{transform:scale(1.04)}
+  .tile__viz{position:absolute;left:0;right:0;top:-10%;height:120%;will-change:transform;transform:translate3d(0,0,0)}
   .tile__grain{position:absolute;inset:0;opacity:.5;mix-blend-mode:overlay;
     background-image:radial-gradient(rgba(255,255,255,.14) 1px,transparent 1px);background-size:4px 4px}
   .tile__title{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;color:#fff;
@@ -96,8 +95,12 @@
   .foot__links a{border-bottom:1px solid transparent;transition:border-color .2s} .foot__links a:hover{border-color:var(--lime)}
   .foot__base{margin-top:40px;font-family:var(--fm);font-size:11.5px;color:#7a7a7e;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
-  .rv{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+  /* smooth-scroll wrapper (desktop) */
+  #smooth.smooth-on{position:fixed;top:0;left:0;width:100%;will-change:transform;backface-visibility:hidden}
+  .work{transition:opacity .4s var(--ease)}
+  .rv{opacity:0;transform:translateY(34px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
   .rv.in{opacity:1;transform:none}
+  .grid .tile:nth-child(even){transition-delay:.09s}
 
   @media (max-width:760px){
     .grid{grid-template-columns:1fr}
@@ -125,6 +128,7 @@
   </div>
 </div>
 
+<div id="smooth">
 <section class="intro">
   <h1>Ilara is the decision layer for <em>live mobile games</em>. We turn a million players a day into the moves worth making.</h1>
   <p>Not dashboards. Predictions, priced decisions and proof, shipped on live titles and measured against a control. Selected work below.</p>
@@ -167,24 +171,77 @@
   </div>
   <div class="foot__base"><span>© 2026 Ilara</span><span>More players, more revenue, less guesswork.</span></div>
 </footer>
+</div><!-- /#smooth -->
 
 <script>
 (function(){
-  /* scroll progress */
-  var prog=document.getElementById('prog');
-  addEventListener('scroll', function(){
-    var h=document.documentElement.scrollHeight-innerHeight;
-    prog.style.width=(h>0?(scrollY/h*100):0)+'%';
-  }, {passive:true});
-  /* view toggle */
+  var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var prog=document.getElementById('prog'), smooth=document.getElementById('smooth'), work=document.querySelector('.work');
+  var isDesktop = matchMedia('(min-width:1025px) and (pointer:fine)').matches;
+  var doSmooth = isDesktop && !reduce;
+  var cur = window.scrollY||0;
+
+  function setBodyHeight(){ if(doSmooth && smooth){ document.body.style.height = smooth.getBoundingClientRect().height + 'px'; } }
+
+  /* view toggle with crossfade */
   document.querySelectorAll('.view button').forEach(function(b){
     b.addEventListener('click', function(){
+      if(b.classList.contains('on')) return;
       document.querySelectorAll('.view button').forEach(function(x){x.classList.remove('on')}); b.classList.add('on');
-      document.body.classList.toggle('is-list', b.getAttribute('data-view')==='list');
+      work.style.opacity='0';
+      setTimeout(function(){ document.body.classList.toggle('is-list', b.getAttribute('data-view')==='list'); work.style.opacity='1'; setBodyHeight(); }, 240);
     });
   });
-  /* reveal */
-  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+
+  /* reveal on scroll (expo) */
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:.08,rootMargin:'0px 0px -6% 0px'});
   document.querySelectorAll('.rv').forEach(function(e){ io.observe(e); });
+
+  /* smooth scroll wrapper (desktop only) */
+  if(doSmooth){
+    smooth.classList.add('smooth-on'); setBodyHeight();
+    addEventListener('resize', setBodyHeight);
+    addEventListener('load', function(){ setBodyHeight(); setTimeout(setBodyHeight,450); });
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(setBodyHeight);
+    /* anchor links -> lerp to target (transform scroll breaks native hash) */
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      a.addEventListener('click', function(e){
+        var id=a.getAttribute('href'); if(id==='#'||id.length<2) return;
+        var el=document.querySelector(id); if(!el) return; e.preventDefault();
+        var ty=el.getBoundingClientRect().top - smooth.getBoundingClientRect().top;
+        window.scrollTo({top:Math.max(0,ty-24), behavior:'auto'});
+      });
+    });
+  }
+
+  /* tiles: parallax + lerped hover scale */
+  var tiles=[].slice.call(document.querySelectorAll('.tile')).map(function(t){
+    var o={el:t, viz:t.querySelector('.tile__viz'), sc:1, tsc:1};
+    if(!reduce){ t.addEventListener('mouseenter',function(){o.tsc=1.06}); t.addEventListener('mouseleave',function(){o.tsc=1}); }
+    return o;
+  });
+
+  function frame(){
+    if(doSmooth){
+      var y=window.scrollY;
+      cur += (y-cur)*0.09; if(Math.abs(y-cur)<0.05) cur=y;
+      smooth.style.transform='translate3d(0,'+(-cur)+'px,0)';
+    }
+    var h=document.documentElement.scrollHeight-innerHeight;
+    if(prog) prog.style.width=(h>0?(window.scrollY/h*100):0)+'%';
+    if(!reduce){
+      var vh=innerHeight;
+      for(var i=0;i<tiles.length;i++){
+        var t=tiles[i], r=t.el.getBoundingClientRect();
+        if(r.bottom>-60 && r.top<vh+60){
+          var p=((r.top+r.height/2)-vh/2)/vh;
+          t.sc += (t.tsc-t.sc)*0.1;
+          t.viz.style.transform='translate3d(0,'+(p*-30).toFixed(2)+'px,0) scale('+t.sc.toFixed(3)+')';
+        }
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 })();
 </script>
