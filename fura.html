@@ -1,0 +1,278 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ilara — the decision layer for live mobile games</title>
+<meta name="description" content="Ilara: the decision layer for live mobile games. We stop players leaving at the moment they decide.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050608; --navy:#091319; --panel:#0f1318; --panel2:#141a20; --line:rgba(255,255,255,.10); --line2:rgba(255,255,255,.18);
+    --fg:#f3f4f5; --fg2:#9aa1a8; --fg3:#6b727a;
+    --lime:#a3e635; --lime-d:#8fce22; --lime-ink:#0e1806;
+    --serif:'Newsreader',Georgia,'Times New Roman',serif;
+    --fd:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    --fm:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--fd);color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,44px)}
+  .serif{font-family:var(--serif)}
+  .eyebrow{font-family:var(--serif);font-style:italic;font-size:clamp(17px,1.9vw,22px);color:var(--fg2);letter-spacing:.01em}
+  .btn-out{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-size:15px;font-weight:500;
+    padding:14px 26px;border:1px solid var(--line2);color:var(--fg);border-radius:2px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+  .btn-out:hover{background:var(--lime);color:var(--lime-ink);border-color:var(--lime)}
+  .btn-lime{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:600;padding:14px 26px;background:var(--lime);color:var(--lime-ink);border-radius:2px;cursor:pointer;transition:transform .15s,background .2s}
+  .btn-lime:hover{background:#b2f04a;transform:translateY(-2px)}
+
+  /* nav */
+  .nav{position:absolute;top:30px;left:0;right:0;z-index:40}
+  .nav__in{display:flex;align-items:center;justify-content:space-between}
+  .brand{font-family:var(--fd);font-weight:800;font-size:24px;letter-spacing:.14em}
+  .nav__links{display:flex;gap:30px;font-size:15px;color:var(--fg)}
+  .nav__links a{opacity:.82;transition:opacity .2s;display:flex;align-items:center;gap:7px} .nav__links a:hover{opacity:1}
+  .nav__links .mk{width:11px;height:11px;border:1px solid var(--lime);border-radius:2px;display:inline-block}
+  .hamb{display:none}
+
+  /* hero */
+  .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:150px 0 60px;overflow:hidden;text-align:center}
+  .hero::before{content:"";position:absolute;inset:0;z-index:0;
+    background:radial-gradient(120% 78% at 50% 122%, rgba(163,230,53,.20), transparent 46%),
+      radial-gradient(100% 66% at 50% 108%, rgba(70,110,180,.20), transparent 56%),
+      linear-gradient(180deg,#05070a 0%,#0a0f16 52%,#070b10 100%)}
+  .hero::after{content:"";position:absolute;inset:0;z-index:0;opacity:.5;
+    background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+    background-size:64px 64px;mask-image:radial-gradient(80% 60% at 50% 60%,#000,transparent 78%)}
+  .hero__in{position:relative;z-index:3}
+  .hero h1{margin-top:20px;font-family:var(--fd);font-weight:700;font-size:clamp(38px,6.4vw,88px);line-height:1.0;letter-spacing:-.03em;max-width:16ch;margin-left:auto;margin-right:auto}
+  .hero h1 .lm{color:var(--lime)}
+  .hero__cta{margin-top:34px}
+  .stage{position:relative;z-index:2;margin:60px auto 0;max-width:1000px;height:clamp(220px,34vw,360px)}
+  .gpill{position:absolute;display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.07);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:12px 16px;text-align:left;box-shadow:0 20px 50px -24px rgba(0,0,0,.7);animation:float 6s ease-in-out infinite}
+  .gpill .ic{width:34px;height:34px;border-radius:9px;background:rgba(163,230,53,.16);display:grid;place-items:center;color:var(--lime);flex:none;font-family:var(--fm);font-size:14px;font-weight:700}
+  .gpill .n{font-weight:700;font-size:15px;letter-spacing:-.01em}
+  .gpill .l{font-size:12px;color:var(--fg2);margin-top:1px}
+  .gp1{top:4%;left:6%;animation-delay:0s} .gp2{top:0%;right:8%;animation-delay:-2s}
+  .gp3{bottom:8%;left:12%;animation-delay:-4s} .gp4{bottom:2%;right:6%;animation-delay:-1s}
+  .stage__core{position:absolute;inset:0;display:grid;place-items:center}
+  .stage__ring{width:clamp(150px,20vw,230px);height:clamp(150px,20vw,230px);border-radius:50%;border:1px solid rgba(163,230,53,.3);
+    display:grid;place-items:center;box-shadow:0 0 90px rgba(163,230,53,.22),inset 0 0 60px rgba(163,230,53,.08)}
+  .stage__ring b{font-family:var(--fd);font-weight:800;font-size:clamp(26px,3.4vw,42px);letter-spacing:.1em;color:#fff}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .vidcard{position:absolute;left:clamp(20px,4vw,44px);bottom:34px;z-index:4;display:flex;align-items:center;gap:12px;font-family:var(--fm);font-size:12.5px;color:var(--fg2)}
+  .vidcard .thumb{width:96px;height:60px;border-radius:6px;background:linear-gradient(135deg,#12321a,#0a0f16);border:1px solid var(--line);display:grid;place-items:center;color:var(--lime)}
+
+  /* sections */
+  .sec{padding:clamp(80px,10vw,140px) 0;position:relative}
+  .sec--navy{background:var(--navy)}
+  .h2{font-family:var(--fd);font-weight:700;font-size:clamp(32px,5vw,60px);line-height:1.02;letter-spacing:-.03em}
+  .lead{margin-top:20px;font-size:clamp(16px,1.7vw,19px);line-height:1.6;color:var(--fg2);max-width:56ch}
+  .center{text-align:center}.center .lead{margin-left:auto;margin-right:auto}
+
+  /* stats band */
+  .stats{margin-top:64px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  .stat{background:var(--bg);padding:34px 26px}
+  .sec--navy .stat{background:var(--navy)}
+  .stat .n{font-family:var(--fd);font-weight:700;font-size:clamp(38px,4.6vw,60px);letter-spacing:-.03em;color:var(--lime)}
+  .stat .l{margin-top:10px;font-size:13.5px;color:var(--fg2);line-height:1.45}
+
+  /* audience image cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,34px);margin-top:64px}
+  .card{border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--panel)}
+  .card__img{aspect-ratio:16/10;position:relative;overflow:hidden}
+  .card__img.a{background:radial-gradient(120% 100% at 20% 0%,rgba(163,230,53,.22),transparent 55%),linear-gradient(160deg,#12203a,#0a0f16)}
+  .card__img.b{background:radial-gradient(120% 100% at 80% 0%,rgba(163,230,53,.16),transparent 55%),linear-gradient(160deg,#1a1330,#0a0f16)}
+  .card__img .mk{position:absolute;inset:0;opacity:.5;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:40px 40px}
+  .card__b{padding:32px}
+  .card__k{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--fg)}
+  .card__d{margin-top:16px;font-size:15.5px;color:var(--fg2);line-height:1.6;max-width:44ch}
+  .card__b .btn-out{margin-top:26px}
+
+  /* meet showcase */
+  .meet{text-align:center}
+  .meet .mega{font-family:var(--fd);font-weight:700;font-size:clamp(40px,7vw,96px);line-height:.98;letter-spacing:-.035em;margin-top:14px}
+  .meet .mega .lm{color:var(--lime)}
+  .mockrow{margin-top:64px;display:grid;grid-template-columns:1.05fr .95fr;gap:24px;text-align:left;align-items:stretch}
+  .mock{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+  .mock__h{font-family:var(--fm);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);display:flex;align-items:center;gap:8px;margin-bottom:16px}
+  .mock__h .sq{width:8px;height:8px;border-radius:2px;background:var(--lime)}
+  .bub{max-width:82%;padding:12px 15px;border-radius:14px;font-size:14px;line-height:1.5;margin-bottom:12px}
+  .bub--u{background:var(--lime);color:var(--lime-ink);margin-left:auto;border-bottom-right-radius:4px;font-weight:500}
+  .bub--a{background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .bub--a .hl{color:var(--lime)}
+  .notif{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .notif:last-child{border-bottom:0}
+  .notif .av{width:38px;height:38px;border-radius:9px;background:rgba(163,230,53,.14);color:var(--lime);display:grid;place-items:center;font-family:var(--fm);font-weight:700;flex:none;font-size:12px}
+  .notif .t{font-weight:600;font-size:14.5px}
+  .notif .s{font-size:13px;color:var(--fg2);margin-top:2px}
+  .notif .v{margin-left:auto;font-family:var(--fm);font-weight:700;font-size:14px;color:var(--lime)}
+
+  /* newsroom list */
+  .news{margin-top:56px;border-top:1px solid var(--line)}
+  .nrow{display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;padding:24px 4px;border-bottom:1px solid var(--line);transition:background .2s}
+  .nrow:hover{background:rgba(255,255,255,.02)}
+  .nrow .tag{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--lime);width:120px}
+  .nrow .ti{font-family:var(--serif);font-size:clamp(18px,2.2vw,24px);color:var(--fg);line-height:1.2}
+  .nrow .ar{color:var(--fg3);font-size:20px;transition:color .2s,transform .2s} .nrow:hover .ar{color:var(--lime);transform:translateX(4px)}
+
+  /* cta */
+  .cta{text-align:center;background:
+     radial-gradient(100% 120% at 50% 0%, rgba(163,230,53,.16), transparent 55%), var(--navy)}
+  .cta .eyebrow{color:var(--fg2)}
+  .cta h2{margin-top:14px}
+  .cta__b{margin-top:34px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:64px 0 44px;color:var(--fg2)}
+  .foot__top{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap}
+  .foot__brand{font-family:var(--fd);font-weight:800;font-size:30px;letter-spacing:.14em;color:#fff}
+  .foot__cols{display:flex;gap:clamp(30px,6vw,74px);flex-wrap:wrap}
+  .foot__cols h4{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#fff;margin-bottom:14px}
+  .foot__cols a{display:block;font-size:14px;margin-bottom:9px} .foot__cols a:hover{color:#fff}
+  .foot__base{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--fm);font-size:12px}
+
+  .rv{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (max-width:860px){
+    .nav__links{display:none}
+    .stats{grid-template-columns:1fr 1fr}
+    .cards,.mockrow{grid-template-columns:1fr}
+    .gpill{padding:10px 13px} .gp1{left:0} .gp2{right:0} .gp3{left:0} .gp4{right:0}
+    .nrow{grid-template-columns:1fr auto} .nrow .tag{grid-column:1/-1;width:auto;margin-bottom:-8px}
+    .vidcard{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rv{opacity:1;transform:none;transition:none}.gpill{animation:none}}
+</style>
+
+<div class="nav"><div class="wrap nav__in">
+  <span class="brand">ILARA</span>
+  <nav class="nav__links">
+    <a href="#studios"><span class="mk"></span>Studios</a>
+    <a href="#teams"><span class="mk"></span>Teams</a>
+    <a href="#proof"><span class="mk"></span>Proof</a>
+    <a href="#news"><span class="mk"></span>Newsroom</a>
+    <a href="#book"><span class="mk"></span>About</a>
+  </nav>
+</div></div>
+
+<header class="hero"><div class="wrap hero__in">
+  <div class="eyebrow rv">Ilara is the decision layer for live games</div>
+  <h1 class="rv">We stop players leaving<br>at the moment <span class="lm">they decide.</span></h1>
+  <div class="hero__cta rv"><a class="btn-out" href="#studios">Show me how</a></div>
+  <div class="stage">
+    <div class="gpill gp1"><span class="ic">◍</span><div><div class="n">1.1M players</div><div class="l">scored daily</div></div></div>
+    <div class="gpill gp2"><span class="ic">↑</span><div><div class="n">38%</div><div class="l">less onboarding friction</div></div></div>
+    <div class="gpill gp3"><span class="ic">≈</span><div><div class="n">$18.4K/mo</div><div class="l">top move, this week</div></div></div>
+    <div class="gpill gp4"><span class="ic">0</span><div><div class="n">0 ML hires</div><div class="l">needed to run it</div></div></div>
+    <div class="stage__core"><div class="stage__ring"><b>ILARA</b></div></div>
+  </div>
+</div>
+<div class="vidcard"><span class="thumb">▶</span>Why Ilara is different</div>
+</header>
+
+<!-- why + stats -->
+<section class="sec" id="why"><div class="wrap">
+  <div class="eyebrow rv">Why Ilara?</div>
+  <h2 class="h2 rv" style="margin-top:16px;max-width:20ch">Backed by real-time scoring and a decision engine that ships.</h2>
+  <p class="lead rv">Your dashboards tell you what happened. Ilara scores every player daily, works out the moves worth making, and hands your team a ranked, priced list — measured against a control, not a projection.</p>
+  <div class="stats">
+    <div class="stat rv"><div class="n">1.1M</div><div class="l">players scored every day</div></div>
+    <div class="stat rv"><div class="n">3</div><div class="l">live titles in production</div></div>
+    <div class="stat rv"><div class="n">&lt;1 day</div><div class="l">to first predictions, cold</div></div>
+    <div class="stat rv"><div class="n">100%</div><div class="l">of moves run against a control</div></div>
+  </div>
+</div></section>
+
+<!-- audience cards -->
+<section class="sec sec--navy" id="studios"><div class="wrap">
+  <div class="cards">
+    <div class="card rv"><div class="card__img a"><span class="mk"></span></div><div class="card__b">
+      <div class="card__k">Studios</div>
+      <div class="card__d">Score every player, decide the moves worth making, and ship them measured against a control. The decision layer a studio gets without hiring an ML team.</div>
+      <a class="btn-out" href="#book" id="studios-cta">Run it on your game</a>
+    </div></div>
+    <div class="card rv" id="teams"><div class="card__img b"><span class="mk"></span></div><div class="card__b">
+      <div class="card__k">Teams</div>
+      <div class="card__d">The C-suite gets the call, product sees what to build, analytics gets every assumption exposed. One set of predictions, read three ways.</div>
+      <a class="btn-out" href="#book">See the read-outs</a>
+    </div></div>
+  </div>
+</div></section>
+
+<!-- meet showcase -->
+<section class="sec" id="ask"><div class="wrap meet">
+  <div class="eyebrow rv">Meet Ask Ilara</div>
+  <div class="mega rv">Decisions for <span class="lm">everyone.</span></div>
+  <p class="lead rv center" style="margin-top:24px">Ask it like you'd ask your best analyst. Answers come from your live game data, with the chart and the next move attached.</p>
+  <div class="mockrow">
+    <div class="mock rv">
+      <div class="mock__h"><span class="sq"></span>Ask Ilara · live title</div>
+      <div class="bub bub--u">Why did revenue dip on the 14th?</div>
+      <div class="bub bub--a">Your alliance event ended on the 13th. Alliance-active revenue fell <span class="hl">−38%</span> the next day and hasn't recovered — that's −$4.1K so far.</div>
+      <div class="bub bub--u">Queue the fix.</div>
+      <div class="bub bub--a"><span class="hl">✓ Queued</span> — rolling alliance mini-event · est. +$4.1K/mo · control group 10%.</div>
+    </div>
+    <div class="mock rv">
+      <div class="mock__h"><span class="sq"></span>Decision queue · WK 29</div>
+      <div class="notif"><span class="av">01</span><div><div class="t">Rescue paying players going cold</div><div class="s">spend −60% in 7 days · 4,120 players</div></div><span class="v">$18.4K</span></div>
+      <div class="notif"><span class="av">02</span><div><div class="t">Loot box 45s after a match win</div><div class="s">154,018 win→buy paths / week</div></div><span class="v">$12.9K</span></div>
+      <div class="notif"><span class="av">03</span><div><div class="t">Offer to likely payers</div><div class="s">top 1% concentrate the spend</div></div><span class="v">$9.7K</span></div>
+      <div class="notif"><span class="av">04</span><div><div class="t">Stop spending on the already-gone</div><div class="s">0% ever came back</div></div><span class="v">$4.1K</span></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- proof -->
+<section class="sec sec--navy" id="proof"><div class="wrap center">
+  <div class="eyebrow rv">Business case · Reliance Games · 6,319 players</div>
+  <h2 class="h2 rv" style="margin-top:16px;max-width:20ch;margin-left:auto;margin-right:auto">We ran it on a live game. Here's what happened.</h2>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr);text-align:left">
+    <div class="stat rv"><div class="n">38%</div><div class="l">less onboarding friction, one in thirteen installs rescued</div></div>
+    <div class="stat rv"><div class="n">9.5%</div><div class="l">more revenue per install, retention flat at every horizon</div></div>
+    <div class="stat rv"><div class="n">$1.5M</div><div class="l">a year found across the wider engagement</div></div>
+  </div>
+  <p class="lead rv center" style="margin-top:36px;font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.4vw,26px);color:var(--fg);max-width:40ch">“The primary metric didn't move. It was the first line of the report.”</p>
+</div></section>
+
+<!-- newsroom -->
+<section class="sec" id="news"><div class="wrap">
+  <div class="eyebrow rv">Newsroom</div>
+  <div class="news">
+    <a class="nrow rv" href="#"><span class="tag">Result</span><span class="ti">FTUE skip lifts onboarding completion 38% on a live title</span><span class="ar">→</span></a>
+    <a class="nrow rv" href="#"><span class="tag">Product</span><span class="ti">Ask Ilara: the chart and the next move, in one line</span><span class="ar">→</span></a>
+    <a class="nrow rv" href="#"><span class="tag">Method</span><span class="ti">How we prove a number: tested on players it has never seen</span><span class="ar">→</span></a>
+    <a class="nrow rv" href="#"><span class="tag">Wedge</span><span class="ti">The decision layer a studio gets without hiring an ML team</span><span class="ar">→</span></a>
+  </div>
+</div></section>
+
+<!-- cta -->
+<section class="sec cta" id="book"><div class="wrap center">
+  <div class="eyebrow rv">Ready when you are</div>
+  <h2 class="h2 rv" style="max-width:18ch;margin-left:auto;margin-right:auto">Run it on your game.</h2>
+  <p class="lead rv center">Book a teardown with our team. Send us data, we come back with findings you can check against a control.</p>
+  <div class="cta__b rv"><a class="btn-lime" href="#">Book a teardown</a><a class="btn-out" href="#proof">See the proof</a></div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="foot__top">
+    <div><div class="foot__brand">ILARA</div><div style="margin-top:14px;font-family:var(--serif);font-style:italic;font-size:16px;color:var(--fg2)">The decision layer for live mobile games.</div></div>
+    <div class="foot__cols">
+      <div><h4>Platform</h4><a href="#studios">Studios</a><a href="#teams">Teams</a><a href="#ask">Ask Ilara</a><a href="#proof">Proof</a></div>
+      <div><h4>Company</h4><a href="#news">Newsroom</a><a href="#book">About</a><a href="#book">Contact</a></div>
+      <div><h4>Legal</h4><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Status</a></div>
+    </div>
+  </div>
+  <div class="foot__base"><span>© 2026 Ilara</span><span>More players, more revenue, less guesswork.</span></div>
+</div></footer>
+
+<script>
+(function(){
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(function(e){ io.observe(e); });
+})();
+</script>
