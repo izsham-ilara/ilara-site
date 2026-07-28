@@ -149,6 +149,18 @@
   .chip{background:var(--lime);color:var(--lime-ink);font-family:var(--fm);font-weight:700;font-size:9.5px;padding:1.5px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.05em;margin-right:7px;vertical-align:1px}
   .foot__tag{margin-top:14px;font-family:var(--fm);font-size:12.5px;color:var(--lime)}
   .foot__tag2{margin-top:6px;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--fg2)}
+  /* connects */
+  .connect{margin-top:56px;display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(20px,4vw,60px);align-items:center}
+  .conn-col{display:grid;gap:12px}
+  .conn-k{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--lime);margin-bottom:4px}
+  .conn-col--r{text-align:right}
+  .conn-i{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:14px 18px;font-size:15px;color:var(--fg);display:flex;align-items:center;gap:10px}
+  .conn-col--r .conn-i{flex-direction:row-reverse}
+  .conn-i .dt{width:7px;height:7px;border-radius:50%;background:var(--lime);flex:none}
+  .conn-hub__c{width:clamp(150px,17vw,190px);height:clamp(150px,17vw,190px);border-radius:50%;background:radial-gradient(120% 120% at 30% 20%,#12241f,#0a0f16);border:1px solid rgba(163,230,53,.3);color:#fff;display:grid;place-items:center;text-align:center;padding:22px;box-shadow:0 0 70px rgba(163,230,53,.16)}
+  .conn-hub__c .wm{height:24px;width:66px;fill:var(--lime)}
+  .conn-hub__c span{font-family:var(--fm);font-size:11px;color:var(--fg2);margin-top:10px;line-height:1.45}
+  @media(max-width:860px){.connect{grid-template-columns:1fr;gap:24px}.conn-hub{justify-self:center}.conn-col--r{text-align:left}.conn-col--r .conn-i{flex-direction:row}}
   .rv{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
   .rv.in{opacity:1;transform:none}
 
@@ -241,6 +253,18 @@
       <div class="notif"><span class="av">03</span><div><div class="t">Offer to likely payers</div><div class="s"><span class="chip">why</span>top 1% concentrate the spend</div></div><span class="v">$9.7K</span></div>
       <div class="notif"><span class="av">04</span><div><div class="t">Stop spending on the already-gone</div><div class="s"><span class="chip">why</span>0% ever came back</div></div><span class="v">$4.1K</span></div>
     </div>
+  </div>
+</div></section>
+
+<!-- connects -->
+<section class="sec" id="connect"><div class="wrap">
+  <div class="eyebrow rv">Integrations</div>
+  <h2 class="h2 rv" style="margin-top:16px;max-width:20ch">Connects to what you already run.</h2>
+  <p class="lead rv">We read the game data you already collect, and write decisions back into the places your team already acts. Events living somewhere else? A CSV export covers the first run.</p>
+  <div class="connect">
+    <div class="conn-col rv"><div class="conn-k">What you send</div><div class="conn-i"><span class="dt"></span>devtodev</div><div class="conn-i"><span class="dt"></span>Firebase / GA4</div><div class="conn-i"><span class="dt"></span>Daily CSV / S3</div><div class="conn-i"><span class="dt"></span>SDK / REST</div></div>
+    <div class="conn-hub rv"><div class="conn-hub__c"><svg class="wm"><use href="#wm"/></svg><span>Scores every player daily</span></div></div>
+    <div class="conn-col conn-col--r rv"><div class="conn-k">What comes back</div><div class="conn-i"><span class="dt"></span>Live scoring API</div><div class="conn-i"><span class="dt"></span>In-game offers</div><div class="conn-i"><span class="dt"></span>Control-group A/B</div><div class="conn-i"><span class="dt"></span>Webhooks</div></div>
   </div>
 </div></section>
 

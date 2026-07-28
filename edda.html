@@ -47,7 +47,7 @@
   /* floating mockups */
   .stage{position:relative;height:clamp(360px,40vw,480px)}
   .card{position:absolute;background:#fff;color:var(--ink);border-radius:16px;box-shadow:0 30px 70px -30px rgba(0,0,0,.55);overflow:hidden}
-  .board{width:82%;right:0;top:8%;border:1px solid #eceee7}
+  .board{width:63%;right:0;top:50%;transform:translateY(-50%);border:1px solid #eceee7;z-index:1}
   .board__bar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid #f0f1ec;font-family:var(--fm);font-size:11px;color:var(--fg2)}
   .board__bar .sq{width:8px;height:8px;border-radius:2px;background:var(--lime)}
   .play{display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:11px 14px;border-top:1px solid #f4f5f0;font-size:13px}
@@ -57,13 +57,13 @@
   .play__w{margin-top:2px;font-family:var(--fm);font-size:10px;color:var(--fg2)}
   .chip{background:var(--lime);color:var(--lime-ink);font-weight:700;padding:1px 5px;border-radius:3px;text-transform:uppercase;font-size:8.5px;letter-spacing:.04em;margin-right:5px}
   .play__v{font-family:var(--fm);font-weight:700;font-size:13px}
-  .notif{width:44%;left:0;top:0;padding:18px;text-align:center;z-index:3}
+  .notif{width:35%;left:0;top:3%;padding:16px;text-align:center;z-index:3}
   .notif .ic{width:38px;height:38px;border-radius:10px;background:var(--lime);color:var(--lime-ink);display:grid;place-items:center;margin:0 auto 12px;font-weight:700}
   .notif h4{font-family:var(--serif);font-size:19px}
   .notif p{margin-top:6px;font-size:12.5px;color:var(--fg2);line-height:1.4}
   .notif p b{color:var(--ink)}
   .notif .go{margin-top:12px;display:inline-block;background:var(--ink);color:#fff;font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px}
-  .donut{width:40%;right:2%;bottom:0;padding:16px;z-index:2}
+  .donut{width:35%;left:0;bottom:3%;padding:14px;z-index:2}
   .donut h5{font-size:12px;font-weight:600}
   .donut__d{margin:12px auto 0;width:112px;height:112px;border-radius:50%;
     background:conic-gradient(var(--lime) 0 46%,#2f7d0a 46% 70%,#8fce22 70% 86%,#cfe8a3 86% 100%);
@@ -114,6 +114,19 @@
   .proofrow{margin-top:60px;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,4vw,52px)}
   .pstat .n{font-family:var(--serif);font-size:clamp(50px,7vw,88px);line-height:1;color:var(--lime-d)}
   .pstat .c{margin-top:12px;font-size:14px;color:var(--fg2);max-width:26ch;line-height:1.45}
+
+  /* connects */
+  .connect{margin-top:60px;display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(20px,4vw,64px);align-items:center}
+  .conn-col{display:grid;gap:10px}
+  .conn-k{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--lime-d);margin-bottom:4px}
+  .conn-col--r{text-align:right}
+  .conn-i{background:#fff;border:1px solid var(--line);border-radius:11px;padding:14px 18px;font-size:15px;font-weight:500;box-shadow:0 12px 26px -20px rgba(14,26,23,.35);display:flex;align-items:center;gap:10px}
+  .conn-col--r .conn-i{flex-direction:row-reverse}
+  .conn-i .dt{width:7px;height:7px;border-radius:2px;background:var(--lime);flex:none}
+  .conn-hub__c{width:clamp(150px,17vw,196px);height:clamp(150px,17vw,196px);border-radius:50%;background:radial-gradient(120% 120% at 30% 20%,#1c3a33,#0d1a17);color:#fff;display:grid;place-items:center;text-align:center;padding:24px;box-shadow:0 0 0 10px rgba(163,230,53,.10),0 34px 64px -30px rgba(14,26,23,.55)}
+  .conn-hub__c .wm{height:24px;width:66px;fill:#fff}
+  .conn-hub__c span{font-family:var(--fm);font-size:11px;color:var(--onfg2);margin-top:12px;line-height:1.45}
+  @media(max-width:900px){.connect{grid-template-columns:1fr;gap:26px}.conn-hub{justify-self:center}.conn-col--r{text-align:left}.conn-col--r .conn-i{flex-direction:row}}
 
   /* CTA + footer */
   .cta{background:linear-gradient(160deg,#0d1a17,#0c1512);color:#fff;text-align:center}
@@ -218,6 +231,28 @@
     <p class="lead">On players we've never seen, on a game we've never scored. No feature engineering, no six-month integration, no ML team to hire.</p>
     <div style="margin-top:30px"><a class="pill pill--lime" href="#book">See the platform</a></div>
   </div></div>
+</div></section>
+
+<!-- connects -->
+<section class="sec sec--cream" id="connect"><div class="wrap">
+  <div class="sec__head"><div class="l"><div class="eyebrow rv">Integrations</div><h2 class="h2 rv">Connects to what you already run.</h2><p class="lead rv">We read the game data you already collect, and write decisions back into the places your team already acts. Events living somewhere else? A CSV export covers the first run.</p></div></div>
+  <div class="connect">
+    <div class="conn-col rv">
+      <div class="conn-k">What you send</div>
+      <div class="conn-i"><span class="dt"></span>devtodev</div>
+      <div class="conn-i"><span class="dt"></span>Firebase / GA4</div>
+      <div class="conn-i"><span class="dt"></span>Daily CSV / S3</div>
+      <div class="conn-i"><span class="dt"></span>SDK / REST</div>
+    </div>
+    <div class="conn-hub rv"><div class="conn-hub__c"><svg class="wm"><use href="#wm"/></svg><span>Scores every player daily</span></div></div>
+    <div class="conn-col conn-col--r rv">
+      <div class="conn-k">What comes back</div>
+      <div class="conn-i"><span class="dt"></span>Live scoring API</div>
+      <div class="conn-i"><span class="dt"></span>In-game offers</div>
+      <div class="conn-i"><span class="dt"></span>Control-group A/B</div>
+      <div class="conn-i"><span class="dt"></span>Webhooks</div>
+    </div>
+  </div>
 </div></section>
 
 <!-- proof -->
