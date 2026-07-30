@@ -7,8 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0e0e10; --panel:#151517; --panel2:#1b1b1e; --line:#26262a; --line2:#303036;
-    --dim:#4c4c52; --ghost:#191a1e; --ascii:#1a1b1e; --fg:#e9e9ec; --fg2:#9a9aa0; --fg3:#6f6f76;
+    --bg:#17171b; --panel:#202024; --panel2:#27272c; --line:#313137; --line2:#3c3c43;
+    --dim:#55555c; --ghost:#242430; --ascii:#242429; --fg:#e9e9ec; --fg2:#9a9aa0; --fg3:#6f6f76;
     --lime:#a3e635; --lime-d:#8fce22; --amber:#e2a13c;
     --fm:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
     --fd:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
@@ -70,11 +70,11 @@
   .hgut b.cur{color:var(--lime)}
   .canvas{flex:1;position:relative;overflow:hidden}
   .ascii{position:absolute;inset:0;padding:14px 0 0 16px;font-family:var(--fm);font-size:12px;line-height:1.55;
-    color:#242429;white-space:pre;overflow:hidden;pointer-events:none;letter-spacing:.5px}
+    color:#2a2a30;white-space:pre;overflow:hidden;pointer-events:none;letter-spacing:.5px}
   .ascii .lm{color:var(--lime);opacity:.85}
   .canvas::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 88% 96%, rgba(163,230,53,.10), transparent 55%)}
   .canvas::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
-    background:radial-gradient(74% 62% at 6% 16%, rgba(14,14,16,.86), rgba(14,14,16,.34) 42%, transparent 64%)}
+    background:radial-gradient(74% 62% at 6% 16%, rgba(23,23,27,.86), rgba(23,23,27,.34) 42%, transparent 64%)}
   .ov{position:absolute;pointer-events:none}
   .tl{top:clamp(24px,5vh,60px);left:clamp(20px,4vw,64px);z-index:3;pointer-events:auto}
   .kick{font-family:var(--fm);font-size:12.5px;color:var(--fg3);margin-bottom:16px}
@@ -121,7 +121,7 @@
   .blk__d{margin-top:14px;font-size:14px;color:var(--fg2);line-height:1.58}
 
   /* terminal */
-  .term{margin-top:52px;background:#0a0a0c;border:1px solid var(--line);overflow:hidden;font-family:var(--fm);max-width:840px}
+  .term{margin-top:52px;background:#101014;border:1px solid var(--line);overflow:hidden;font-family:var(--fm);max-width:840px}
   .term__bar{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:11.5px;color:var(--fg3)}
   .term__bar .d{width:11px;height:11px;border-radius:50%;background:var(--dim)}
   .term__b{padding:20px 20px 24px}
@@ -151,7 +151,7 @@
   .imp .kw{color:var(--lime)} .imp .str{color:var(--amber)}
 
   /* proof tests */
-  .tests{margin-top:52px;background:#0a0a0c;border:1px solid var(--line);overflow:hidden;font-family:var(--fm);font-size:13.5px;max-width:920px}
+  .tests{margin-top:52px;background:#101014;border:1px solid var(--line);overflow:hidden;font-family:var(--fm);font-size:13.5px;max-width:920px}
   .test{display:flex;align-items:baseline;gap:12px;padding:15px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
   .test:last-child{border-bottom:0}
   .test .mk{width:16px;flex:none;font-weight:700}
@@ -214,11 +214,11 @@
   .brand .wm{height:15px;width:41.5px;fill:currentColor;color:var(--fg);display:block;transition:color .2s}
   .brand:hover .wm{color:var(--lime)}
 
-  /* ---- light "paper" sections: break up the dark ---- */
-  .sec--light{--fg:#16161a;--fg2:#55555c;--fg3:#8a8a91;--line:#e6e6e0;--line2:#dcdcd4;--ghost:#edede8;--lime:#5c8a15;--amber:#a9761c;
-    background:#f7f7f2;color:#16161a}
-  .sec--light .st{color:#141417}
-  .sec--light .ghost{color:#edede8}
+  /* ---- lighter "stone" sections: break up the dark without going white ---- */
+  .sec--light{--fg:#17171b;--fg2:#4e4e55;--fg3:#77777e;--line:#c8c7bf;--line2:#bebdb4;--ghost:#d2d1c9;--lime:#587f18;--amber:#9e6d1a;
+    background:#dcdbd3;color:#17171b}
+  .sec--light .st{color:#151519}
+  .sec--light .ghost{color:#d2d1c9}
 
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
@@ -414,7 +414,7 @@
       </section>
 
       <section class="cta" id="run">
-        <span class="ghost ghost--r" aria-hidden="true" style="color:#141416">run</span>
+        <span class="ghost ghost--r" aria-hidden="true" style="color:#22222a">run</span>
         <div class="sec__in" style="max-width:none;position:relative;z-index:2">
           <div class="prompt rv"><span class="p">$</span> ilara run <span class="fl">--game</span> your-title</div>
           <h2 class="rv">Run it on your game.</h2>
