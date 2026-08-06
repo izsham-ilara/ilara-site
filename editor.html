@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ilara.js — the decision layer for live mobile games</title>
+<title>ilara.js · Decisions, not dashboards</title>
 <meta name="description" content="Ilara: the decision layer for live mobile games. Decisions, not dashboards.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -226,23 +226,25 @@
     .rv{opacity:1;transform:none;transition:none}
   }
 </style>
+<noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="wm" viewBox="0 0 1056.84 381.52"><path d="M32.21,13.97h77.58v346.83H32.21V13.97Z"/><path d="M478.04,14.5c66.31,0,98.8,43.76,98.8,103.44v188.32c0,39.79-19.89,59.68-59.68,59.68h-177.04c-59.68,0-87.53-36.47-87.53-109.41,0-66.31,27.85-109.41,87.53-109.41h159.14v-22.54c0-33.15-15.91-50.39-49.07-50.39h-171.74V14.5h199.59ZM369.96,206.79c-26.52,0-37.13,16.58-37.13,49.73s10.61,49.73,37.13,49.73h109.41c13.26,0,19.89-6.63,19.89-19.89v-79.57h-129.3Z"/><path d="M602.66,147.12c0-94.16,47.74-132.62,141.9-132.62h52.38v59.68h-32.49c-62.33,0-84.21,31.17-84.21,93.5v198.26h-77.58v-218.82Z"/><path d="M934.84,14.5c66.31,0,98.8,43.76,98.8,103.44v188.32c0,39.79-19.89,59.68-59.68,59.68h-177.04c-59.68,0-87.53-36.47-87.53-109.41,0-66.31,27.85-109.41,87.53-109.41h159.14v-22.54c0-33.15-15.91-50.39-49.07-50.39h-171.74V14.5h199.59ZM826.76,206.79c-26.52,0-37.13,16.58-37.13,49.73s10.61,49.73,37.13,49.73h109.41c13.26,0,19.89-6.63,19.89-19.89v-79.57h-129.3Z"/><path d="M133.37,14.05h77.58v198.26c0,62.33,21.88,93.5,84.21,93.5h32.49v59.68h-52.38c-94.16,0-141.9-38.46-141.9-132.62V14.05Z"/></symbol></svg>
 
 <div class="bar">
   <div class="bar__l">
-  <a class="brand" href="#top" aria-label="Ilara — home"><svg class="wm" aria-hidden="true"><use href="#wm"/></svg></a>
+  <a class="brand" href="#top" aria-label="Ilara home"><svg class="wm" aria-hidden="true"><use href="#wm"/></svg></a>
   <div class="tabs">
     <a class="tab tab--on" href="#top" data-sec="top"><span class="dot"></span>ilara.js</a>
     <a class="tab tab--hide" href="#problem" data-sec="problem"><span class="dot"></span>problem.js</a>
-    <a class="tab tab--hide" href="#decide" data-sec="decide"><span class="dot"></span>decide.js</a>
+    <a class="tab tab--hide" href="#decide" data-sec="decide"><span class="dot"></span>engine.js</a>
     <a class="tab tab--hide" href="#ask" data-sec="ask"><span class="dot"></span>ask.js</a>
     <a class="tab tab--hide" href="#proof" data-sec="proof"><span class="dot"></span>proof.js</a>
     <a class="tab tab--hide" href="#pricing" data-sec="pricing"><span class="dot"></span>pricing.js</a>
+    <a class="tab tab--hide" href="#faq" data-sec="faq"><span class="dot"></span>faq.js</a>
   </div>
   </div>
   <div class="bar__r">
-    <a class="runbtn" href="#run"><span>Run it on your game</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#0d0d0e" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a class="runbtn" href="#run"><span>Book a teardown</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#0d0d0e" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     <span class="icn" title="Theme"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg></span>
     <span class="icn" title="Panel"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></span>
   </div>
@@ -253,11 +255,11 @@
   <div class="canvas">
     <pre class="ascii" id="ascii" aria-hidden="true"></pre>
     <div class="ov tl">
-      <div class="kick"><span class="c">//</span> the decision layer for live mobile games</div>
+      <div class="kick"><span class="c">//</span> predictive liveops &middot; per player</div>
       <h1>Decisions,<br>not <span class="strike">dashboards</span>.<span class="cur-blink" aria-hidden="true"></span></h1>
-      <div class="sub">Your dashboards tell you what happened. Ilara tells you what to do next <span class="c">—</span> the move, the price, the player, ready to ship.</div>
+      <div class="sub">Ilara sits on top of the analytics you already run and watches your live game player by player. It spots the ones about to churn, buy, or cheat, picks the move most likely to change what happens next, and hands it to you priced and ready to approve.</div>
     </div>
-    <div class="ov br-word" aria-hidden="true"><div class="tagm">// scoring 1.1M players daily</div><span class="w">ilara</span></div>
+    <div class="ov br-word" aria-hidden="true"><div class="tagm">// a teardown on one of your own titles</div><span class="w">ilara</span></div>
   </div>
 </div>
 
@@ -270,12 +272,12 @@
         <span class="ghost ghost--r" aria-hidden="true">leave</span>
         <div class="sec__in">
           <div class="sk rv"><span class="c">//</span> problem</div>
-          <h2 class="st rv">Three in four players leave. You find out too late to act.</h2>
-          <p class="sp rv">It's rarely the game. Nobody can watch a million players one at a time, so retention budget gets sprayed at everyone, and the players worth saving walk out unnoticed.</p>
+          <h2 class="st rv">You find out too late to act.</h2>
+          <p class="sp rv">Your dashboard reports what happened, accurately, after the fact. By the time the weekly report lands, the player has been gone six days and no offer, message or tuning change can reach them. The numbers are not the problem. The lag is.</p>
           <div class="stats">
-            <div class="stat rv"><div class="n amber">38.7%</div><div class="c">of installs never seen again after day zero</div></div>
-            <div class="stat rv"><div class="n amber">0%</div><div class="c">of the most at-risk group ever came back on their own</div></div>
-            <div class="stat rv"><div class="n amber">weekly</div><div class="c">a fresh set of calls, made or not</div></div>
+            <div class="stat rv"><div class="n amber">3 in 4</div><div class="c">new players never come back</div></div>
+            <div class="stat rv"><div class="n amber">&lt;5%</div><div class="c">of the ones who stay ever pay you anything</div></div>
+            <div class="stat rv"><div class="n amber">6 days</div><div class="c">gone, on average, before the weekly report flags them</div></div>
           </div>
         </div>
       </section>
@@ -283,13 +285,13 @@
       <section class="sec sec--light" id="decide">
         <span class="ghost ghost--l" aria-hidden="true">decide</span>
         <div class="sec__in">
-          <div class="sk rv"><span class="c">//</span> the fix</div>
-          <h2 class="st rv">Ilara decides, so your team doesn't have to guess.</h2>
-          <p class="sp rv">It scores every player every day, works out who's about to leave or spend, and turns that into a ranked list of moves with a dollar value on each. Your team approves the move instead of designing it.</p>
+          <div class="sk rv"><span class="c">//</span> how it works</div>
+          <h2 class="st rv">Ilara decides, you approve.</h2>
+          <p class="sp rv">Every player is scored continuously against what they are about to do next. Ilara ranks the moves that would change that outcome, prices each one, and shows you the call with the reasoning behind it. You approve, and it ships, always against a live control group so you can see what that move was worth.</p>
           <div class="cols">
-            <div class="blk rv"><div class="blk__k">predict()</div><div class="blk__t">Who's leaving, who's about to pay.</div><div class="blk__d">Every player scored daily, before they act, on signals your team can't watch by hand.</div></div>
-            <div class="blk rv"><div class="blk__k">decide()</div><div class="blk__t">The week's moves, ranked by money.</div><div class="blk__d">Not a chart. A short list of specific plays, each priced, each with the reason attached.</div></div>
-            <div class="blk rv"><div class="blk__k">act()</div><div class="blk__t">Ship it, measured against a control.</div><div class="blk__d">Approve and it ships. What comes back is earned dollars, tested against a holdout, not a projection.</div></div>
+            <div class="blk rv"><div class="blk__k">predict()</div><div class="blk__t">Every player, scored on what they do next.</div><div class="blk__d">Continuously and per player, not a cohort read once a week.</div></div>
+            <div class="blk rv"><div class="blk__k">decide()</div><div class="blk__t">The moves worth making, ranked and priced.</div><div class="blk__d">A short list of specific plays, each carrying the reason it was chosen.</div></div>
+            <div class="blk rv"><div class="blk__k">act()</div><div class="blk__t">Approve it, and it ships against a control.</div><div class="blk__d">What comes back is what the move earned, not what it should have earned.</div></div>
           </div>
         </div>
       </section>
@@ -298,17 +300,17 @@
         <span class="ghost ghost--r" aria-hidden="true">ask</span>
         <div class="sec__in">
           <div class="sk rv"><span class="c">//</span> ask</div>
-          <h2 class="st rv">Ask it like you'd ask your best analyst.</h2>
-          <p class="sp rv">Answers come from your live game data, with the chart and the next move attached. No query language, no analyst in the loop.</p>
+          <h2 class="st rv">Ask it like your best analyst.</h2>
+          <p class="sp rv">Type the question you would have sent to your data team. You get back a ranked list of real players and the move for each one, not a chart to interpret. No SQL, no ticket, no waiting for Thursday’s report.</p>
           <div class="term rv">
             <div class="term__bar"><span class="d"></span><span class="d" style="background:#242429"></span><span class="d" style="background:#242429"></span>&nbsp;ask ilara · live title · 265,832 players</div>
             <div class="term__b">
-              <div class="q"><span class="p">&gt;</span>why did revenue dip on the 14th?</div>
-              <div class="a">Your alliance event ended on the 13th. Revenue from alliance-active players fell <span class="hl">−38%</span> the next day and hasn't recovered. That's <b>−$4.1K</b> so far.</div>
-              <div class="q"><span class="p">&gt;</span>is that just seasonality?</div>
-              <div class="a">No. Players with no alliance held flat over the same window, so the drop is tied to the event ending, not the calendar.</div>
-              <div class="q"><span class="p">&gt;</span>queue the fix</div>
-              <div class="a"><span class="ok">✓ queued</span> · rolling alliance mini-event · est. <b>+$4.1K/mo</b> · control group 10% · ready to ship</div>
+              <div class="q"><span class="p">&gt;</span>who is about to churn on ios this week, and what do i send them?</div>
+              <div class="a"><b>1,240 players</b> are on track to stop playing within seven days. The strongest single move is the comeback offer: <span class="hl">+$18.4K</span> expected, measured against a 10% control.</div>
+              <div class="q"><span class="p">&gt;</span>why those players?</div>
+              <div class="a">Session length fell for six days straight and their last two offers went unopened. Players who look like this came back 8% of the time on their own, and 31% when the comeback offer reached them in time.</div>
+              <div class="q"><span class="p">&gt;</span>approve and ship it</div>
+              <div class="a"><span class="ok">✓ queued</span> · comeback offer · 1,116 treated, 124 held back · results in seven days</div>
             </div>
           </div>
         </div>
@@ -317,13 +319,13 @@
       <section class="sec sec--light" id="who">
         <span class="ghost ghost--l" aria-hidden="true">teams</span>
         <div class="sec__in">
-          <div class="sk rv"><span class="c">//</span> who it's for</div>
-          <h2 class="st rv">Every team gets the version they can act on.</h2>
-          <p class="sp rv">One set of predictions, read three ways. The C-suite makes the call, product sees what to build, analytics gets every assumption exposed.</p>
+          <div class="sk rv"><span class="c">//</span> how it reads</div>
+          <h2 class="st rv">A version each team can act on.</h2>
+          <p class="sp rv">The same engine, read three ways, so no meeting is spent arguing about whose figure is right.</p>
           <div class="cols">
-            <div class="blk rv"><div class="blk__k">C-Suite</div><div class="blk__t">Make the call, not the calculation.</div><div class="blk__d">One line, one confidence level, one recommended action. No dashboard to interpret, no analyst to translate. The decision arrives already made.</div></div>
-            <div class="blk rv"><div class="blk__k">Product Team</div><div class="blk__t">What to build next, and what to stop building.</div><div class="blk__d">Demand signals mapped to roadmap items. See which features the forecast is actually pulling toward before you commit a sprint to them.</div></div>
-            <div class="blk rv"><div class="blk__k">Analytics Team</div><div class="blk__t">Every assumption, exposed.</div><div class="blk__d">The full read-out. Inputs, weights, model confidence, the data lineage behind every number. Audit it, challenge it, feed it back in.</div></div>
+            <div class="blk rv"><div class="blk__k">C-Suite</div><div class="blk__t">The revenue at risk this week.</div><div class="blk__d">One number, what recovering it is worth, and the call to make. No dashboard to interpret first, no analyst to translate.</div></div>
+            <div class="blk rv"><div class="blk__k">Product Team</div><div class="blk__t">The specific fix to ship.</div><div class="blk__d">Which change moves which players, and exactly who it lands on, before a sprint is committed to it.</div></div>
+            <div class="blk rv"><div class="blk__k">Analytics Team</div><div class="blk__t">The test, its control, the confidence.</div><div class="blk__d">Inputs, weights and lineage behind every number, open to be audited, challenged and fed back in.</div></div>
           </div>
         </div>
       </section>
@@ -331,11 +333,12 @@
       <section class="sec sec--light" id="how">
         <span class="ghost ghost--r" aria-hidden="true">days</span>
         <div class="sec__in">
-          <div class="sk rv"><span class="c">//</span> live in days, not months</div>
-          <h2 class="st rv">You skip the warm-up, the integration and the data-science hire.</h2>
+          <div class="sk rv"><span class="c">//</span> the wedge</div>
+          <h2 class="st rv">Live in a day, not six months.</h2>
+          <p class="sp rv">Ilara cold-starts on a game it has never seen, because there is no per-game model to rebuild and nothing new to instrument first. Building the same capability in house means roughly six months and a data-science team you have to hire before you find out whether it works.</p>
           <div class="steps">
             <div class="step rv"><div class="step__n">step one · connect</div><div class="step__t">Send a data export, or drop in the SDK.</div><div class="step__d">Whatever you already collect is enough. No new instrumentation.</div></div>
-            <div class="step rv"><div class="step__n">step two · score</div><div class="step__t">Predictions stood up cold, in under a day.</div><div class="step__d">On players we've never seen, on a game we've never scored. No feature engineering.</div></div>
+            <div class="step rv"><div class="step__n">step two · score</div><div class="step__t">The first ranked players, the same day.</div><div class="step__d">Send an export in the morning, get scores back on a game we have never seen.</div></div>
             <div class="step rv"><div class="step__n">step three · act</div><div class="step__t">A ranked, priced list of moves.</div><div class="step__d">Approve them, and we measure what each one earned against a control.</div></div>
           </div>
         </div>
@@ -345,8 +348,8 @@
         <span class="ghost ghost--r" aria-hidden="true">connect</span>
         <div class="sec__in">
           <div class="sk rv"><span class="c">//</span> connects to what you already run</div>
-          <h2 class="st rv">Read your data. Write decisions back.</h2>
-          <p class="sp rv">We read the game data you already collect, and write decisions into the places your team already acts. Events living somewhere else? A CSV export covers the first run.</p>
+          <h2 class="st rv">Works with the tools you already run.</h2>
+          <p class="sp rv">Ilara reads the events you already send, wherever they live, and writes decisions back out through the CRM and LiveOps tools your team already works in. Nothing to rip out, no SDK swap, no migration project, and no new dashboard for anyone to learn.</p>
           <div class="conn2">
             <div class="conn2__col rv">
               <div class="conn2__k">// what you send</div>
@@ -369,19 +372,18 @@
       <section class="sec" id="proof">
         <span class="ghost ghost--l" aria-hidden="true">proof</span>
         <div class="sec__in">
-          <div class="sk rv"><span class="c">//</span> proof · Reliance Games · 6,319 players</div>
-          <h2 class="st rv">We ran it on a live game. Here's what happened.</h2>
-          <p class="sp rv">One controlled test on a live title: a control group and two identical treatment groups, so the result validates itself.</p>
+          <div class="sk rv"><span class="c">//</span> proof · one live test · studio anonymized</div>
+          <h2 class="st rv">Told straight, measured against a control.</h2>
+          <p class="sp rv">On a live game, players flagged by Ilara bought at 8.7% per offer shown against 1.0% for the control, roughly nine times more, while the number of players interrupted by an offer fell by 95%.</p>
           <div class="stats">
-            <div class="stat rv"><div class="n lime">38%</div><div class="c">less onboarding friction, or one in thirteen installs rescued</div></div>
-            <div class="stat rv"><div class="n lime">9.5%</div><div class="c">more revenue per install, retention flat at every horizon</div></div>
-            <div class="stat rv"><div class="n lime">$1.5M</div><div class="c">a year found across the wider engagement</div></div>
+            <div class="stat rv"><div class="n lime">9×</div><div class="c">more purchases per offer shown, 1.0% to 8.7% against the control</div></div>
+            <div class="stat rv"><div class="n lime">95%</div><div class="c">fewer players interrupted by an offer at all</div></div>
+            <div class="stat rv"><div class="n lime">flat</div><div class="c">retention over the same window, unchanged either way</div></div>
           </div>
           <div class="tests rv">
-            <div class="test"><span class="mk pass">✓</span><span class="lbl">onboarding friction cut 38%</span><span class="tag pass">proven</span></div>
-            <div class="test"><span class="mk warn">~</span><span class="lbl">repeat purchases up 44% → 56%</span><span class="tag warn">strong pattern</span></div>
-            <div class="test"><span class="mk fail">·</span><span class="lbl">revenue per install $0.39 → $0.46</span><span class="tag">early trend</span></div>
-            <div class="test"><span class="mk fail">✗</span><span class="lbl">day-1 paying conversion — the primary metric</span><span class="tag">no lift · we led with it</span></div>
+            <div class="test"><span class="mk pass">✓</span><span class="lbl">purchase rate per offer 1.0% → 8.7%</span><span class="tag pass">causal · vs control</span></div>
+            <div class="test"><span class="mk pass">✓</span><span class="lbl">players interrupted by an offer down 95%</span><span class="tag pass">causal · vs control</span></div>
+            <div class="test"><span class="mk fail">✗</span><span class="lbl">retention over the same window</span><span class="tag">flat · we say so</span></div>
           </div>
         </div>
       </section>
@@ -390,11 +392,11 @@
         <span class="ghost ghost--r" aria-hidden="true">scale</span>
         <div class="sec__in">
           <div class="sk rv"><span class="c">//</span> pricing</div>
-          <h2 class="st rv">Start with a teardown. Scale into the platform.</h2>
-          <p class="sp rv">Send us data, we come back with findings you can check. If the numbers are there, the platform is how you keep acting on them.</p>
+          <h2 class="st rv">Teardown, then platform.</h2>
+          <p class="sp rv">Start with a fixed, paid teardown on one title. If that lands, it becomes an annual managed service, quoted after a short discovery against the value we just showed you.</p>
           <div class="cols cols--2 price">
-            <div class="blk rv"><div class="blk__k">teardown</div><div class="blk__t">Paid build</div><div class="meta">one title · no platform commitment</div><ul><li>Your data, scored cold in days</li><li>A ranked, priced list of moves</li><li>Findings you can check against a control</li></ul></div>
-            <div class="blk rv"><div class="blk__k">platform</div><div class="blk__t">Annual · managed</div><div class="meta">quoted per studio, within guardrails</div><ul><li>Daily scoring across your live titles</li><li>The decision queue, in your workflow</li><li>Causal A/B on every move</li><li>Priced off your own economics</li></ul></div>
+            <div class="blk rv"><div class="blk__k">teardown</div><div class="blk__t">Fixed price, one title</div><div class="meta">no platform commitment</div><ul><li>Your own data, scored cold in days</li><li>A ranked, priced list of moves</li><li>A straight read on what acting on them is worth</li></ul></div>
+            <div class="blk rv"><div class="blk__k">platform</div><div class="blk__t">Annual, managed</div><div class="meta">quoted per studio after discovery</div><ul><li>Continuous scoring across your live titles</li><li>The decision queue inside your workflow</li><li>A control group on every move</li><li>Priced off your own economics, not a per-seat rate card</li></ul></div>
           </div>
         </div>
       </section>
@@ -403,12 +405,12 @@
         <span class="ghost ghost--l" aria-hidden="true">faq</span>
         <div class="sec__in">
           <div class="sk rv"><span class="c">//</span> faq</div>
-          <h2 class="st rv">The questions a technical buyer asks.</h2>
+          <h2 class="st rv">The four hard questions, answered.</h2>
           <div class="faq rv">
-            <div class="fq"><div class="fq__q"><span class="c">01</span>How much history do you need?</div><div class="fq__a">Whatever you already collect. We stand predictions up on your existing events, cold, without new instrumentation or feature engineering.</div></div>
-            <div class="fq"><div class="fq__q"><span class="c">02</span>How do you prove a number is real?</div><div class="fq__a">Every prediction is tested on players it has never seen, and every play runs against a control group. What comes back is earned dollars measured against that control. When a test misses, we say so.</div></div>
-            <div class="fq"><div class="fq__q"><span class="c">03</span>Do we need an ML team?</div><div class="fq__a">No. That's the point. Ilara is the decision layer a studio gets without hiring one, standing models up in days rather than the six-month integration and the data-science hire.</div></div>
-            <div class="fq"><div class="fq__q"><span class="c">04</span>Does it replace our tools?</div><div class="fq__a">No. It reads the same game data your team already collects and writes decisions back into the places they already act. It's the layer on top, not a rip-and-replace.</div></div>
+            <div class="fq"><div class="fq__q"><span class="c">01</span>Do we have to replace our stack?</div><div class="fq__a">No. Ilara reads the events you already send and writes decisions back through the tools your team already works in. It is a layer on top, not a rip and replace.</div></div>
+            <div class="fq"><div class="fq__q"><span class="c">02</span>How fast until we see something real?</div><div class="fq__a">The same week, on your own events. There is no per-game model to rebuild first, so the first ranked players come back the day we get an export.</div></div>
+            <div class="fq"><div class="fq__q"><span class="c">03</span>Do we need an ML team?</div><div class="fq__a">No, and that is the point of this. The alternative is roughly six months of building and a data-science hire before you learn whether it works on your game.</div></div>
+            <div class="fq"><div class="fq__q"><span class="c">04</span>Is it safe to run on a title that is already live?</div><div class="fq__a">It never writes to your game build, only to the channels you already message players through, and every move runs against a control group you can read afterwards.</div></div>
           </div>
         </div>
       </section>
@@ -418,15 +420,15 @@
         <div class="sec__in" style="max-width:none;position:relative;z-index:2">
           <div class="prompt rv"><span class="p">$</span> ilara run <span class="fl">--game</span> your-title</div>
           <h2 class="rv">Run it on your game.</h2>
+          <p class="sp rv" style="margin:0 auto 26px;max-width:56ch">Send one email and we will book thirty minutes. Bring one live title and a week of events, and we will bring back the players at risk and the moves worth making on them. No slides and no procurement cycle.</p>
           <div class="cta__btns rv">
-            <a class="btn btn--pri" href="#top">Book the teardown →</a>
-            <a class="btn btn--ghost" href="#proof">See the proof</a>
+            <a class="btn btn--pri" href="mailto:hello@ilara.ai?subject=Teardown">Book a teardown →</a>
           </div>
         </div>
       </section>
 
       <footer>
-        <div><span class="lm">●</span> ilara — the decision layer for live mobile games</div>
+        <div><span class="lm">●</span> ilara · predictive liveops for live mobile games</div>
         <div>Decisions, not dashboards. · <a href="#top">back to top ↑</a></div>
       </footer>
     </main>
@@ -437,7 +439,7 @@
   <div class="grp">
     <span class="seg live"><span class="pulse"></span>live</span>
     <span class="seg">⎇&nbsp;3&nbsp;titles</span>
-    <span class="seg seg--hide">100M events</span>
+    <span class="seg seg--hide">studio anonymized</span>
     <span class="seg seg--hide">0 ML hires</span>
   </div>
   <div class="grp grp--r">
@@ -540,14 +542,13 @@
   /* proof: run the test suite (stagger the assertions in), looping slowly */
   var tests = document.querySelector('.tests');
   if(tests){
-    tests.classList.add('test-run');
     var rows = [].slice.call(tests.querySelectorAll('.test')), tStarted=false;
     function runTests(){
       rows.forEach(function(r){ r.classList.remove('show'); });
       rows.forEach(function(r,i){ setTimeout(function(){ r.classList.add('show'); }, 350 + i*600); });
       setTimeout(runTests, 9000);
     }
-    function startTests(){ if(tStarted) return; tStarted=true; runTests(); }
+    function startTests(){ if(tStarted) return; tStarted=true; tests.classList.add('test-run'); runTests(); }
     var io2=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ io2.disconnect(); startTests(); } }); },{threshold:.15});
     io2.observe(tests);
     setTimeout(function(){ if(!tStarted){ tStarted=true; rows.forEach(function(r){ r.classList.add('show'); }); } }, 2600);

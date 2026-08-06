@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ilara — Decisions, not dashboards</title>
-<meta name="description" content="Ilara — the decision layer for live mobile games. Decisions, not dashboards, for the teams that run live titles.">
+<title>Ilara · Decisions, not dashboards</title>
+<meta name="description" content="Ilara is a prediction layer on the stack you already run. It acts on each player before they churn, buy, or cheat, measured against a control.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -146,8 +146,8 @@
   .play{transition:background .25s}
   .play.fresh{animation:qflash 1.2s var(--ease)}
   @keyframes qflash{0%,14%{background:rgba(163,230,53,.16)}100%{background:transparent}}
-  .pcard--c .mini.ask-seq>*{opacity:0;transform:translateY(6px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
-  .pcard--c .mini.ask-seq>*.show{opacity:1;transform:none}
+  .repl .ask-seq.armed>*{opacity:0;transform:translateY(6px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+  .repl .ask-seq.armed>*.show{opacity:1;transform:none}
   @keyframes drift{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
   .notif{animation:drift 6s ease-in-out infinite}
   .donut{animation:drift 7.5s ease-in-out infinite;animation-delay:-2.5s}
@@ -161,34 +161,70 @@
     .trust{grid-template-columns:1fr;gap:20px}
     .aiband__in{max-width:100%} .sec__head{align-items:flex-start} .foot__top{flex-direction:column}
   }
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rv{opacity:1;transform:none;transition:none}.notif,.donut{animation:none}.pcard--c .mini.ask-seq>*{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rv{opacity:1;transform:none;transition:none}.notif,.donut{animation:none}.repl .ask-seq.armed>*{opacity:1;transform:none}}
+
+  /* --- beats: ask, teams, pricing, faq --- */
+  .repl{margin-top:56px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 30px 70px -40px rgba(14,26,23,.5)}
+  .repl__bar{display:flex;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid #f0f1ec;font-family:var(--fm);font-size:11.5px;color:var(--fg2)}
+  .repl__bar .sq{width:8px;height:8px;border-radius:2px;background:var(--lime)}
+  .repl__b{padding:22px clamp(18px,3vw,30px) 26px;display:grid;gap:14px}
+  .repl .q{font-family:var(--fm);font-size:14px;color:var(--ink);font-weight:500}
+  .repl .q .p{color:var(--lime-d);font-weight:700;margin-right:9px}
+  .repl .a{font-size:15px;color:var(--fg2);line-height:1.6;padding-left:24px;border-left:2px solid var(--line);max-width:74ch}
+  .repl .a b{color:var(--ink)}
+  .repl .a .ok{font-family:var(--fm);font-size:12.5px;font-weight:700;color:var(--lime-d)}
+  .tcols{margin-top:60px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .tcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px}
+  .tcard__k{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--lime-d)}
+  .tcard__t{font-family:var(--serif);font-size:23px;margin-top:12px;letter-spacing:-.01em;line-height:1.15}
+  .tcard__d{margin-top:12px;font-size:14.5px;color:var(--fg2);line-height:1.6}
+  .prices{margin-top:60px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .price{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px}
+  .price--b{border-color:var(--lime);box-shadow:0 0 0 3px rgba(163,230,53,.16)}
+  .price__k{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--lime-d)}
+  .price__t{font-family:var(--serif);font-size:27px;margin-top:12px;letter-spacing:-.01em}
+  .price__m{margin-top:8px;font-family:var(--fm);font-size:12px;color:var(--fg2)}
+  .price ul{margin-top:18px;list-style:none;display:grid;gap:10px}
+  .price li{position:relative;padding-left:20px;font-size:14.5px;color:var(--fg2);line-height:1.5}
+  .price li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:2px;background:var(--lime)}
+  .faq{margin-top:56px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .fq{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 28px}
+  .fq__q{font-family:var(--serif);font-size:20px;letter-spacing:-.01em;line-height:1.2}
+  .fq__q .c{font-family:var(--fm);font-size:11px;color:var(--lime-d);margin-right:10px;vertical-align:3px}
+  .fq__a{margin-top:12px;font-size:14.5px;color:var(--fg2);line-height:1.6}
+  .honest{margin-top:44px;border-left:3px solid var(--lime);padding:6px 0 6px 22px;max-width:62ch;
+    font-family:var(--serif);font-size:clamp(18px,2.2vw,23px);line-height:1.4;color:var(--ink)}
+  @media (max-width:900px){.tcols,.prices,.faq{grid-template-columns:1fr}}
 </style>
+<noscript><style>.rv{opacity:1!important;transform:none!important}.repl .ask-seq>*{opacity:1!important;transform:none!important}</style></noscript>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="wm" viewBox="0 0 1056.84 381.52"><path d="M32.21,13.97h77.58v346.83H32.21V13.97Z"/><path d="M478.04,14.5c66.31,0,98.8,43.76,98.8,103.44v188.32c0,39.79-19.89,59.68-59.68,59.68h-177.04c-59.68,0-87.53-36.47-87.53-109.41,0-66.31,27.85-109.41,87.53-109.41h159.14v-22.54c0-33.15-15.91-50.39-49.07-50.39h-171.74V14.5h199.59ZM369.96,206.79c-26.52,0-37.13,16.58-37.13,49.73s10.61,49.73,37.13,49.73h109.41c13.26,0,19.89-6.63,19.89-19.89v-79.57h-129.3Z"/><path d="M602.66,147.12c0-94.16,47.74-132.62,141.9-132.62h52.38v59.68h-32.49c-62.33,0-84.21,31.17-84.21,93.5v198.26h-77.58v-218.82Z"/><path d="M934.84,14.5c66.31,0,98.8,43.76,98.8,103.44v188.32c0,39.79-19.89,59.68-59.68,59.68h-177.04c-59.68,0-87.53-36.47-87.53-109.41,0-66.31,27.85-109.41,87.53-109.41h159.14v-22.54c0-33.15-15.91-50.39-49.07-50.39h-171.74V14.5h199.59ZM826.76,206.79c-26.52,0-37.13,16.58-37.13,49.73s10.61,49.73,37.13,49.73h109.41c13.26,0,19.89-6.63,19.89-19.89v-79.57h-129.3Z"/><path d="M133.37,14.05h77.58v198.26c0,62.33,21.88,93.5,84.21,93.5h32.49v59.68h-52.38c-94.16,0-141.9-38.46-141.9-132.62V14.05Z"/></symbol></svg>
 
 <div class="nav"><div class="wrap nav__in">
-  <a class="brand" href="#"><svg class="wm"><use href="#wm"/></svg></a>
-  <nav class="nav__links"><a href="#products">Platform</a><a href="#ask">Ask Ilara</a><a href="#proof">Proof</a><a href="#pricing">Pricing</a><a href="#book">Security</a></nav>
-  <div class="nav__r"><a class="desk" href="#">Log in</a><a class="pill pill--lime" href="#book">Get a teardown</a></div>
+  <a class="brand" href="#top"><svg class="wm"><use href="#wm"/></svg></a>
+  <div class="nav__r"><a class="pill pill--lime" href="#book">Book a teardown</a></div>
 </div></div>
 
-<header class="hero"><div class="wrap">
+<!-- S1 · hero -->
+<header class="hero" id="top"><div class="wrap">
   <div class="hero__grid">
     <div>
-      <h1>Decisions,<br>not dashboards.</h1>
-      <p class="hero__sub">The only end-to-end decision layer for live mobile games. Score every player, decide the moves worth making, and ship them measured against a control.</p>
-      <div class="hero__cta"><a class="pill pill--lime" href="#book">See it in action</a><a class="pill pill--outw" href="#products">Learn how it works</a></div>
+      <div class="eyebrow" style="color:var(--lime)">Predictive LiveOps · per player</div>
+      <h1 style="margin-top:18px">Decisions,<br>not dashboards.</h1>
+      <p class="hero__sub">Ilara sits on top of the analytics you already run and watches your live game player by player. It spots the ones about to churn, buy, or cheat, picks the move most likely to change what happens next, and hands it to you priced and ready to approve.</p>
+      <div class="hero__cta"><a class="pill pill--lime" href="#book">Book a teardown</a><a class="pill pill--outw" href="#proof">See the work</a></div>
+      <div style="margin-top:22px;font-family:var(--fm);font-size:12.5px;color:var(--onfg2)">A live teardown on one of your own titles</div>
     </div>
     <div class="stage">
       <div class="card board">
         <div class="board__bar"><span class="sq"></span>Decision queue · live title · WK 29</div>
-        <div class="play"><span class="play__r">01</span><div><div class="play__t">Rescue paying players going cold</div><div class="play__w"><span class="chip">why</span>spend −60% / 7d</div></div><span class="play__v">$18.4K</span></div>
+        <div class="play"><span class="play__r">01</span><div><div class="play__t">Rescue paying players going cold</div><div class="play__w"><span class="chip">why</span>spend &minus;60% / 7d</div></div><span class="play__v">$18.4K</span></div>
         <div class="play"><span class="play__r">02</span><div><div class="play__t">Loot box after a match win</div><div class="play__w"><span class="chip">why</span>154,018 paths/wk</div></div><span class="play__v">$12.9K</span></div>
         <div class="play"><span class="play__r">03</span><div><div class="play__t">Offer to likely payers</div><div class="play__w"><span class="chip">why</span>top 1% of spend</div></div><span class="play__v">$9.7K</span></div>
         <div class="play"><span class="play__r">04</span><div><div class="play__t">Stop spending on the gone</div><div class="play__w"><span class="chip">why</span>0% return</div></div><span class="play__v">$4.1K</span></div>
       </div>
       <div class="card notif">
-        <div class="ic">✓</div>
+        <div class="ic">&#10003;</div>
         <h4>Queued</h4>
         <p>The rescue campaign was sent to <b>LiveOps</b>, running against a <b>control</b>.</p>
         <span class="go">Go to results</span>
@@ -196,58 +232,99 @@
       <div class="card donut">
         <h5>Revenue by move</h5>
         <div class="donut__d"></div>
-        <div class="donut__l"><div><i></i>Rescue — 46%</div><div><i style="background:#2f7d0a"></i>Offers — 24%</div><div><i style="background:#8fce22"></i>Events — 16%</div></div>
+        <div class="donut__l"><div><i></i>Rescue &middot; 46%</div><div><i style="background:#2f7d0a"></i>Offers &middot; 24%</div><div><i style="background:#8fce22"></i>Events &middot; 16%</div></div>
       </div>
     </div>
   </div>
-  <div class="trust">
-    <div class="trust__t">Scoring <b>1.1M players</b> a day across <b>3 live titles</b></div>
-    <div class="trust__l"><span>devtodev</span><span>Firebase</span><span>GA4</span><span>Reliance</span><span>S3</span></div>
-  </div>
 </div></header>
 
-<!-- core products -->
-<section class="sec sec--paper" id="products"><div class="wrap">
-  <div class="sec__head">
-    <div class="l">
-      <div class="eyebrow rv">Ilara core products</div>
-      <h2 class="h2 rv">Welcome to your decision home</h2>
-      <p class="lead rv">Centralize the whole loop on Ilara, from a raw event to a shipped, measured move.</p>
-    </div>
-    <a class="pill pill--outd rv" href="#book">Get a live demo</a>
-  </div>
-  <div class="pcards">
-    <div class="pcard pcard--a rv"><div class="pcard__viz"><div class="mini" style="width:100%"><div class="row"><span>Rescue cooling payers</span><b class="lm">$18.4K</b></div><div class="row"><span>Loot box after win</span><b>$12.9K</b></div><div class="row"><span>Offer likely payers</span><b>$9.7K</b></div><div class="row"><span>Hold on the gone</span><b>$4.1K</b></div></div></div><div class="pcard__b"><div class="pcard__k">Decide</div><div class="pcard__t">The week's moves, ranked by money.</div><div class="pcard__d">A short list of specific plays, each priced, each with its reason attached.</div></div></div>
-    <div class="pcard pcard--b rv"><div class="pcard__viz"><div class="mini" style="width:100%"><div style="font-weight:600;margin-bottom:6px">Predicted vs observed</div><div class="row"><span>Extra payers</span><b>27 / 24</b></div><div class="row"><span>Extra retained D7</span><b>46 / 50</b></div><div class="mini__bars"><i style="height:40%"></i><i class="lm" style="height:100%"></i><i style="height:70%"></i><i style="height:55%"></i><i class="lm" style="height:88%"></i><i style="height:46%"></i></div></div></div><div class="pcard__b"><div class="pcard__k">Prove</div><div class="pcard__t">Every move runs against a control.</div><div class="pcard__d">Earned dollars, tested against a holdout. When a test misses, we say so.</div></div></div>
-    <div class="pcard pcard--c rv"><div class="pcard__viz"><div class="mini" style="width:100%"><div style="font-family:var(--fm);color:var(--lime-d);font-weight:700">&gt; why did revenue dip?</div><div style="margin-top:8px;color:var(--fg2);line-height:1.5">Alliance event ended on the 13th. Alliance revenue fell <b style="color:#111">−38%</b>.</div><div style="margin-top:8px"><span class="lm" style="font-family:var(--fm);font-weight:700">✓ queued</span></div></div></div><div class="pcard__b"><div class="pcard__k">Ask</div><div class="pcard__t">Ask it like your best analyst.</div><div class="pcard__d">Answers from your live data, with the chart and the next move attached.</div></div></div>
+<!-- S2 · problem -->
+<section class="sec sec--paper" id="problem"><div class="wrap">
+  <div class="sec__head"><div class="l">
+    <div class="eyebrow rv">The problem</div>
+    <h2 class="h2 rv">You find out too late to act.</h2>
+    <p class="lead rv">Your dashboard reports what happened, accurately, after the fact. By the time the weekly report lands, the player has been gone six days and no offer, message or tuning change can reach them. The numbers are not the problem. The lag is.</p>
+  </div></div>
+  <div class="proofrow">
+    <div class="pstat rv"><div class="n" style="color:var(--fg2)">3 in 4</div><div class="c">new players never come back</div></div>
+    <div class="pstat rv"><div class="n" style="color:var(--fg2)">&lt;5%</div><div class="c">of the ones who stay ever pay you anything</div></div>
+    <div class="pstat rv"><div class="n" style="color:var(--fg2)">6 days</div><div class="c">gone, on average, before the weekly report flags them</div></div>
   </div>
 </div></section>
 
-<!-- AI band -->
-<section class="sec sec--cream"><div class="wrap">
+<!-- S3 · engine -->
+<section class="sec sec--cream" id="engine"><div class="wrap">
+  <div class="sec__head">
+    <div class="l">
+      <div class="eyebrow rv">How it works</div>
+      <h2 class="h2 rv">Ilara decides, you approve.</h2>
+      <p class="lead rv">Every player is scored continuously against what they are about to do next. Ilara ranks the moves that would change that outcome, prices each one, and shows you the call with the reasoning behind it. You approve, and it ships, always against a live control group so you can see what that move was worth.</p>
+    </div>
+  </div>
+  <div class="pcards">
+    <div class="pcard pcard--a rv"><div class="pcard__viz"><div class="mini" style="width:100%"><div class="row"><span>P-4471 &middot; churn 48h</span><b class="lm">0.91</b></div><div class="row"><span>P-2210 &middot; likely payer</span><b>0.78</b></div><div class="row"><span>P-8830 &middot; going cold</span><b>0.74</b></div><div class="row"><span>P-1046 &middot; already gone</span><b>0.12</b></div></div></div><div class="pcard__b"><div class="pcard__k">1 &middot; Predict</div><div class="pcard__t">Every player, scored on what they do next.</div><div class="pcard__d">Continuous, per player, not a weekly cohort read.</div></div></div>
+    <div class="pcard pcard--b rv"><div class="pcard__viz"><div class="mini" style="width:100%"><div class="row"><span>Rescue cooling payers</span><b class="lm">$18.4K</b></div><div class="row"><span>Loot box after win</span><b>$12.9K</b></div><div class="row"><span>Offer likely payers</span><b>$9.7K</b></div><div class="row"><span>Hold on the gone</span><b>$4.1K</b></div></div></div><div class="pcard__b"><div class="pcard__k">2 &middot; Decide</div><div class="pcard__t">The moves worth making, ranked and priced.</div><div class="pcard__d">Each one carries the reason it was chosen.</div></div></div>
+    <div class="pcard pcard--c rv"><div class="pcard__viz"><div class="mini" style="width:100%"><div style="font-weight:600;margin-bottom:6px">Treatment vs control</div><div class="row"><span>Extra payers</span><b>27 / 24</b></div><div class="row"><span>Extra retained D7</span><b>46 / 50</b></div><div class="mini__bars"><i style="height:40%"></i><i class="lm" style="height:100%"></i><i style="height:70%"></i><i style="height:55%"></i><i class="lm" style="height:88%"></i><i style="height:46%"></i></div></div></div><div class="pcard__b"><div class="pcard__k">3 &middot; Act</div><div class="pcard__t">Approve it, and it ships against a control.</div><div class="pcard__d">You see what the move earned, not what it should have.</div></div></div>
+  </div>
+</div></section>
+
+<!-- S4 · ask -->
+<section class="sec sec--paper" id="ask"><div class="wrap">
+  <div class="sec__head"><div class="l">
+    <div class="eyebrow rv">Command</div>
+    <h2 class="h2 rv">Ask it like your best analyst.</h2>
+    <p class="lead rv">Type the question you would have sent to your data team. You get back a ranked list of real players and the move for each one, not a chart to interpret. No SQL, no ticket, no waiting for Thursday&rsquo;s report.</p>
+  </div></div>
+  <div class="repl rv">
+    <div class="repl__bar"><span class="sq"></span>Ask Ilara &middot; live title &middot; 265,832 players</div>
+    <div class="repl__b ask-seq">
+      <div class="q"><span class="p">&gt;</span>who is about to churn on iOS this week, and what do I send them?</div>
+      <div class="a"><b>1,240 players</b> are on track to stop playing within seven days. The strongest single move is the comeback offer: <b>+$18.4K</b> expected, measured against a 10% control.</div>
+      <div class="q"><span class="p">&gt;</span>approve and ship it</div>
+      <div class="a"><span class="ok">&#10003; queued</span> &middot; comeback offer &middot; 1,116 players treated, 124 held back &middot; results in seven days</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- S5 · teams -->
+<section class="sec sec--cream" id="teams"><div class="wrap">
+  <div class="sec__head"><div class="l">
+    <div class="eyebrow rv">One engine, every team</div>
+    <h2 class="h2 rv">A version each team can act on.</h2>
+    <p class="lead rv">The same engine, read three ways, so no meeting is spent arguing about whose figure is right.</p>
+  </div></div>
+  <div class="tcols">
+    <div class="tcard rv"><div class="tcard__k">C-suite</div><div class="tcard__t">The revenue at risk this week.</div><div class="tcard__d">One number, what recovering it is worth, and the call to make. No dashboard to interpret first.</div></div>
+    <div class="tcard rv"><div class="tcard__k">Product</div><div class="tcard__t">The specific fix to ship.</div><div class="tcard__d">Which change moves which players, and exactly who it lands on, before a sprint is committed to it.</div></div>
+    <div class="tcard rv"><div class="tcard__k">Analytics</div><div class="tcard__t">The test, its control, the confidence.</div><div class="tcard__d">Inputs, weights and lineage behind every number, open to be audited and argued with.</div></div>
+  </div>
+</div></section>
+
+<!-- S6 · speed -->
+<section class="sec sec--paper" id="speed"><div class="wrap">
   <div class="aiband rv"><div class="aiband__in">
-    <div class="eyebrow">Introducing</div>
-    <h2 class="h2" style="margin-top:16px">Predictions that stand up cold, in under a day.</h2>
-    <p class="lead">On players we've never seen, on a game we've never scored. No feature engineering, no six-month integration, no ML team to hire.</p>
-    <div style="margin-top:30px"><a class="pill pill--lime" href="#book">See the platform</a></div>
+    <div class="eyebrow">The wedge</div>
+    <h2 class="h2" style="margin-top:16px">Live in a day, not six months.</h2>
+    <p class="lead">Ilara cold-starts on a game it has never seen. Send an event export in the morning and the first ranked players come back the same day, because there is no per-game model to rebuild and nothing new to instrument first. Building the same capability in house means roughly six months and a data-science team you have to hire before you find out whether it works.</p>
+    <div style="margin-top:30px"><a class="pill pill--lime" href="#book">Book a teardown</a></div>
   </div></div>
 </div></section>
 
-<!-- connects -->
+<!-- S7 · connect -->
 <section class="sec sec--cream" id="connect"><div class="wrap">
-  <div class="sec__head"><div class="l"><div class="eyebrow rv">Integrations</div><h2 class="h2 rv">Connects to what you already run.</h2><p class="lead rv">We read the game data you already collect, and write decisions back into the places your team already acts. Events living somewhere else? A CSV export covers the first run.</p></div></div>
+  <div class="sec__head"><div class="l"><div class="eyebrow rv">Fits your stack</div><h2 class="h2 rv">Works with the tools you already run.</h2><p class="lead rv">Ilara reads the events you already send, wherever they live, and writes decisions back out through the CRM and LiveOps tools your team already works in. Nothing to rip out, no SDK swap, no migration project, and no new dashboard for anyone to learn.</p></div></div>
   <div class="connect">
     <div class="conn-col rv">
       <div class="conn-k">What you send</div>
       <div class="conn-i"><span class="dt"></span>devtodev</div>
       <div class="conn-i"><span class="dt"></span>Firebase / GA4</div>
       <div class="conn-i"><span class="dt"></span>Daily CSV / S3</div>
-      <div class="conn-i"><span class="dt"></span>SDK / REST</div>
+      <div class="conn-i"><span class="dt"></span>Unity SDK / REST</div>
     </div>
-    <div class="conn-hub rv"><div class="conn-hub__c"><svg class="wm"><use href="#wm"/></svg><span>Scores every player daily</span></div></div>
+    <div class="conn-hub rv"><div class="conn-hub__c"><svg class="wm"><use href="#wm"/></svg><span>Scores every player, continuously</span></div></div>
     <div class="conn-col conn-col--r rv">
       <div class="conn-k">What comes back</div>
-      <div class="conn-i"><span class="dt"></span>Live scoring API</div>
+      <div class="conn-i"><span class="dt"></span>Your CRM</div>
       <div class="conn-i"><span class="dt"></span>In-game offers</div>
       <div class="conn-i"><span class="dt"></span>Control-group A/B</div>
       <div class="conn-i"><span class="dt"></span>Webhooks</div>
@@ -255,34 +332,57 @@
   </div>
 </div></section>
 
-<!-- proof -->
+<!-- S8 · proof -->
 <section class="sec sec--paper" id="proof"><div class="wrap">
-  <div class="sec__head"><div class="l"><div class="eyebrow rv">Proof · Reliance Games · 6,319 players</div><h2 class="h2 rv">We ran it on a live game.</h2><p class="lead rv">One controlled test on a live title: a control group and two identical treatment groups, so the result validates itself.</p></div></div>
+  <div class="sec__head"><div class="l"><div class="eyebrow rv">Proof &middot; one live test &middot; studio anonymized</div><h2 class="h2 rv">Told straight, measured against a control.</h2><p class="lead rv">On a live game, players flagged by Ilara bought at 8.7% per offer shown against 1.0% for the control, roughly nine times more, while the number of players interrupted by an offer fell by 95%.</p></div></div>
   <div class="proofrow">
-    <div class="pstat rv"><div class="n">38%</div><div class="c">less onboarding friction, one in thirteen installs rescued</div></div>
-    <div class="pstat rv"><div class="n">9.5%</div><div class="c">more revenue per install, retention flat at every horizon</div></div>
-    <div class="pstat rv"><div class="n">$1.5M</div><div class="c">a year found across the wider engagement</div></div>
+    <div class="pstat rv"><div class="n">9&times;</div><div class="c">more purchases per offer shown, 1.0% to 8.7% against the control</div></div>
+    <div class="pstat rv"><div class="n">95%</div><div class="c">fewer players interrupted by an offer at all</div></div>
+    <div class="pstat rv"><div class="n">flat</div><div class="c">retention over the same window, unchanged either way</div></div>
+  </div>
+  <p class="honest rv">Retention stayed flat, so the win was in revenue rather than in keeping people around longer. That is the whole result, including the part that did not move.</p>
+</div></section>
+
+<!-- S9 · pricing -->
+<section class="sec sec--cream" id="pricing"><div class="wrap">
+  <div class="sec__head"><div class="l"><div class="eyebrow rv">Pricing</div><h2 class="h2 rv">Teardown, then platform.</h2><p class="lead rv">Start with a fixed, paid teardown on one title. If that lands, it becomes an annual managed service, quoted after a short discovery against the value we just showed you.</p></div></div>
+  <div class="prices">
+    <div class="price rv"><div class="price__k">1 &middot; Teardown</div><div class="price__t">Fixed price, one title</div><div class="price__m">no platform commitment</div>
+      <ul><li>Your own data, scored cold in days</li><li>A ranked, priced list of moves</li><li>A straight read on what acting on them is worth</li></ul></div>
+    <div class="price price--b rv"><div class="price__k">2 &middot; Platform</div><div class="price__t">Annual, managed</div><div class="price__m">quoted per studio after discovery</div>
+      <ul><li>Continuous scoring across your live titles</li><li>The decision queue inside your workflow</li><li>A control group on every move</li><li>Priced off your own economics, not a per-seat rate card</li></ul></div>
   </div>
 </div></section>
 
-<!-- cta -->
-<section class="sec cta" id="book"><div class="wrap">
-  <div class="eyebrow rv" style="color:var(--lime)">Ready when you are</div>
-  <h2 class="h2 rv" style="margin-top:16px">Made for the teams that run live games.</h2>
-  <p class="rv">Book a teardown. Send us data, we come back with findings you can check against a control.</p>
-  <div class="cta__b rv"><a class="pill pill--lime" href="#">Get a teardown</a><a class="pill pill--outw" href="#proof">See the proof</a></div>
+<!-- S10 · faq -->
+<section class="sec sec--paper" id="faq"><div class="wrap">
+  <div class="sec__head"><div class="l"><div class="eyebrow rv">The honest FAQ</div><h2 class="h2 rv">The four hard questions, answered.</h2></div></div>
+  <div class="faq">
+    <div class="fq rv"><div class="fq__q"><span class="c">01</span>Do we have to replace our stack?</div><div class="fq__a">No. Ilara reads the events you already send and writes decisions back through the tools your team already works in. It is a layer on top, not a rip and replace.</div></div>
+    <div class="fq rv"><div class="fq__q"><span class="c">02</span>How fast until we see something real?</div><div class="fq__a">The same week, on your own events. There is no per-game model to rebuild first, so the first ranked players come back the day we get an export.</div></div>
+    <div class="fq rv"><div class="fq__q"><span class="c">03</span>Do we need an ML team?</div><div class="fq__a">No, and that is the point of this. The alternative is roughly six months of building and a data-science hire before you learn whether it works on your game.</div></div>
+    <div class="fq rv"><div class="fq__q"><span class="c">04</span>Is it safe to run on a title that is already live?</div><div class="fq__a">It never writes to your game build, only to the channels you already message players through, and every move runs against a control group you can read afterwards.</div></div>
+  </div>
 </div></section>
 
-<footer id="pricing"><div class="wrap">
+<!-- S11 · close -->
+<section class="sec cta" id="book"><div class="wrap">
+  <div class="eyebrow rv" style="color:var(--lime)">The close</div>
+  <h2 class="h2 rv" style="margin-top:16px">Run it on your game.</h2>
+  <p class="rv">Send one email and we will book thirty minutes. Bring one live title and a week of events, and we will bring back the players at risk and the moves worth making on them. No slides and no procurement cycle.</p>
+  <div class="cta__b rv"><a class="pill pill--lime" href="mailto:hello@ilara.ai?subject=Teardown">Book a teardown</a></div>
+  <div class="rv" style="margin-top:18px;font-family:var(--fm);font-size:12px;color:var(--onfg2)">One next step, and only one</div>
+</div></section>
+
+<footer><div class="wrap">
   <div class="foot__top">
-    <div class="foot__big">Decide to create.</div>
+    <div class="foot__big">Decisions, not dashboards.</div>
     <div class="foot__cols">
-      <div><h4>Platform</h4><a href="#products">Decide</a><a href="#ask">Ask Ilara</a><a href="#proof">Prove</a><a href="#book">Pricing</a></div>
-      <div><h4>Company</h4><a href="#">About</a><a href="#">Newsroom</a><a href="#book">Contact</a></div>
-      <div><h4>Legal</h4><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Security</a></div>
+      <div><h4>The page</h4><a href="#problem">The problem</a><a href="#engine">How it works</a><a href="#ask">Ask Ilara</a><a href="#proof">Proof</a></div>
+      <div><h4>Details</h4><a href="#connect">Integrations</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="#book">Book a teardown</a></div>
     </div>
   </div>
-  <div class="foot__base"><span><span class="lm">●</span> © 2026 Ilara — the decision layer for live mobile games</span><span>Decisions, not dashboards.</span></div>
+  <div class="foot__base"><span><span class="lm">&#9679;</span> &copy; 2026 Ilara &middot; predictive LiveOps for live mobile games</span><span>Studio results anonymized until cleared.</span></div>
 </div></footer>
 
 <script>
@@ -315,13 +415,13 @@
   }
 
   /* Ask Ilara card — progressive REPL reveal, looping */
-  var askMini=document.querySelector('.pcard--c .mini');
+  var askMini=document.querySelector('#ask .repl__b');
   if(askMini){
-    askMini.classList.add('ask-seq');
-    var lines=[].slice.call(askMini.children), delays=[350,1500,2800], aStarted=false;
-    function runAsk(){ lines.forEach(function(l){ l.classList.remove('show'); }); lines.forEach(function(l,i){ setTimeout(function(){ l.classList.add('show'); }, delays[i]||350); }); setTimeout(runAsk, 6500); }
-    function startAsk(){ if(aStarted) return; aStarted=true; runAsk(); }
-    var io2=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ io2.disconnect(); startAsk(); } }); },{threshold:.15}); io2.observe(askMini.closest('.pcard'));
+    
+    var lines=[].slice.call(askMini.children), delays=[350,1600,3100,4300], aStarted=false;
+    function runAsk(){ lines.forEach(function(l){ l.classList.remove('show'); }); lines.forEach(function(l,i){ setTimeout(function(){ l.classList.add('show'); }, delays[i]||350); }); setTimeout(runAsk, 7800); }
+    function startAsk(){ if(aStarted) return; aStarted=true; askMini.classList.add('armed'); runAsk(); }
+    var io2=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ io2.disconnect(); startAsk(); } }); },{threshold:.15}); io2.observe(askMini.closest('.repl'));
     /* safety: never leave the REPL lines stuck hidden if the observer never fires */
     setTimeout(function(){ if(!aStarted){ aStarted=true; lines.forEach(function(l){ l.classList.add('show'); }); } }, 2600);
   }
